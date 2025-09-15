@@ -17,12 +17,14 @@ from src.agent import create_agent
 from src.config import config
 from src.logger import logger
 from src.models import model_manager
+from src.tui.agent_integration import run_with_tui_progress
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='main')
     parser.add_argument("--config", default=os.path.join(root, "configs", "config_main.py"), help="config file path")
     parser.add_argument("--task", type=str, help="Research task to execute")
+    parser.add_argument("--no-progress", action="store_true", help="Disable progress display (use logs only)")
 
     parser.add_argument(
         '--cfg-options',
@@ -80,7 +82,23 @@ async def main(task: str = None):
     else:
         logger.info(f"| Executing custom task: {task[:100]}...")
 
-    res = await agent.run(task)
+    # Determine if we should show progress display
+    show_progress = not getattr(args, 'no_progress', False)
+
+    if show_progress:
+        # Run with TUI progress display
+        logger.info(f"| Starting task execution with progress display...")
+        res = await run_with_tui_progress(
+            agent,
+            task,
+            is_hierarchical=True,
+            show_progress=True
+        )
+    else:
+        # Run without progress display (traditional logging)
+        logger.info(f"| Starting task execution (logs only)...")
+        res = await agent.run(task)
+
     logger.info(f"| Result: {res}")
 
 if __name__ == '__main__':
