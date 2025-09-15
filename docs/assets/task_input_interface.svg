@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .terminal-bg { fill: #0d1117; }
+      .terminal-text { fill: #c9d1d9; font-family: 'Fira Code', monospace; font-size: 12px; }
+      .prompt-box { fill: #21262d; stroke: #58a6ff; stroke-width: 2; }
+      .input-text { fill: #58a6ff; font-weight: bold; }
+      .template-text { fill: #7d8590; }
+      .success-text { fill: #238636; }
+      .accent-text { fill: #f85149; }
+      .header-text { fill: #ffa657; font-size: 14px; font-weight: bold; }
+    </style>
+  </defs>
+
+  <!-- Terminal Background -->
+  <rect class="terminal-bg" width="800" height="500" rx="8"/>
+
+  <!-- Header -->
+  <text class="header-text" x="20" y="30">🔬 DeepResearchAgent - Interactive Task Collection</text>
+
+  <!-- Main Prompt Box -->
+  <rect class="prompt-box" x="20" y="50" width="760" height="120" rx="4"/>
+  <text class="input-text" x="30" y="75">📝 Enter your research task:</text>
+  <text class="terminal-text" x="30" y="95">What would you like me to research and analyze for you?</text>
+  <text class="terminal-text" x="30" y="115">Type your custom task, or choose a template below...</text>
+
+  <!-- Input Field -->
+  <rect fill="#161b22" stroke="#30363d" stroke-width="1" x="30" y="135" width="720" height="25" rx="2"/>
+  <text class="success-text" x="35" y="152">▋ Test progress display: Calculate 5*7</text>
+
+  <!-- Template Options -->
+  <text class="header-text" x="20" y="190">📋 Available Templates:</text>
+
+  <text class="template-text" x="30" y="210">1. 📊 Market Analysis: "Analyze the current market trends for [industry/product]"</text>
+  <text class="template-text" x="30" y="225">2. 🔬 Scientific Research: "Research the latest developments in [scientific field]"</text>
+  <text class="template-text" x="30" y="240">3. 💼 Business Intelligence: "Provide competitive analysis for [company/market]"</text>
+  <text class="template-text" x="30" y="255">4. 📈 Technology Assessment: "Evaluate the potential of [emerging technology]"</text>
+  <text class="template-text" x="30" y="270">5. 🏛️ Policy Analysis: "Analyze the impact of [policy/regulation] on [sector]"</text>
+
+  <!-- Controls -->
+  <text class="terminal-text" x="20" y="310">Navigation:</text>
+  <text class="accent-text" x="30" y="330">• Press Enter to submit your task</text>
+  <text class="accent-text" x="30" y="345">• Press Tab to cycle through templates</text>
+  <text class="accent-text" x="30" y="360">• Press Ctrl+C to cancel</text>
+  <text class="accent-text" x="30" y="375">• Type 'help' for more assistance</text>
+
+  <!-- Status -->
+  <text class="success-text" x="20" y="410">✅ Task validation: Active</text>
+  <text class="success-text" x="20" y="430">✅ Agent system: Ready</text>
+  <text class="success-text" x="20" y="450">✅ Progress display: Enabled</text>
+</svg>

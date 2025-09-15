@@ -3,12 +3,11 @@ Configuration for local-only setup with minimal dependencies.
 This config uses only models that don't require external API keys.
 """
 
-# Experiment settings
+# Experiment settings - organized directory structure
 tag = 'local_only'
-workdir = 'workdir'
-exp_path = f'{workdir}/{tag}'
-log_path = f'{exp_path}/log.txt'
-save_path = f'{exp_path}/dra.jsonl'
+workdir = 'outputs'  # Cleaner name than 'workdir'
+log_path = 'local_only.log'  # System will place in exp_path automatically
+save_path = 'local_only_results.jsonl'  # System will place in exp_path automatically
 
 # Use hierarchical agent structure
 use_hierarchical_agent = True
@@ -31,6 +30,9 @@ planning_agent_config = dict(
     ],
     provide_run_summary=True,
 )
+
+# Set the main agent configuration
+agent_config = planning_agent_config
 
 # Deep analyzer with local models
 deep_analyzer_agent_config = dict(

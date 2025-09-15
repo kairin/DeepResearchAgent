@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="600" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .terminal-bg { fill: #0d1117; }
+      .terminal-text { fill: #c9d1d9; font-family: 'Fira Code', monospace; font-size: 12px; }
+      .folder-icon { fill: #58a6ff; }
+      .file-icon { fill: #238636; }
+      .path-text { fill: #7d8590; }
+      .header-text { fill: #ffa657; font-size: 14px; font-weight: bold; }
+      .tree-line { stroke: #30363d; stroke-width: 1; fill: none; }
+    </style>
+  </defs>
+
+  <!-- Terminal Background -->
+  <rect class="terminal-bg" width="600" height="400" rx="8"/>
+
+  <!-- Header -->
+  <text class="header-text" x="20" y="30">📁 Organized Directory Structure</text>
+
+  <!-- Root Project -->
+  <text class="folder-icon" x="20" y="60">📁</text>
+  <text class="terminal-text" x="40" y="60">DeepResearchAgent/</text>
+
+  <!-- Main folders -->
+  <line class="tree-line" x1="30" y1="70" x2="30" y2="340"/>
+
+  <!-- outputs/ -->
+  <text class="folder-icon" x="40" y="80">📁</text>
+  <text class="terminal-text" x="60" y="80">outputs/</text>
+  <text class="path-text" x="150" y="80"># Organized output directory</text>
+
+  <!-- outputs subdirectories -->
+  <line class="tree-line" x1="50" y1="90" x2="50" y2="200"/>
+
+  <text class="folder-icon" x="60" y="100">📁</text>
+  <text class="terminal-text" x="80" y="100">logs/</text>
+  <text class="path-text" x="150" y="100"># All log files</text>
+
+  <text class="folder-icon" x="60" y="120">📁</text>
+  <text class="terminal-text" x="80" y="120">results/</text>
+  <text class="path-text" x="150" y="120"># Result JSON files</text>
+
+  <text class="folder-icon" x="60" y="140">📁</text>
+  <text class="terminal-text" x="80" y="140">reports/</text>
+  <text class="path-text" x="150" y="140"># Migration & validation reports</text>
+
+  <text class="folder-icon" x="60" y="160">📁</text>
+  <text class="terminal-text" x="80" y="160">local_only/</text>
+  <text class="path-text" x="150" y="160"># Local config execution files</text>
+
+  <text class="folder-icon" x="60" y="180">📁</text>
+  <text class="terminal-text" x="80" y="180">temp/</text>
+  <text class="path-text" x="150" y="180"># Temporary files</text>
+
+  <!-- configs/ -->
+  <text class="folder-icon" x="40" y="220">📁</text>
+  <text class="terminal-text" x="60" y="220">configs/</text>
+  <text class="path-text" x="150" y="220"># Configuration files</text>
+
+  <!-- src/ -->
+  <text class="folder-icon" x="40" y="240">📁</text>
+  <text class="terminal-text" x="60" y="240">src/</text>
+
+  <!-- src subdirectories -->
+  <line class="tree-line" x1="50" y1="250" x2="50" y2="320"/>
+
+  <text class="folder-icon" x="60" y="260">📁</text>
+  <text class="terminal-text" x="80" y="260">tui/</text>
+  <text class="path-text" x="150" y="260"># TUI implementation</text>
+
+  <text class="folder-icon" x="60" y="280">📁</text>
+  <text class="terminal-text" x="80" y="280">agent/</text>
+  <text class="path-text" x="150" y="280"># Agent implementations</text>
+
+  <text class="folder-icon" x="60" y="300">📁</text>
+  <text class="terminal-text" x="80" y="300">tools/</text>
+  <text class="path-text" x="150" y="300"># Tool implementations</text>
+
+  <!-- docs/ -->
+  <text class="folder-icon" x="40" y="340">📁</text>
+  <text class="terminal-text" x="60" y="340">docs/</text>
+
+  <!-- docs subdirectories -->
+  <text class="folder-icon" x="60" y="360">📁</text>
+  <text class="terminal-text" x="80" y="360">assets/</text>
+  <text class="path-text" x="150" y="360"># SVG files and images</text>
+</svg>
