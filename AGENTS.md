@@ -4,19 +4,9 @@
 
 ## Project Overview
 
-DeepResearchAgent is a hierarchical multi-agent framework designed for general-purpose task solving and deep research. The system uses a conductor-orchestra metaphor where a central planning agent coordinates specialized lower-level agents to tackle complex, multi-step tasks.
+DeepResearchAgent is a hierarchical multi-agent framework for complex task solving and deep research. A central planning agent coordinates specialized execution agents using an async, tool-based architecture with multi-provider model support.
 
-**Quick Links:**
-- 📚 [Complete Architecture Guide](docs/architecture/OVERVIEW.md)
-- ⚡ [Quick Start Guide](docs/usage/QUICK_START.md)
-- 🔧 [Environment Setup](docs/setup/ENVIRONMENT_SETUP.md)
-- 🤖 [Model Configuration](docs/models/CONFIGURATION.md)
-
-### Core Architecture
-- **Two-layer hierarchical structure** with planning and execution agents
-- **Asynchronous framework** enabling parallel task execution
-- **Tool-based architecture** with pluggable components
-- **Multi-provider model support** (OpenAI, Anthropic, Google, Local)
+**Quick Links:** [Architecture](docs/architecture/OVERVIEW.md) • [Quick Start](docs/usage/QUICK_START.md) • [Setup](docs/setup/ENVIRONMENT_SETUP.md) • [Models](docs/models/CONFIGURATION.md)
 
 ## Quick Setup
 
@@ -56,61 +46,40 @@ uv run ruff check .                      # Lint code
 **Complete Command Reference:** [docs/usage/COMMANDS.md](docs/usage/COMMANDS.md)
 
 ## Configuration
-
-### CLI-First Setup (Recommended)
-The system automatically detects CLI tools and provides intelligent fallbacks:
-
 ```bash
-# Install CLI tools (optional but recommended)
+# CLI-first (recommended)
 npm install -g @anthropics/claude-code
-uv add google-generativeai
-
-# Run with CLI-first priority
 uv run python main.py --config configs/config_cli_fallback.py
-```
 
-### Basic Configuration
-```bash
-# Minimal setup - just add HuggingFace token to .env
-HUGGINGFACE_API_KEY=hf_your-token-here
-
-# Custom config
+# Local-only setup
+HUGGINGFACE_API_KEY=hf_your-token-here  # Add to .env
 uv run python main.py --config configs/config_local_only.py
 
 # Override settings
 uv run python main.py --cfg-options agent_config.max_steps=10
 ```
 
-### Environment Setup
-```bash
-# Copy template and edit
+# Environment setup
 cp .env.template .env
-
-# Add API keys (choose one or more)
-OPENAI_API_KEY=sk-your-key-here
-ANTHROPIC_API_KEY=sk-ant-your-key-here
-GOOGLE_API_KEY=your-google-key-here
+# Add API keys: OPENAI_API_KEY, ANTHROPIC_API_KEY, GOOGLE_API_KEY
 ```
 
-**Full Configuration Guide:** [docs/models/CONFIGURATION.md](docs/models/CONFIGURATION.md)
+**Full Guide:** [docs/models/CONFIGURATION.md](docs/models/CONFIGURATION.md)
 
 ## Development
 
-### Code Style & Architecture
-- **Modular design**: Agents in `src/agent/`, tools in `src/tools/`
-- **Async/await**: All operations use asyncio for concurrency
-- **Config-driven**: MMEngine-based configuration system
-- **Registry pattern**: Dynamic model and tool registration
+### Architecture & Testing
+- **Modular**: Agents in `src/agent/`, tools in `src/tools/`
+- **Async**: All operations use asyncio
+- **Config-driven**: MMEngine configuration system
+- **Performance**: 83.39% GAIA benchmark average
 
-**Detailed Guidelines:** [docs/development/CONTRIBUTING.md](docs/development/CONTRIBUTING.md)
-
-### Testing
 ```bash
-uv run pytest                           # Run all tests
-uv run python examples/run_gaia.py      # GAIA benchmark
+uv run pytest                          # Run tests
+uv run python examples/run_gaia.py     # GAIA benchmark
 ```
 
-**Performance**: 83.39% average on GAIA benchmark
+**Guidelines:** [docs/development/CONTRIBUTING.md](docs/development/CONTRIBUTING.md)
 
 ### 🚨 Git Archive Strategy
 
@@ -126,59 +95,31 @@ git checkout main && git merge "archive/${DATETIME}-description" --no-ff
 
 **Full Git Guidelines:** [docs/development/GIT_STRATEGY.md](docs/development/GIT_STRATEGY.md)
 
-## Supported Models
+## Models
+- **Commercial**: GPT-4.1/4o/o1/o3, Claude-3.7/4-Sonnet, Gemini-2.5-Pro
+- **CLI**: Claude Code (`npm install -g @anthropics/claude-code`)
+- **Local**: vLLM Qwen 2.5 (7B/14B/32B), HuggingFace
 
-### Commercial APIs
-- **OpenAI**: GPT-4.1, GPT-4o, o1, o3
-- **Anthropic**: Claude-3.7-Sonnet, Claude-4-Sonnet
-- **Google**: Gemini-2.5-Pro
-
-### CLI Tools
-- **Claude Code CLI**: `npm install -g @anthropics/claude-code`
-
-### Local Models
-- **vLLM**: Qwen 2.5 series (7B, 14B, 32B)
-- **HuggingFace**: Direct model loading
-
-**Model Configuration:** [docs/models/CONFIGURATION.md](docs/models/CONFIGURATION.md)
+**Configuration:** [docs/models/CONFIGURATION.md](docs/models/CONFIGURATION.md)
 
 ## Security & MCP
+- **Sandboxed execution**: Python restrictions, isolated browsers, API monitoring
+- **MCP integration**: Dynamic tool discovery, local/remote tools, evolution
 
-### Security Features
-- Sandboxed Python execution with configurable restrictions
-- Isolated browser instances with automatic cleanup
-- API key security and monitoring
-
-### Model Context Protocol
-- Dynamic tool discovery and execution
-- Local and remote MCP tool integration
-- Tool evolution and reuse capabilities
-
-**Security Details:** [docs/security/GUIDELINES.md](docs/security/GUIDELINES.md)
+**Details:** [docs/security/GUIDELINES.md](docs/security/GUIDELINES.md)
 
 ## Troubleshooting
 
-### Quick Fixes
 ```bash
-# Dependency issues
-uv sync --reinstall
-
-# Browser automation
-uv run playwright install --force
-
+uv sync --reinstall                     # Fix dependencies
+uv run playwright install --force       # Fix browser automation
 # API validation
 uv run python -c "from src.models.api_validator import APIConfigValidator; APIConfigValidator().validate_all_configs()"
 ```
 
-**Complete Troubleshooting:** [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
+**Full Guide:** [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
 
-## Documentation Structure
+## Documentation
+[Setup](docs/setup/) • [Usage](docs/usage/) • [Architecture](docs/architecture/) • [Models](docs/models/) • [Development](docs/development/) • [Security](docs/security/)
 
-- 📁 **[docs/setup/](docs/setup/)** - Installation and environment setup
-- 📁 **[docs/usage/](docs/usage/)** - Usage guides and examples
-- 📁 **[docs/architecture/](docs/architecture/)** - System architecture and design
-- 📁 **[docs/models/](docs/models/)** - Model configuration and integration
-- 📁 **[docs/development/](docs/development/)** - Development guidelines and contribution
-- 📁 **[docs/security/](docs/security/)** - Security considerations and best practices
-
-**Documentation Index:** [docs/DOCUMENTATION_INDEX.md](docs/DOCUMENTATION_INDEX.md)
+**Index:** [docs/DOCUMENTATION_INDEX.md](docs/DOCUMENTATION_INDEX.md)

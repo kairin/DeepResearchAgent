@@ -432,8 +432,10 @@ def main():
 
     success = validator.run_all_validations()
 
-    # Generate JSON report
-    report_path = project_root / "migration_validation_report.json"
+    # Generate JSON report in organized subdirectory
+    reports_dir = project_root / "outputs" / "reports"
+    reports_dir.mkdir(parents=True, exist_ok=True)
+    report_path = reports_dir / "migration_validation_report.json"
     with open(report_path, 'w') as f:
         json.dump({
             "timestamp": subprocess.run(["date", "-Iseconds"], capture_output=True, text=True).stdout.strip(),

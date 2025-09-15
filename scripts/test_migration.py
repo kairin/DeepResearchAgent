@@ -243,8 +243,10 @@ def main():
 
     success = test_suite.run_all_tests()
 
-    # Generate test report
-    report_path = project_root / "migration_test_report.json"
+    # Generate test report in organized subdirectory
+    reports_dir = project_root / "outputs" / "reports"
+    reports_dir.mkdir(parents=True, exist_ok=True)
+    report_path = reports_dir / "migration_test_report.json"
     with open(report_path, 'w') as f:
         json.dump({
             "timestamp": subprocess.run(["date", "-Iseconds"], capture_output=True, text=True).stdout.strip(),

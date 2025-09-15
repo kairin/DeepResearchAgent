@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="900" height="700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .terminal-bg { fill: #0d1117; }
+      .terminal-text { fill: #c9d1d9; font-family: 'Fira Code', monospace; font-size: 12px; }
+      .box-border { fill: none; stroke: #30363d; stroke-width: 2; }
+      .selected-box { fill: #21262d; stroke: #58a6ff; stroke-width: 2; }
+      .option-box { fill: #161b22; stroke: #30363d; stroke-width: 1; }
+      .header-text { fill: #58a6ff; font-size: 16px; font-weight: bold; }
+      .section-text { fill: #ffa657; font-size: 14px; font-weight: bold; }
+      .selected-text { fill: #58a6ff; font-weight: bold; }
+      .option-text { fill: #c9d1d9; }
+      .description-text { fill: #7d8590; font-size: 10px; }
+      .key-text { fill: #f85149; font-weight: bold; }
+      .status-text { fill: #238636; }
+    </style>
+  </defs>
+
+  <!-- Terminal Background -->
+  <rect class="terminal-bg" width="900" height="700" rx="8"/>
+
+  <!-- Header -->
+  <text class="header-text" x="20" y="30">🎛️ DeepResearchAgent - Configuration Interface</text>
+  <text class="terminal-text" x="20" y="50">Select your preferences using arrow keys and Enter (no flags to remember!)</text>
+
+  <!-- Task Input Section -->
+  <rect class="box-border" x="20" y="70" width="860" height="120" rx="4"/>
+  <text class="section-text" x="30" y="95">📝 Research Task</text>
+
+  <rect class="selected-box" x="30" y="105" width="820" height="30" rx="2"/>
+  <text class="selected-text" x="35" y="125">▋ Test progress display: Calculate 5*7</text>
+
+  <text class="description-text" x="30" y="150">Enter your research task above, or use templates</text>
+  <text class="key-text" x="30" y="165">Tab</text><text class="terminal-text" x="60" y="165">: Browse templates  </text>
+  <text class="key-text" x="200" y="165">Ctrl+T</text><text class="terminal-text" x="250" y="165">: Task templates  </text>
+  <text class="key-text" x="360" y="165">Ctrl+H</text><text class="terminal-text" x="410" y="165">: Help</text>
+
+  <!-- Configuration Options Section -->
+  <rect class="box-border" x="20" y="210" width="420" height="280" rx="4"/>
+  <text class="section-text" x="30" y="235">⚙️ Execution Options</text>
+
+  <!-- Progress Display Option -->
+  <rect class="selected-box" x="30" y="245" width="390" height="40" rx="2"/>
+  <text class="selected-text" x="40" y="265">● Progress Display: Enabled</text>
+  <text class="description-text" x="40" y="280">Show real-time progress bars and agent status</text>
+
+  <!-- Output Mode Option -->
+  <rect class="option-box" x="30" y="295" width="390" height="40" rx="2"/>
+  <text class="option-text" x="40" y="315">○ Output Mode: Logs Only</text>
+  <text class="description-text" x="40" y="330">Traditional log output without TUI</text>
+
+  <!-- Configuration Option -->
+  <rect class="option-box" x="30" y="345" width="390" height="40" rx="2"/>
+  <text class="option-text" x="40" y="365">○ Configuration: config_main.py</text>
+  <text class="description-text" x="40" y="380">Active configuration profile</text>
+
+  <!-- Backend Option -->
+  <rect class="option-box" x="30" y="395" width="390" height="40" rx="2"/>
+  <text class="option-text" x="40" y="415">○ Backend: Local Models (HuggingFace)</text>
+  <text class="description-text" x="40" y="430">Currently using qwen2.5-7b-instruct</text>
+
+  <text class="key-text" x="30" y="465">↑↓</text><text class="terminal-text" x="60" y="465">: Navigate  </text>
+  <text class="key-text" x="140" y="465">Space</text><text class="terminal-text" x="185" y="465">: Toggle  </text>
+  <text class="key-text" x="240" y="465">Enter</text><text class="terminal-text" x="285" y="465">: Configure</text>
+
+  <!-- Backend Status Section -->
+  <rect class="box-border" x="460" y="210" width="420" height="280" rx="4"/>
+  <text class="section-text" x="470" y="235">🔌 Available Backends</text>
+
+  <!-- HuggingFace Status -->
+  <rect class="selected-box" x="470" y="245" width="390" height="40" rx="2"/>
+  <text class="status-text" x="480" y="265">✅ HuggingFace API: Connected</text>
+  <text class="description-text" x="480" y="280">qwen2.5-7b-instruct, qwen2.5-14b-instruct, qwen2.5-32b-instruct</text>
+
+  <!-- Claude Code CLI Status -->
+  <rect class="option-box" x="470" y="295" width="390" height="40" rx="2"/>
+  <text class="terminal-text" x="480" y="315">❌ Claude Code CLI: Not Installed</text>
+  <text class="description-text" x="480" y="330">Install: npm install -g @anthropics/claude-code</text>
+
+  <!-- OpenAI API Status -->
+  <rect class="option-box" x="470" y="345" width="390" height="40" rx="2"/>
+  <text class="terminal-text" x="480" y="365">⚠️ OpenAI API: Not Configured</text>
+  <text class="description-text" x="480" y="380">Add OPENAI_API_KEY to .env file</text>
+
+  <!-- Gemini CLI Status -->
+  <rect class="option-box" x="470" y="395" width="390" height="40" rx="2"/>
+  <text class="terminal-text" x="480" y="415">❌ Gemini CLI: Not Installed</text>
+  <text class="description-text" x="480" y="430">Install: uv add google-generativeai</text>
+
+  <text class="key-text" x="470" y="465">F2</text><text class="terminal-text" x="500" y="465">: Setup Backends  </text>
+  <text class="key-text" x="620" y="465">F3</text><text class="terminal-text" x="650" y="465">: Test Connection</text>
+
+  <!-- Quick Actions Section -->
+  <rect class="box-border" x="20" y="510" width="860" height="100" rx="4"/>
+  <text class="section-text" x="30" y="535">🚀 Quick Actions</text>
+
+  <rect class="option-box" x="30" y="545" width="200" height="35" rx="2"/>
+  <text class="terminal-text" x="35" y="568">F5: Run with Current Settings</text>
+
+  <rect class="option-box" x="250" y="545" width="200" height="35" rx="2"/>
+  <text class="terminal-text" x="255" y="568">F6: Save Configuration</text>
+
+  <rect class="option-box" x="470" y="545" width="200" height="35" rx="2"/>
+  <text class="terminal-text" x="475" y="568">F7: Load Configuration</text>
+
+  <rect class="option-box" x="690" y="545" width="180" height="35" rx="2"/>
+  <text class="terminal-text" x="695" y="568">F8: Advanced Options</text>
+
+  <!-- Status Bar -->
+  <rect fill="#21262d" x="0" y="650" width="900" height="50"/>
+  <text class="status-text" x="20" y="675">● Ready to execute</text>
+  <text class="terminal-text" x="150" y="675">Current: Local Models | Progress: Enabled | Config: main</text>
+  <text class="terminal-text" x="650" y="675">Press F1 for help</text>
+  <text class="key-text" x="780" y="675">Esc</text><text class="terminal-text" x="810" y="675">: Exit</text>
+</svg>

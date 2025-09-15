@@ -1,11 +1,11 @@
 _base_ = './base.py'
 
-# General Config
+# General Config - organized directory structure
 tag = "main"
 concurrency = 1
-workdir = "workdir"
-log_path = "log.txt"
-save_path = "dra.jsonl"
+workdir = "outputs"
+log_path = f"{workdir}/logs/main.log"
+save_path = f"{workdir}/results/main_results.jsonl"
 use_local_proxy = False # True for local proxy, False for public proxy
 
 use_hierarchical_agent = True
