@@ -33,7 +33,7 @@ English | [🌐 **Website**](https://skyworkai.github.io/DeepResearchAgent/)
 
 ## Introduction
 
-![Integration Overview](docs/assets/integration_hero.svg)
+![Integration Overview](docs/assets/integration_hero_animated.svg)
 
 ```mermaid
 graph TB

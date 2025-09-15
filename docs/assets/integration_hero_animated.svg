@@ -1,0 +1,130 @@
+<svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="200" fill="#0f172a" rx="10"/>
+
+  <!-- Title with slide-in animation -->
+  <text x="400" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#f1f5f9">
+    DeepResearchAgent + Guardian Agents Integration
+    <animateTransform
+      attributeName="transform"
+      type="translate"
+      values="-50,0;0,0"
+      dur="1s"
+      begin="0s"/>
+    <animate
+      attributeName="opacity"
+      values="0;1"
+      dur="1s"
+      begin="0s"/>
+  </text>
+
+  <!-- Current State with pulsing animation -->
+  <rect x="50" y="60" width="120" height="80" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="2">
+    <animate
+      attributeName="opacity"
+      values="0.7;1;0.7"
+      dur="2s"
+      repeatCount="indefinite"/>
+  </rect>
+  <text x="110" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#fbbf24">5 Agents</text>
+  <text x="110" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#e2e8f0">Research Focus</text>
+  <text x="110" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#94a3b8">Manual Coordination</text>
+
+  <!-- Arrow 1 with slide-in -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#10b981"/>
+    </marker>
+  </defs>
+  <path d="M 200 100 L 280 100" stroke="#10b981" stroke-width="4" fill="none" marker-end="url(#arrow)">
+    <animateTransform
+      attributeName="transform"
+      type="translate"
+      values="-30,0;0,0"
+      dur="1s"
+      begin="0.5s"/>
+    <animate
+      attributeName="opacity"
+      values="0;1"
+      dur="1s"
+      begin="0.5s"/>
+  </path>
+  <text x="240" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#10b981">INTEGRATION</text>
+
+  <!-- Target State with pulsing animation -->
+  <rect x="320" y="60" width="120" height="80" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="2">
+    <animate
+      attributeName="opacity"
+      values="0.7;1;0.7"
+      dur="2s"
+      begin="0.5s"
+      repeatCount="indefinite"/>
+  </rect>
+  <text x="380" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#10b981">57+ Agents</text>
+  <text x="380" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#e2e8f0">Complete Platform</text>
+  <text x="380" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#94a3b8">Auto-Orchestration</text>
+
+  <!-- Arrow 2 with slide-in -->
+  <defs>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#a855f7"/>
+    </marker>
+  </defs>
+  <path d="M 470 100 L 550 100" stroke="#a855f7" stroke-width="4" fill="none" marker-end="url(#arrow2)">
+    <animateTransform
+      attributeName="transform"
+      type="translate"
+      values="-30,0;0,0"
+      dur="1s"
+      begin="1s"/>
+    <animate
+      attributeName="opacity"
+      values="0;1"
+      dur="1s"
+      begin="1s"/>
+  </path>
+  <text x="510" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#a855f7">BENEFITS</text>
+
+  <!-- Benefits with pulsing animation -->
+  <rect x="590" y="60" width="140" height="80" rx="8" fill="#1e293b" stroke="#a855f7" stroke-width="2">
+    <animate
+      attributeName="opacity"
+      values="0.7;1;0.7"
+      dur="2s"
+      begin="1s"
+      repeatCount="indefinite"/>
+  </rect>
+  <text x="660" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#a855f7">Enterprise Ready</text>
+  <text x="660" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#e2e8f0">10x Research Quality</text>
+  <text x="660" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#94a3b8">Production Platform</text>
+
+  <!-- Bottom Stats -->
+  <text x="400" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#64748b">
+    Transform from research tool → Complete AI-powered product development platform
+  </text>
+
+  <!-- Progress Dots with staggered pulsing -->
+  <circle cx="200" cy="180" r="4" fill="#fbbf24">
+    <animate
+      attributeName="opacity"
+      values="0.6;1;0.6"
+      dur="2s"
+      repeatCount="indefinite"/>
+  </circle>
+  <circle cx="400" cy="180" r="4" fill="#10b981">
+    <animate
+      attributeName="opacity"
+      values="0.6;1;0.6"
+      dur="2s"
+      begin="0.5s"
+      repeatCount="indefinite"/>
+  </circle>
+  <circle cx="600" cy="180" r="4" fill="#a855f7">
+    <animate
+      attributeName="opacity"
+      values="0.6;1;0.6"
+      dur="2s"
+      begin="1s"
+      repeatCount="indefinite"/>
+  </circle>
+</svg>
