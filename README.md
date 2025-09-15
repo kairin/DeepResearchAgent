@@ -34,7 +34,7 @@ English | [🌐 **Website**](https://skyworkai.github.io/DeepResearchAgent/)
 ## Introduction
 
 <p align="center">
-  <img src="./docs/assets/integration_workflow.svg" alt="DeepResearchAgent to Guardian Agents Integration Workflow" width="800"/>
+  <img src="./docs/assets/integration_workflow_simple.svg" alt="DeepResearchAgent to Guardian Agents Integration Workflow" width="800"/>
 </p>
 
 **Original Vision**: DeepResearchAgent was conceived by [SkyworkAI](https://github.com/SkyworkAI/DeepResearchAgent) as a hierarchical multi-agent system designed for deep research tasks and general-purpose task solving. The framework leverages a top-level planning agent to coordinate multiple specialized lower-level agents, enabling automated task decomposition and efficient execution across diverse and complex domains.
