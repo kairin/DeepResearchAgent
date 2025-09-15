@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=utf-8
 
 # Copyright 2024 The HuggingFace Inc. team. All rights reserved.
 #
@@ -20,7 +19,6 @@ import importlib.metadata
 import importlib.util
 import inspect
 import json
-import json5
 import keyword
 import os
 import re
@@ -29,8 +27,9 @@ from functools import lru_cache
 from io import BytesIO
 from pathlib import Path
 from textwrap import dedent
-from typing import TYPE_CHECKING, Any, Dict, List, Tuple
+from typing import Any
 
+import json5
 
 
 @lru_cache
@@ -96,7 +95,7 @@ def make_json_serializable(obj: Any) -> Any:
         return str(obj)
 
 
-def parse_json_blob(json_blob: str) -> Tuple[Dict[str, str], str]:
+def parse_json_blob(json_blob: str) -> tuple[dict[str, str], str]:
     "Extracts the JSON blob from the input and returns the JSON data and the rest of the input."
     try:
         if "Calling tools:" in json_blob:

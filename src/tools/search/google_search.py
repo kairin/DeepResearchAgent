@@ -1,19 +1,22 @@
-from typing import List
+
 from dotenv import load_dotenv
+
 load_dotenv(verbose=True)
 
-import requests
 import os
-from bs4 import BeautifulSoup
-from urllib.parse import unquote
 from time import sleep
+from urllib.parse import unquote
 
-from src.tools.search.base import WebSearchEngine, SearchItem
-from src.proxy import PROXY_URL, proxy_env
+import requests
+from bs4 import BeautifulSoup
 from googlesearch.user_agents import get_useragent
 
+from src.proxy import proxy_env
+from src.tools.search.base import SearchItem, WebSearchEngine
+
+
 def _req(term, results, tbs, lang, start, proxies, timeout, safe, ssl_verify, region):
-    
+
     params = {
         "q": term,
         "num": results + 2,  # Prevents multiple requests
@@ -24,7 +27,7 @@ def _req(term, results, tbs, lang, start, proxies, timeout, safe, ssl_verify, re
     }
     if tbs is not None:
         params["tbs"] = tbs
-        
+
     resp = requests.get(
         url="https://www.google.com/search",
         headers={
@@ -44,18 +47,18 @@ def _req(term, results, tbs, lang, start, proxies, timeout, safe, ssl_verify, re
     return resp
 
 
-def google_search(term, 
-                  num_results=10, 
+def google_search(term,
+                  num_results=10,
                   tbs=None,
-                  lang="en", 
-                  proxy=None, 
-                  advanced=False, 
-                  sleep_interval=0, 
+                  lang="en",
+                  proxy=None,
+                  advanced=False,
+                  sleep_interval=0,
                   timeout=5,
                   safe="active",
                   ssl_verify=None,
-                  region=None, 
-                  start_num=0, 
+                  region=None,
+                  start_num=0,
                   unique=False):
     """Search the Google search engine"""
 
@@ -71,18 +74,18 @@ def google_search(term,
         resp = _req(term,
                     num_results - start,
                     tbs,
-                    lang, 
-                    start, 
-                    proxies, 
-                    timeout, 
-                    safe, 
-                    ssl_verify, 
+                    lang,
+                    start,
+                    proxies,
+                    timeout,
+                    safe,
+                    ssl_verify,
                     region)
-        
+
         # put in file - comment for debugging purpose
         # with open('google.html', 'w') as f:
         #     f.write(resp.text)
-        
+
         # Parse
         soup = BeautifulSoup(resp.text, "html.parser")
         result_block = soup.find_all("div", class_="ezO2md")
@@ -144,17 +147,17 @@ def search(params):
     Mock function to simulate Google search results.
     In a real-world scenario, this would interface with the Google Search API.
     """
-    
+
     base_url = os.getenv("SKYWORK_GOOGLE_SEARCH_API", None)
 
     query = params.get("q", "")
     filter_year = params.get("filter_year", None)
-    
+
     # Use local google search api
     if base_url is not None:
         with proxy_env():
             response = requests.get(base_url, params=params)
-            
+
             if response.status_code == 200:
                 items = response.json()
             else:
@@ -189,7 +192,7 @@ def search(params):
                         )
                     )
             return results
-    
+
     else: # Use remote google search api
         response = google_search(
             term=params["q"],
@@ -201,11 +204,11 @@ def search(params):
             sleep_interval=0,
             timeout=5,
         )
-        
+
         results = []
         for item in response:
             results.append(item)
-        
+
         return results
 
 class GoogleSearchEngine(WebSearchEngine):
@@ -215,7 +218,7 @@ class GoogleSearchEngine(WebSearchEngine):
         num_results: int = 10,
         filter_year: int = None,
         *args, **kwargs
-    ) -> List[SearchItem]:
+    ) -> list[SearchItem]:
         """
         Google search engine.
 

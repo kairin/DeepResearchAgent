@@ -1,9 +1,10 @@
 import requests
 
-from src.tools import AsyncTool, ToolResult
-from src.tools.web_fetcher import WebFetcherTool
 from src.logger import logger
 from src.registry import TOOL
+from src.tools.tools import AsyncTool, ToolResult
+from src.tools.web_fetcher import WebFetcherTool
+
 
 @TOOL.register_module(name="archive_searcher_tool", force=True)
 class ArchiveSearcherTool(AsyncTool):

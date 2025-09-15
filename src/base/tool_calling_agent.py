@@ -1,4 +1,3 @@
-# coding=utf-8
 
 # Copyright 2024 The HuggingFace Inc. team. All rights reserved.
 #
@@ -15,52 +14,50 @@
 # limitations under the License.
 import importlib
 import json
+from collections.abc import Generator
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import TYPE_CHECKING, Any
+
 import yaml
 from rich.live import Live
 from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.text import Text
-from collections.abc import Generator
-
 
 if TYPE_CHECKING:
-    import PIL.Image
+    pass
 
-from src.memory import (ActionStep,
-                        ToolCall)
-from src.models import (
-    ChatMessage,
-    ChatMessageStreamDelta,
+from src.base.multistep_agent import (
+    MultiStepAgent,
+    PromptTemplates,
+    StreamEvent,
+    ToolOutput,
+    populate_template,
 )
-from src.logger import (
-    LogLevel,
-)
-
-from src.tools import Tool
 from src.exception import (
+    AgentGenerationError,
     AgentParsingError,
     AgentToolCallError,
     AgentToolExecutionError,
-    AgentGenerationError,
-    AgentExecutionError,
 )
-from src.base.multistep_agent import (MultiStepAgent,
-                                      PromptTemplates,
-                                      populate_template,
-                                      ToolOutput,
-                                      StreamEvent)
-from src.models import (Model,
-                        agglomerate_stream_deltas,
-                        parse_json_if_needed)
+from src.logger import (
+    YELLOW_HEX,
+    LogLevel,
+)
+from src.memory import ActionStep, ToolCall
+from src.models import (
+    ChatMessage,
+    ChatMessageStreamDelta,
+    Model,
+    agglomerate_stream_deltas,
+    parse_json_if_needed,
+)
+from src.tools import Tool
 from src.utils import (
-    AgentImage,
     AgentAudio,
-    AgentText,
+    AgentImage,
 )
 
-from src.logger import logger, YELLOW_HEX
 
 class ToolCallingAgent(MultiStepAgent):
     """

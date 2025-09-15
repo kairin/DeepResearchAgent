@@ -1,16 +1,14 @@
-import json
-import json5
 import re
 import time
-from typing import List, Optional, Set, Tuple
+
+import json5
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from src.models import model_manager, ChatMessage
-from src.tools.web_searcher import WebSearcherTool, SearchResult
-from src.tools import AsyncTool, ToolResult
 from src.logger import logger
+from src.models import ChatMessage, model_manager
 from src.registry import TOOL
-
+from src.tools.tools import AsyncTool, ToolResult
+from src.tools.web_searcher import SearchResult, WebSearcherTool
 
 _DEEP_RESEARCHER_DESCRIPTION = """Performs comprehensive research on a topic through multi-level web searches and content analysis. 
 Returns a structured summary of findings with source attribution and relevance ratings."""
@@ -68,7 +66,7 @@ class ResearchInsight(BaseModel):
 
     content: str = Field(description="The insight content")
     source_url: str = Field(description="URL where this insight was found")
-    source_title: Optional[str] = Field(default=None, description="Title of the source")
+    source_title: str | None = Field(default=None, description="Title of the source")
     relevance_score: float = Field(
         default=1.0, description="Relevance score (0.0-1.0)", ge=0.0, le=1.0
     )
@@ -81,9 +79,9 @@ class ResearchInsight(BaseModel):
 class ResearchContext(BaseModel):
     """Research context for tracking research progress."""
     query: str = Field(description="The original research query")
-    insights: List[ResearchInsight] = Field(default_factory=list, description="Key insights discovered")
-    follow_up_queries: List[str] = Field(default_factory=list, description="Generated follow-up queries")
-    visited_urls: Set[str] = Field(default_factory=set, description="URLs visited during research")
+    insights: list[ResearchInsight] = Field(default_factory=list, description="Key insights discovered")
+    follow_up_queries: list[str] = Field(default_factory=list, description="Generated follow-up queries")
+    visited_urls: set[str] = Field(default_factory=set, description="URLs visited during research")
     current_depth: int = Field(default=0, description="Current depth of research exploration", ge=0)
     max_depth: int = Field(default=2, description="Maximum depth of research to reach", ge=1)
 
@@ -92,8 +90,8 @@ class ResearchSummary(BaseModel):
 
     output: str = Field(default="", description="Formatted research summary")
     query: str = Field(description="The original research query")
-    insights: List[ResearchInsight] = Field(default_factory=list, description="Key insights discovered")
-    visited_urls: Set[str] = Field(default_factory=set, description="URLs visited during research")
+    insights: list[ResearchInsight] = Field(default_factory=list, description="Key insights discovered")
+    visited_urls: set[str] = Field(default_factory=set, description="URLs visited during research")
     depth_reached: int = Field(default=0, description="Maximum depth of research reached", ge=0)
 
     @model_validator(mode="after")
@@ -161,7 +159,7 @@ class OptimizedQueryTool(AsyncTool):
 
     async def forward(self, query: str,
                       optimized_query: str,
-                      filter_year: Optional[int] = None):
+                      filter_year: int | None = None):
         """Generate an optimized search query."""
         return query, optimized_query, filter_year
 
@@ -186,7 +184,7 @@ class GenerateFollowUpsTool(AsyncTool):
     }
     output_type = "any"
 
-    async def forward(self, follow_up_queries: List[str]) -> List[str]:
+    async def forward(self, follow_up_queries: list[str]) -> list[str]:
         """Generate follow-up queries based on insights."""
         return follow_up_queries
 
@@ -310,7 +308,7 @@ class DeepResearcherTool(AsyncTool):
 
         return result
 
-    async def _generate_optimized_query(self, query: str) -> Tuple[str, Optional[int]]:
+    async def _generate_optimized_query(self, query: str) -> tuple[str, int | None]:
         """Generate an optimized search query using LLM."""
         try:
             prompt = OPTIMIZE_QUERY_INSTRUCTION.format(query=query)
@@ -355,8 +353,8 @@ class DeepResearcherTool(AsyncTool):
         self,
         context: ResearchContext,
         query: str,
-        filter_year: Optional[int] = None,
-        deadline: Optional[float] = None,
+        filter_year: int | None = None,
+        deadline: float | None = None,
     ) -> None:
         """Run a complete research cycle (search, analyze, generate follow-ups)."""
         # Check termination conditions
@@ -411,7 +409,7 @@ class DeepResearcherTool(AsyncTool):
 
     async def _search_web(self,
                     query: str,
-                    filter_year: Optional[int] = None) -> List[SearchResult]:
+                    filter_year: int | None = None) -> list[SearchResult]:
         """Perform web search for the given query."""
         search_response = await self.web_searcher.forward(
             query=query,
@@ -422,10 +420,10 @@ class DeepResearcherTool(AsyncTool):
     async def _extract_insights(
         self,
         context: ResearchContext,
-        results: List[SearchResult],
+        results: list[SearchResult],
         original_query: str,
         deadline: float,
-    ) -> List[ResearchInsight]:
+    ) -> list[ResearchInsight]:
         """Extract insights from search results."""
         all_insights = []
 
@@ -458,10 +456,10 @@ class DeepResearcherTool(AsyncTool):
 
     async def _generate_follow_ups(
         self,
-        insights: List[ResearchInsight],
+        insights: list[ResearchInsight],
         current_query: str,
         original_query: str
-    ) -> List[str]:
+    ) -> list[str]:
         """Generate follow-up queries based on insights."""
         if not insights:
             return []
@@ -500,7 +498,7 @@ class DeepResearcherTool(AsyncTool):
 
     async def _analyze_content(
         self, content: str, url: str, title: str, query: str
-    ) -> List[ResearchInsight]:
+    ) -> list[ResearchInsight]:
         """Extract insights from content based on relevance to query."""
         prompt = EXTRACT_INSIGHTS_PROMPT.format(
             query=query, content=content  # Limit content size

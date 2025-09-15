@@ -1,7 +1,6 @@
-from src.tools import AsyncTool, ToolResult
-from src.models import model_manager
+from src.models import ChatMessage, MessageRole, model_manager
 from src.registry import TOOL
-from src.models import ChatMessage, MessageRole
+from src.tools.tools import AsyncTool, ToolResult
 
 _OAI_DEEP_RESEARCH_DESCRIPTION = """Call this tool to perform deep research using OpenAI's deep research capabilities.
 This tool is designed to handle complex queries and provide detailed insights based on the provided query.

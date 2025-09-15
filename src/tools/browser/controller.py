@@ -1,25 +1,20 @@
 import os
+
 from dotenv import load_dotenv
+
 load_dotenv(verbose=True)
-import time
+import asyncio
 import enum
 import json
 import re
-from typing import TypeVar, cast
-from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_core.prompts import PromptTemplate
-from patchright.async_api import ElementHandle, Page
-from pydantic import BaseModel
-import requests
 import urllib.parse
+from typing import TypeVar, cast
 
-import asyncio
-from browser_use import Agent
+import requests
 from browser_use.agent.views import ActionModel, ActionResult
 from browser_use.browser.context import BrowserContext
-from browser_use import BrowserConfig, Browser
-from browser_use.controller.service import Controller as BrowserUseController
 from browser_use.controller.registry.service import Registry
+from browser_use.controller.service import Controller as BrowserUseController
 from browser_use.controller.views import (
     ClickElementAction,
     CloseTabAction,
@@ -36,10 +31,11 @@ from browser_use.controller.views import (
     SwitchTabAction,
 )
 from browser_use.utils import time_execution_sync
-from langchain_openai import ChatOpenAI
+from langchain_core.language_models.chat_models import BaseChatModel
+from langchain_core.prompts import PromptTemplate
+from patchright.async_api import ElementHandle, Page
+from pydantic import BaseModel
 
-from src.proxy.local_proxy import PROXY_URL, proxy_env
-from src.tools import Tool, ToolResult
 from src.logger import logger
 
 Context = TypeVar('Context')

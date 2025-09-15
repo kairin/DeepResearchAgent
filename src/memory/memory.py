@@ -1,12 +1,10 @@
 from dataclasses import asdict, dataclass
-from typing import TYPE_CHECKING, Any, Dict, List, TypedDict, Union, Optional
+from typing import TYPE_CHECKING, Any
 
-from src.models import ChatMessage, MessageRole
 from src.exception import AgentError
+from src.logger import AgentLogger, LogLevel, Timing, TokenUsage
+from src.models import ChatMessage, MessageRole
 from src.utils import make_json_serializable
-from src.logger import LogLevel, AgentLogger, Timing, TokenUsage
-
-
 
 if TYPE_CHECKING:
     import PIL.Image
@@ -177,19 +175,19 @@ class SystemPromptStep(MemoryStep):
 @dataclass
 class FinalAnswerStep(MemoryStep):
     output: Any
-    
+
 @dataclass
 class UserPromptStep(MemoryStep):
     user_prompt: str
 
-    def to_messages(self, summary_mode: bool = False, **kwargs) -> List[ChatMessage]:
+    def to_messages(self, summary_mode: bool = False, **kwargs) -> list[ChatMessage]:
         if summary_mode:
             return []
         return [ChatMessage(role=MessageRole.USER, content=[{"type": "text", "text": self.user_prompt}])]
 
 
 class AgentMemory:
-    def __init__(self, system_prompt: str, user_prompt: Optional[str] = None):
+    def __init__(self, system_prompt: str, user_prompt: str | None = None):
         self.system_prompt = SystemPromptStep(system_prompt=system_prompt)
         if user_prompt is not None:
             self.user_prompt = UserPromptStep(user_prompt=user_prompt)

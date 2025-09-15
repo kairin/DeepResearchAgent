@@ -1,16 +1,15 @@
-import json5
-from typing import Tuple, Optional
+import asyncio
 import base64
 import os
+
+import json5
 from PIL import Image
-import asyncio
 
-from src.tools import AsyncTool, ToolResult
-from src.models import ChatMessage, model_manager
-from src.logger import logger
-from src.registry import TOOL
 from src.config import config
-
+from src.logger import logger
+from src.models import ChatMessage, model_manager
+from src.registry import TOOL
+from src.tools.tools import AsyncTool, ToolResult
 
 OPTIMIZE_PROMPT_INSTRUCTION = """
 You are an expert in generating optimized prompts for video generation tasks.
@@ -53,7 +52,7 @@ class OptimizedPromptTool(AsyncTool):
     }
     output_type = "any"
 
-    async def forward(self, prompt: str, optimized_prompt: str, image_path: Optional[str] = None) -> str:
+    async def forward(self, prompt: str, optimized_prompt: str, image_path: str | None = None) -> str:
         """Generate an optimized prompt for video generation."""
         return optimized_prompt
 
@@ -86,9 +85,9 @@ class VideoGeneratorTool(AsyncTool):
 
     def __init__(self,
                  *args,
-                 analyzer_model_id: Optional[str] = None,
-                 predict_model_id: Optional[str] = None,
-                 fetch_model_id: Optional[str] = None,
+                 analyzer_model_id: str | None = None,
+                 predict_model_id: str | None = None,
+                 fetch_model_id: str | None = None,
                  **kwargs):
 
         super(VideoGeneratorTool, self).__init__()
@@ -103,7 +102,7 @@ class VideoGeneratorTool(AsyncTool):
     async def forward(self,
                       prompt: str,
                       save_name,
-                      image_path: Optional[str] = None, ) -> ToolResult:
+                      image_path: str | None = None, ) -> ToolResult:
         """Generate a video based on the provided prompt and image."""
 
         if not prompt:
@@ -120,7 +119,7 @@ class VideoGeneratorTool(AsyncTool):
         result = await self._generate_video(optimized_prompt, save_name, image_path)
         return result
 
-    async def _generate_optimized_prompt(self, prompt: str, image_path: Optional[str] = None) -> str:
+    async def _generate_optimized_prompt(self, prompt: str, image_path: str | None = None) -> str:
         try:
             prompt = OPTIMIZE_PROMPT_INSTRUCTION.format(prompt=prompt)
 
@@ -161,7 +160,7 @@ class VideoGeneratorTool(AsyncTool):
                 return prompt
 
             if not optimized_prompt:
-                res = f"VideoGeneratorTool returned an empty optimized prompt."
+                res = "VideoGeneratorTool returned an empty optimized prompt."
                 logger.warning(res)
                 return prompt
 

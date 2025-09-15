@@ -1,9 +1,9 @@
-from typing import Dict, List, Optional
-from typing_extensions import Literal
 
-from src.registry import TOOL
-from src.tools import AsyncTool, ToolResult
+from typing import Literal
+
 from src.logger import logger
+from src.registry import TOOL
+from src.tools.tools import AsyncTool, ToolResult
 
 _PLANNING_TOOL_DESCRIPTION = """A planning tool that allows the agent to create and manage plans for solving complex tasks. The tool provides functionality for creating plans, updating plan steps, and tracking progress.
 NOTE:
@@ -76,7 +76,7 @@ class PlanningTool(AsyncTool):
     output_type = "any"
 
     plans: dict = {}  # Dictionary to store plans by plan_id
-    _current_plan_id: Optional[str] = None  # Track the current active plan
+    _current_plan_id: str | None = None  # Track the current active plan
 
     def __init__(self):
         super(PlanningTool, self).__init__()
@@ -87,9 +87,9 @@ class PlanningTool(AsyncTool):
 
     async def _create_plan(
         self,
-        plan_id: Optional[str],
-        title: Optional[str],
-        steps: Optional[List[str]]
+        plan_id: str | None,
+        title: str | None,
+        steps: list[str] | None
     ):
         """Create a new plan with the given ID, title, and steps."""
         if not plan_id:
@@ -150,9 +150,9 @@ class PlanningTool(AsyncTool):
 
     async def _update_plan(
         self,
-        plan_id: Optional[str],
-        title: Optional[str],
-        steps: Optional[List[str]]
+        plan_id: str | None,
+        title: str | None,
+        steps: list[str] | None
     ) -> ToolResult:
         """Update an existing plan with new title or steps."""
         if not plan_id:
@@ -243,7 +243,7 @@ class PlanningTool(AsyncTool):
             error=None,
         )
 
-    async def _get_plan(self, plan_id: Optional[str]) -> ToolResult:
+    async def _get_plan(self, plan_id: str | None) -> ToolResult:
         """Get details of a specific plan."""
         if not plan_id:
             # If no plan_id is provided, use the current active plan
@@ -273,7 +273,7 @@ class PlanningTool(AsyncTool):
             error=None,
         )
 
-    async def _set_active_plan(self, plan_id: Optional[str]) -> ToolResult:
+    async def _set_active_plan(self, plan_id: str | None) -> ToolResult:
         """Set a plan as the active plan."""
         if not plan_id:
             res = "Parameter `plan_id` is required for action: set_active"
@@ -302,10 +302,10 @@ class PlanningTool(AsyncTool):
 
     async def _mark_step(
         self,
-        plan_id: Optional[str],
-        step_index: Optional[int],
-        step_status: Optional[str],
-        step_notes: Optional[str],
+        plan_id: str | None,
+        step_index: int | None,
+        step_status: str | None,
+        step_notes: str | None,
     ) -> ToolResult:
         """Mark a step with a specific status and optional notes."""
         if not plan_id:
@@ -371,7 +371,7 @@ class PlanningTool(AsyncTool):
             error=None,
         )
 
-    async def _delete_plan(self, plan_id: Optional[str]) -> ToolResult:
+    async def _delete_plan(self, plan_id: str | None) -> ToolResult:
         """Delete a plan."""
         if not plan_id:
             res = "Parameter `plan_id` is required for action: delete"
@@ -402,7 +402,7 @@ class PlanningTool(AsyncTool):
             error=None,
         )
 
-    def _format_plan(self, plan: Dict) -> str:
+    def _format_plan(self, plan: dict) -> str:
         """Format a plan for display."""
         output = f"Plan: {plan['title']} (ID: {plan['plan_id']})\n"
         output += "=" * len(output) + "\n\n"
@@ -450,12 +450,12 @@ class PlanningTool(AsyncTool):
         action: Literal[
             "create", "update", "list", "get", "set_active", "mark_step", "delete"
         ],
-        plan_id: Optional[str] = None,
-        title: Optional[str] = None,
-        steps: Optional[List[str]] = None,
-        step_index: Optional[int] = None,
-        step_status: Optional[Literal["not_started", "in_progress", "completed", "blocked"]] = None,
-        step_notes: Optional[str] = None,
+        plan_id: str | None = None,
+        title: str | None = None,
+        steps: list[str] | None = None,
+        step_index: int | None = None,
+        step_status: Literal["not_started", "in_progress", "completed", "blocked"] | None = None,
+        step_notes: str | None = None,
     ):
         """
         Execute the planning tool with the given action and parameters.

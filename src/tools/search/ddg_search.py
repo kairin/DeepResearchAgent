@@ -1,13 +1,13 @@
-from typing import List
 
 from duckduckgo_search import DDGS
 
-from src.tools.search.base import WebSearchEngine, SearchItem
+from src.tools.search.base import SearchItem, WebSearchEngine
+
 
 class DuckDuckGoSearchEngine(WebSearchEngine):
     async def perform_search(
         self, query: str, num_results: int = 10, *args, **kwargs
-    ) -> List[SearchItem]:
+    ) -> list[SearchItem]:
         """
         DuckDuckGo search engine.
 

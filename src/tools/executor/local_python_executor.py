@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=utf-8
 
 # Copyright 2024 The HuggingFace Inc. team. All rights reserved.
 #
@@ -18,7 +17,6 @@ import ast
 import builtins
 import difflib
 import inspect
-import logging
 import math
 import re
 from collections.abc import Callable, Mapping
@@ -27,8 +25,8 @@ from importlib import import_module
 from types import BuiltinFunctionType, FunctionType, ModuleType
 from typing import Any
 
-from src.utils import BASE_BUILTIN_MODULES, truncate_content
 from src.logger import logger
+from src.utils import BASE_BUILTIN_MODULES, truncate_content
 
 
 class InterpreterError(ValueError):
@@ -1356,7 +1354,7 @@ def evaluate_ast(
         # Constant -> just return the value
         return expression.value
     elif isinstance(expression, ast.Tuple):
-        return tuple((evaluate_ast(elt, *common_params) for elt in expression.elts))
+        return tuple(evaluate_ast(elt, *common_params) for elt in expression.elts)
     elif isinstance(expression, (ast.ListComp, ast.GeneratorExp)):
         return evaluate_listcomp(expression, *common_params)
     elif isinstance(expression, ast.DictComp):
@@ -1449,7 +1447,7 @@ def evaluate_ast(
     elif isinstance(expression, ast.With):
         return evaluate_with(expression, *common_params)
     elif isinstance(expression, ast.Set):
-        return set((evaluate_ast(elt, *common_params) for elt in expression.elts))
+        return set(evaluate_ast(elt, *common_params) for elt in expression.elts)
     elif isinstance(expression, ast.Return):
         raise ReturnException(evaluate_ast(expression.value, *common_params) if expression.value else None)
     elif isinstance(expression, ast.Pass):

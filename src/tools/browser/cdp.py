@@ -1,14 +1,15 @@
 import os
 import subprocess
+
 import requests
 from dotenv import load_dotenv
+
 load_dotenv(verbose=True)
-import time
-import re
 
 from src.logger import logger
 
-class CDP():
+
+class CDP:
     def __init__(self,
                  chrome_path: str = None,
                  user_data_dir: str = None,
@@ -26,10 +27,10 @@ class CDP():
         # --disable-gpu --no-sandbox --disable-dev-shm-usage
         self.process = subprocess.Popen(
             [self.chrome_path,
-             f"--remote-debugging-port=9222",
-             f"--disable-gpu",
-             f"--no-sandbox",
-             f"--disable-dev-shm-usage",
+             "--remote-debugging-port=9222",
+             "--disable-gpu",
+             "--no-sandbox",
+             "--disable-dev-shm-usage",
              f"--user-data-dir={self.user_data_dir}"],
         )
 
@@ -53,4 +54,4 @@ class CDP():
         logger.info(f"Stopping Chrome with pid: {self.process_id}")
         # stop the chrome process
         self.process.terminate()
-        logger.info(f"Chrome stopped")
+        logger.info("Chrome stopped")

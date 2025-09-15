@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import json
-import json5
 import logging
 import os
 import re
@@ -25,12 +24,15 @@ from enum import Enum
 from threading import Thread
 from typing import TYPE_CHECKING, Any
 
-from src.logger import TokenUsage
-from src.utils import (_is_package_available,
-                       encode_image_base64, 
-                       make_image_url, 
-                       parse_json_blob)
+import json5
 
+from src.logger import TokenUsage
+from src.utils import (
+    _is_package_available,
+    encode_image_base64,
+    make_image_url,
+    parse_json_blob,
+)
 
 if TYPE_CHECKING:
     from transformers import StoppingCriteriaList

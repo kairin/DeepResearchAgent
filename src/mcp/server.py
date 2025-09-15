@@ -1,16 +1,16 @@
+import asyncio
 import os
 import sys
-
-from fastmcp import FastMCP
-from dotenv import load_dotenv
-import asyncio
 from pathlib import Path
+
+from dotenv import load_dotenv
+from fastmcp import FastMCP
 
 root = str(Path(__file__).resolve().parents[2])
 sys.path.append(root)
 
-from src.utils import assemble_project_path
 from src.logger import logger
+from src.utils import assemble_project_path
 
 # Load environment variables
 load_dotenv(override=True)
@@ -58,7 +58,7 @@ async def register_tools(script_info_path):
     import json
 
     try:
-        with open(script_info_path, 'r') as f:
+        with open(script_info_path) as f:
             script_info_list = json.load(f)
 
         for script_info in script_info_list:

@@ -1,22 +1,25 @@
 from dotenv import load_dotenv
+
 load_dotenv(verbose=True)
 
 import asyncio
 import base64
 import json
-from typing import Generic, Optional, TypeVar, Any
+from typing import Any, Generic, TypeVar
+
 from browser_use import Browser as BrowserUseBrowser
 from browser_use import BrowserConfig
 from browser_use.browser.context import BrowserContext, BrowserContextConfig
 from browser_use.dom.service import DomService
 from pydantic import field_validator
 from pydantic_core.core_schema import ValidationInfo
-from src.tools import AsyncTool, ToolResult
-from src.tools.web_searcher import WebSearcherTool
-from src.tools.web_fetcher import fetch_url
+
 from src.config import config
-from src.tools.markdown.mdconvert import MarkitdownConverter
 from src.logger import logger
+from src.tools.tools import AsyncTool, ToolResult
+from src.tools.markdown.mdconvert import MarkitdownConverter
+from src.tools.web_fetcher import fetch_url
+from src.tools.web_searcher import WebSearcherTool
 
 _BROWSER_DESCRIPTION = """\
 A powerful browser automation tool that allows interaction with web pages through various actions.
@@ -258,15 +261,15 @@ class BrowserUseTool(AsyncTool, Generic[Context]):
     async def execute(
             self,
             action: str,
-            url: Optional[str] = None,
-            index: Optional[int] = None,
-            text: Optional[str] = None,
-            scroll_amount: Optional[int] = None,
-            tab_id: Optional[int] = None,
-            query: Optional[str] = None,
-            goal: Optional[str] = None,
-            keys: Optional[str] = None,
-            seconds: Optional[int] = None,
+            url: str | None = None,
+            index: int | None = None,
+            text: str | None = None,
+            scroll_amount: int | None = None,
+            tab_id: int | None = None,
+            query: str | None = None,
+            goal: str | None = None,
+            keys: str | None = None,
+            seconds: int | None = None,
             **kwargs,
     ) -> ToolResult:
         """
@@ -518,7 +521,7 @@ Page content:
                 return ToolResult(error=f"Browser action '{action}' failed: {str(e)}")
 
     async def get_current_state(
-        self, context: Optional[BrowserContext] = None
+        self, context: BrowserContext | None = None
     ) -> ToolResult:
         """
         Get the current browser state as a ToolResult.
@@ -615,15 +618,15 @@ Page content:
     async def forward(
             self,
             action: str,
-            url: Optional[str] = None,
-            index: Optional[int] = None,
-            text: Optional[str] = None,
-            scroll_amount: Optional[int] = None,
-            tab_id: Optional[int] = None,
-            query: Optional[str] = None,
-            goal: Optional[str] = None,
-            keys: Optional[str] = None,
-            seconds: Optional[int] = None,
+            url: str | None = None,
+            index: int | None = None,
+            text: str | None = None,
+            scroll_amount: int | None = None,
+            tab_id: int | None = None,
+            query: str | None = None,
+            goal: str | None = None,
+            keys: str | None = None,
+            seconds: int | None = None,
         ) -> ToolResult:
 
         res = await self.execute(

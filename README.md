@@ -6,6 +6,8 @@
 
 English | [简体中文](README_CN.md) | [🌐 **Website**](https://skyworkai.github.io/DeepResearchAgent/)
 
+> 🔧 **Migration Notice**: This fork has been migrated from Poetry to uv and upgraded to Python 3.13. See [CHANGELOG.md](CHANGELOG.md) for details and [FORK_MANAGEMENT.md](FORK_MANAGEMENT.md) for sync strategies.
+
 ## Introduction
 image.png
 DeepResearchAgent is a hierarchical multi-agent system designed not only for deep research tasks but also for general-purpose task solving. The framework leverages a top-level planning agent to coordinate multiple specialized lower-level agents, enabling automated task decomposition and efficient execution across diverse and complex domains.
@@ -69,6 +71,15 @@ Image and Video Examples:
 </p>
 
 ## Updates
+
+### Fork-Specific Updates
+* **2025.09.15**: **BREAKING** - Complete migration from Poetry to uv for dependency management
+* **2025.09.15**: **BREAKING** - Upgraded default Python version to 3.13 (Ubuntu 25.04+ system Python)
+* **2025.09.15**: Added comprehensive validation scripts and migration documentation
+* **2025.09.15**: Fixed circular imports and Python 3.13 compatibility issues
+* **2025.09.15**: Updated all dependencies to latest compatible versions (420+ packages)
+
+### Upstream Updates
 * **2025.08.04**: Add the support for loading mcp tools from the local json file.
 * **2025.07.08**: Add the video generator tool, which can generate a video based on the input text and/or image. The video generator tool is based on the Veo3 model.
 * **2025.07.08**: Add the image generator tool, which can generate images based on the input text. The image generator tool is based on the Imagen model.
@@ -91,22 +102,49 @@ Image and Video Examples:
 
 ## Installation
 
-### Prepare Environment
+### Using uv (Recommended)
+
+uv is a fast Python package and project manager written in Rust. Install it first:
 
 ```bash
-# poetry install environment
-conda create -n dra python=3.11
-conda activate dra
+# Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Quick setup with uv
+uv sync --all-extras
+uv run playwright install chromium --with-deps --no-shell
+
+# Or use make commands
+make venv        # Create virtual environment
+make install     # Install all dependencies
+```
+
+### Ubuntu 25.04+ with Python 3.13 (Recommended)
+
+For Ubuntu 25.04+ users with system Python 3.13:
+
+```bash
+# Use system Python
+make venv-system
 make install
 
-# (Optional) You can also use requirements.txt
-conda create -n dra python=3.11
-conda activate dra
-make install-requirements
+# Or specify Python version
+PYTHON_VERSION=3.13 make venv
+make install
+```
 
-# playwright install if needed
-pip install playwright
-playwright install chromium --with-deps --no-shell
+### Alternative Installation Methods
+
+If you prefer not to use uv, you can still use pip:
+
+```bash
+# Create virtual environment manually
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install dependencies
+uv sync
+uv run playwright install chromium --with-deps --no-shell
 ```
 
 ### Set Up `.env`
@@ -129,24 +167,40 @@ gcloud auth application-default login
 ### Main Example
 A simple example to demonstrate the usage of the DeepResearchAgent framework.
 ```bash
+# Using uv (recommended)
+uv run python main.py
+
+# Or using make
+make run
+
+# Or in activated environment
 python main.py
 ```
 
-### Run Single Agent Example
-A simple example to demonstrate the usage of a single agent, such as a general tool calling agent.
+### Run Single Agent Examples
 ```bash
-python examples/run_general.py
+# General agent example
+uv run python examples/run_general.py
+# or: make run-general
+
+# GAIA benchmark evaluation
+uv run python examples/run_gaia.py
+# or: make run-gaia
+
+# High-level evaluation
+uv run python examples/run_hle.py
+# or: make run-hle
 ```
 
-### RUN GAIA Evaluation Example
+### GAIA Evaluation Setup
 
 ```bash
-# Download GAIA
+# Download GAIA dataset
 mkdir data && cd data
 git clone https://huggingface.co/datasets/gaia-benchmark/GAIA
 
-# Run
-python examples/run_gaia.py
+# Run evaluation
+uv run python examples/run_gaia.py
 ```
 
 ## Experiments
@@ -183,9 +237,8 @@ model_id = "qwen2.5-7b-instruct"
 If problems occur, reinstall:
 
 ```bash
-pip install "browser-use[memory]"==0.1.48
-pip install playwright
-playwright install chromium --with-deps --no-shell
+uv sync --all-extras
+uv run playwright install chromium --with-deps --no-shell
 ```
 
 ### 3. Sub-Agent Calling
@@ -227,6 +280,45 @@ Example command:
 ```bash
 Use deep_researcher_agent to search the latest papers on the topic of 'AI Agent' and then summarize it.
 ```
+
+## Migration Validation
+
+### Validate Your Installation
+
+This fork includes comprehensive validation to ensure the migration is working correctly:
+
+```bash
+# Run comprehensive validation
+uv run python scripts/validate_migration.py
+
+# Quick validation - test core imports
+uv run python -c "import src; print('✅ All imports successful!')"
+```
+
+### Migration Report
+
+The validation script generates a detailed report at `migration_validation_report.json` with:
+- Python version verification
+- Virtual environment validation
+- Dependency resolution checks
+- Import testing
+- Build system validation
+
+### Common Issues
+
+If validation fails:
+
+1. **Python 3.13 not found**: Install Python 3.13 or use `make venv` instead of `make venv-system`
+2. **Import errors**: Run `make clean && make install` to refresh dependencies
+3. **uv not found**: Install uv with `curl -LsSf https://astral.sh/uv/install.sh | sh`
+
+## Fork Management
+
+This fork maintains significant changes from the upstream repository. See [FORK_MANAGEMENT.md](FORK_MANAGEMENT.md) for:
+- Sync strategies to protect your changes
+- Conflict resolution guidelines
+- Critical file identification
+- Git protection mechanisms
 
 ## Acknowledgement
 

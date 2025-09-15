@@ -1,26 +1,27 @@
 import warnings
+
 warnings.simplefilter("ignore", DeprecationWarning)
 
+import argparse
+import asyncio
+import json
 import os
 import sys
-from pathlib import Path
-import pandas as pd
-from typing import List
-import json
-from datetime import datetime
-import asyncio
 import threading
-import argparse
+from datetime import datetime
+from pathlib import Path
+
+import pandas as pd
 from mmengine import DictAction
 
 root = str(Path(__file__).resolve().parents[1])
 sys.path.append(root)
 
-from src.logger import logger
-from src.config import config
-from src.models import model_manager
-from src.metric import question_scorer
 from src.agent import create_agent, prepare_response
+from src.config import config
+from src.logger import logger
+from src.metric import question_scorer
+from src.models import model_manager
 from src.registry import DATASET
 
 append_answer_lock = threading.Lock()
@@ -64,8 +65,8 @@ def filter_answers(answers_file):
 
     logger.info(f"Previous answers filtered! {len(answer_df)} -> {len(filttered_df)}")
 
-def get_tasks_to_run(answers_file, dataset) -> List[dict]:
-    
+def get_tasks_to_run(answers_file, dataset) -> list[dict]:
+
     data = dataset.data
 
     logger.info(f"Loading answers from {answers_file}...")
@@ -187,7 +188,7 @@ async def main():
     # Registed models
     model_manager.init_models(use_local_proxy=True)
     logger.info("| Registed models: %s", ", ".join(model_manager.registed_models.keys()))
-    
+
     # Load dataset
     dataset = DATASET.build(config.dataset)
     logger.info(f"| Loaded dataset: {len(dataset)} examples.")

@@ -1,17 +1,19 @@
 import argparse
+import asyncio
+import base64
 import os
 import sys
-import asyncio
 from pathlib import Path
+
 from mmengine import DictAction
-import base64
 
 root = str(Path(__file__).resolve().parents[1])
 sys.path.append(root)
 
-from src.logger import logger
 from src.config import config
-from src.models import model_manager, ChatMessage
+from src.logger import logger
+from src.models import ChatMessage, model_manager
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='main')
@@ -50,7 +52,7 @@ async def video_generation():
                 name=name,
             )
             video_data = base64.b64decode(response)
-        except Exception as e:
+        except Exception:
             logger.warning("Failed to fetch video data. Retrying in 60 seconds...")
             await asyncio.sleep(60)  # Wait for 60 seconds before retrying
 

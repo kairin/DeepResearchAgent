@@ -1,13 +1,13 @@
-import json5
-from typing import Tuple, Optional
 import base64
 import os
 
-from src.tools import AsyncTool, ToolResult
-from src.models import ChatMessage, model_manager
-from src.logger import logger
-from src.registry import TOOL
+import json5
+
 from src.config import config
+from src.logger import logger
+from src.models import ChatMessage, model_manager
+from src.registry import TOOL
+from src.tools.tools import AsyncTool, ToolResult
 
 OPTIMIZE_PROMPT_INSTRUCTION = """
 You are an expert in generating optimized prompts for image generation tasks. 
@@ -73,8 +73,8 @@ class ImageGeneratorTool(AsyncTool):
 
     def __init__(self,
                  *args,
-                 analyzer_model_id: Optional[str] = None,
-                 generator_model_id: Optional[str] = None,
+                 analyzer_model_id: str | None = None,
+                 generator_model_id: str | None = None,
                  **kwargs):
 
         super(ImageGeneratorTool, self).__init__()
@@ -127,7 +127,7 @@ class ImageGeneratorTool(AsyncTool):
                 return prompt
 
             if not optimized_prompt:
-                res = f"ImageGeneratorTool returned an empty optimized prompt."
+                res = "ImageGeneratorTool returned an empty optimized prompt."
                 logger.warning(res)
                 return prompt
 

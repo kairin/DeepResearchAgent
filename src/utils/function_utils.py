@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=utf-8
 
 # Copyright 2025 The HuggingFace Inc. team. All rights reserved.
 #
@@ -36,7 +35,6 @@ from typing import (
     get_origin,
     get_type_hints,
 )
-
 
 IMPORT_TO_PACKAGE_MAPPING = {
     "wikipediaapi": "wikipedia-api",

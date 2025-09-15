@@ -2,13 +2,15 @@ import os
 import time
 
 from dotenv import load_dotenv
+
 load_dotenv(verbose=True)
 
-from typing import List
-from firecrawl import FirecrawlApp
 import asyncio
 
-from src.tools.search.base import WebSearchEngine, SearchItem
+from firecrawl import FirecrawlApp
+
+from src.tools.search.base import SearchItem, WebSearchEngine
+
 
 def search(params):
     """
@@ -45,7 +47,7 @@ class FirecrawlSearchEngine(WebSearchEngine):
         num_results: int = 10,
         filter_year: int = None,
         *args, **kwargs
-    ) -> List[SearchItem]:
+    ) -> list[SearchItem]:
         """
         Google search engine.
 

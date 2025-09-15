@@ -1,10 +1,10 @@
-from typing import Optional
-from markitdown._base_converter import DocumentConverterResult
 
-from src.tools import AsyncTool
-from src.utils import fetch_url
+from markitdown._markitdown import DocumentConverterResult
+
 from src.logger import logger
 from src.registry import TOOL
+from src.tools.tools import AsyncTool
+from src.utils import fetch_url
 
 _WEB_FETCHER_DESCRIPTION = """Visit a webpage at a given URL and return its text. """
 
@@ -28,7 +28,7 @@ class WebFetcherTool(AsyncTool):
     def __init__(self):
         super(WebFetcherTool, self).__init__()
 
-    async def forward(self, url: str) -> Optional[DocumentConverterResult]:
+    async def forward(self, url: str) -> DocumentConverterResult | None:
         """Fetch content from a given URL."""
 
         # try to use asyncio to fetch the URL content

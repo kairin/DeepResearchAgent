@@ -1,5 +1,6 @@
-from src.tools import AsyncTool, ToolResult
 from src.registry import TOOL
+from src.tools.tools import AsyncTool, ToolResult
+
 
 @TOOL.register_module(name="final_answer_tool", force=True)
 class FinalAnswerTool(AsyncTool):

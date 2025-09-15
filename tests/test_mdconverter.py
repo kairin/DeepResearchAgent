@@ -1,19 +1,22 @@
-import warnings
 import os
+import warnings
+
 warnings.simplefilter("ignore", DeprecationWarning)
 
+import argparse
 import sys
 from pathlib import Path
-import argparse
+
 from mmengine import DictAction
 
 root = str(Path(__file__).resolve().parents[1])
 sys.path.append(root)
 
-from src.tools.markdown.mdconvert import MarkitdownConverter
-from src.models import model_manager
-from src.logger import logger
 from src.config import config
+from src.logger import logger
+from src.models import model_manager
+from src.tools.markdown.mdconvert import MarkitdownConverter
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='main')
@@ -48,7 +51,7 @@ if __name__ == "__main__":
     # Registed models
     model_manager.init_models(use_local_proxy=True)
     logger.info("Registed models: %s", ", ".join(model_manager.registed_models.keys()))
-    
+
     mdconvert = MarkitdownConverter()
     md = mdconvert.convert("https://www.theguardian.com/food/2021/may/01/yotam-ottolenghis-recipes-for-takeaway-classics")
     print(md)
