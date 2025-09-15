@@ -145,25 +145,22 @@ class MarkitdownConverter:
         if use_llm:
             client = model_manager.registed_models(model_id).http_client
             self.client = MarkItDown(
-                enable_plugins=True,
                 llm_client=client,
                 llm_model=model_id,
             )
         else:
-            self.client = MarkItDown(
-                enable_plugins=True,
-            )
+            self.client = MarkItDown()
 
         removed_converters = [
-            PdfConverter, AudioConverter
+            PdfConverter
         ]
 
-        self.client._converters = [
-            converter for converter in self.client._converters
-            if not isinstance(converter.converter, tuple(removed_converters))
+        self.client._page_converters = [
+            converter for converter in self.client._page_converters
+            if not isinstance(converter, tuple(removed_converters))
         ]
-        self.client.register_converter(PdfWithTableConverter())
-        self.client.register_converter(AudioWhisperConverter())
+        self.client.register_page_converter(PdfWithTableConverter())
+        self.client.register_page_converter(AudioWhisperConverter())
 
     def convert(self, source: str, **kwargs: Any):
         try:
