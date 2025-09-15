@@ -11,7 +11,7 @@ import camelot
 from litellm import transcription
 from markitdown import MarkItDown
 from markitdown._markitdown import (
-    AudioConverter,
+    MediaConverter,
     DocumentConverterResult,
     PdfConverter,
 )
@@ -41,7 +41,7 @@ def transcribe_audio(file_stream, audio_format):
 
     return result
 
-class AudioWhisperConverter(AudioConverter):
+class AudioWhisperConverter(MediaConverter):
 
     def convert(
             self,
