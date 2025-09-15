@@ -26,7 +26,8 @@ This directory contains organized documentation for the DeepResearchAgent fork w
   - Sync procedures to prevent work loss
 
 ### 🎨 **Assets** (`assets/`)
-- **[integration_workflow.svg](assets/integration_workflow.svg)** - Animated workflow diagram showing transformation
+- **[integration_hero_animated.svg](assets/integration_hero_animated.svg)** - Integration overview animation
+- **[integration_workflow_static.svg](assets/integration_workflow_static.svg)** - Static workflow diagram
 - **[python_interpreter_sandbox.md](assets/python_interpreter_sandbox.md)** - Python execution environment documentation
 - Various project images and visual assets
 
@@ -44,7 +45,7 @@ This directory contains organized documentation for the DeepResearchAgent fork w
 
 ### **For Integration Development**
 1. [integration/INTEGRATION_ROADMAP.md](integration/INTEGRATION_ROADMAP.md) - Complete implementation plan
-2. [assets/integration_workflow.svg](assets/integration_workflow.svg) - Visual workflow
+2. [assets/integration_workflow_static.svg](assets/integration_workflow_static.svg) - Visual workflow
 3. [../AGENTS.md](../AGENTS.md) - Current agent documentation
 
 ## 📋 **Document Relationships**
