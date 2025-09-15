@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - TUI Foundation System (2025-09-16)
+- Added interactive task input system (`src/tui/` module)
+  - `src/tui/interactive_main.py` - New interactive entry point with task parameter support
+  - `src/tui/interactive_main_with_input.py` - Full TUI experience with Rich prompts
+  - `src/tui/task_collector.py` - Interactive task collection with validation and templates
+- Added comprehensive task validation system
+  - Length validation (10-2000 characters)
+  - Content validation (not purely numeric, contains alphabetic characters)
+  - User-friendly error messages and retry logic
+- Added task template system with 10 predefined research templates
+  - Research Latest Papers, Analyze Website, Compare Technologies, Market Analysis
+  - Code Review, Technical Documentation, Competitive Analysis, Literature Review
+  - Data Analysis, Custom Task options with placeholder customization
+- Added Rich library dependency for beautiful terminal UI
+- Added three usage modes for user flexibility:
+  1. Command line: `python main.py --task "Custom task"`
+  2. Interactive TUI: `python src/tui/interactive_main_with_input.py --interactive`
+  3. Default demo: `python main.py` (backward compatible)
+
+### Fixed - Critical User Experience Issues (2025-09-16)
+- **CRITICAL**: Fixed hardcoded task limitation that prevented custom user input
+  - Modified `main.py` to accept `--task` parameter
+  - Added task parameter to main() function: `async def main(task: str = None)`
+  - Maintains full backward compatibility with existing usage
+- **CRITICAL**: Fixed MarkItDown integration errors with latest version
+  - Replaced deprecated `MediaConverter` with `AudioConverter`
+  - Fixed `_page_converters` → `_converters` attribute issue
+  - System now starts without MarkItDown import errors
+
+### Changed - Documentation Consolidation (2025-09-16)
+- Consolidated redundant planning documents to reduce documentation proliferation
+  - Removed `TUI_ANALYSIS_AND_STRATEGY.md`, `TUI_COMPREHENSIVE_PLANNING_SUMMARY.md`, `IMPLEMENTATION_SUMMARY.md`
+  - Created unified `TUI_IMPLEMENTATION_GUIDE.md` preserving all valuable content
+  - Updated `CURRENT_STATUS_AND_NEXT_ACTIONS.md` with live status tracking
+  - Updated `PROJECT_ROADMAP.md` and `detailed_todo_checklist.md` with completion status
+- Improved AGENTS.md conciseness by linking to detailed documentation instead of duplication
+
 ### Added - CLI-First Model System
 - Added CLI tool detection system (`src/models/cli_detector.py`)
   - Detects Claude Code CLI and Gemini CLI availability
