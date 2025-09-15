@@ -9,6 +9,7 @@ load_dotenv(verbose=True)
 from langchain_openai import ChatOpenAI
 
 from src.logger import logger
+from src.models.api_validator import APIConfigValidator
 from src.models.hfllm import InferenceClientModel
 from src.models.litellm import LiteLLMModel
 from src.models.openaillm import OpenAIServerModel
@@ -30,14 +31,49 @@ PLACEHOLDER = "PLACEHOLDER"
 class ModelManager(metaclass=Singleton):
     def __init__(self):
         self.registed_models: dict[str, Any] = {}
+        self.validator = APIConfigValidator()
+        self.validation_results = {}
 
     def init_models(self, use_local_proxy: bool = False):
-        self._register_openai_models(use_local_proxy=use_local_proxy)
-        self._register_anthropic_models(use_local_proxy=use_local_proxy)
-        self._register_google_models(use_local_proxy=use_local_proxy)
-        self._register_qwen_models(use_local_proxy=use_local_proxy)
+        # Validate API configurations before initializing models
+        logger.info("Validating API configurations...")
+        self.validation_results = self.validator.validate_all_configs()
+
+        if not self.validator.has_any_valid_provider():
+            logger.error("No valid API configurations found!")
+            logger.error(self.validator.get_configuration_guidance())
+            raise RuntimeError(
+                "No valid API configurations found. Please check your .env file or install CLI tools. "
+                "See logs above for detailed guidance."
+            )
+
+        # Only register models for available providers
+        available_providers = self.validator.get_available_providers()
+        logger.info(f"Initializing models for available providers: {available_providers}")
+
+        if 'openai' in available_providers:
+            self._register_openai_models(use_local_proxy=use_local_proxy)
+        else:
+            logger.warning("Skipping OpenAI models - configuration invalid")
+
+        if 'anthropic' in available_providers:
+            self._register_anthropic_models(use_local_proxy=use_local_proxy)
+        else:
+            logger.warning("Skipping Anthropic models - configuration invalid")
+
+        if 'google' in available_providers:
+            self._register_google_models(use_local_proxy=use_local_proxy)
+        else:
+            logger.warning("Skipping Google models - configuration invalid")
+
+        if 'local' in available_providers:
+            self._register_qwen_models(use_local_proxy=use_local_proxy)
+            self._register_vllm_models(use_local_proxy=use_local_proxy)
+        else:
+            logger.warning("Skipping local models - configuration invalid")
+
+        # Always try to register these (they have different validation logic)
         self._register_langchain_models(use_local_proxy=use_local_proxy)
-        self._register_vllm_models(use_local_proxy=use_local_proxy)
         self._register_deepseek_models(use_local_proxy=use_local_proxy)
 
     def _check_local_api_key(self, local_api_key_name: str, remote_api_key_name: str) -> str:

@@ -9,6 +9,10 @@ from mmengine import DictAction
 root = str(Path(__file__).resolve().parents[0])
 sys.path.append(root)
 
+# Apply compatibility fixes early
+from src.compat import compatibility_manager
+compatibility_manager.apply_compatibility_fixes()
+
 from src.agent import create_agent
 from src.config import config
 from src.logger import logger
@@ -34,20 +38,31 @@ def parse_args():
 
 
 async def main():
-    # Parse command line arguments
-    args = parse_args()
+    try:
+        # Parse command line arguments
+        args = parse_args()
 
-    # Initialize the configuration
-    config.init_config(args.config, args)
+        # Initialize the configuration
+        config.init_config(args.config, args)
 
-    # Initialize the logger
-    logger.init_logger(log_path=config.log_path)
-    logger.info(f"| Logger initialized at: {config.log_path}")
-    logger.info(f"| Config:\n{config.pretty_text}")
+        # Initialize the logger
+        logger.init_logger(log_path=config.log_path)
+        logger.info(f"| Logger initialized at: {config.log_path}")
+        logger.info(f"| Config:\n{config.pretty_text}")
 
-    # Registed models
-    model_manager.init_models(use_local_proxy=True)
-    logger.info("| Registed models: %s", ", ".join(model_manager.registed_models.keys()))
+        # Initialize models with validation
+        logger.info("| Initializing models...")
+        model_manager.init_models(use_local_proxy=True)
+        logger.info("| Registered models: %s", ", ".join(model_manager.registed_models.keys()))
+
+    except RuntimeError as e:
+        logger.error(f"| Startup failed: {e}")
+        logger.error("| Please check your configuration and try again")
+        sys.exit(1)
+    except Exception as e:
+        logger.error(f"| Unexpected error during startup: {e}")
+        logger.error("| See logs above for details")
+        sys.exit(1)
 
     # Create agent
     agent = await create_agent(config)
