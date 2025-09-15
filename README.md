@@ -97,8 +97,13 @@ Image and Video Examples:
 * [x] Video Generator Tool completed
 * [x] MCP in progress
 * [x] Load local MCP tools from JSON file completed
-* [ ] AI4Research Agent to be developed
-* [ ] Novel Writing Agent to be developed
+
+### Upstream Planned Features
+* [ ] **AI4Research Agent** - Planned by [original repo owners](https://github.com/SkyworkAI/DeepResearchAgent)
+* [ ] **Novel Writing Agent** - Planned by [original repo owners](https://github.com/SkyworkAI/DeepResearchAgent)
+
+### Fork-Specific Variations
+For custom agent implementations and variations, see [claude-guardian-agents](https://github.com/kairin/claude-guardian-agents) which provides alternative approaches and specialized agent architectures.
 
 ## Installation
 
