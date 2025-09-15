@@ -8,11 +8,41 @@ English | [🌐 **Website**](https://skyworkai.github.io/DeepResearchAgent/)
 
 > 🔧 **Migration Notice**: This fork has been migrated from Poetry to uv and upgraded to Python 3.13. See [CHANGELOG.md](CHANGELOG.md) for details and [FORK_MANAGEMENT.md](FORK_MANAGEMENT.md) for sync strategies.
 
-## Introduction
-image.png
-DeepResearchAgent is a hierarchical multi-agent system designed not only for deep research tasks but also for general-purpose task solving. The framework leverages a top-level planning agent to coordinate multiple specialized lower-level agents, enabling automated task decomposition and efficient execution across diverse and complex domains.
+---
 
-> 🌐 **Check out our interactive website**: [https://skyworkai.github.io/DeepResearchAgent/](https://skyworkai.github.io/DeepResearchAgent/) - Explore the architecture, view experiments, and learn more about our research!
+## 🚀 **Upcoming Major Enhancement: Guardian Agents Integration**
+
+> **🎯 Vision**: Transform DeepResearchAgent from a research-focused tool into a **complete AI-powered product development platform** by integrating [Claude Guardian Agents](https://github.com/kairin/claude-guardian-agents).
+
+### **📊 Planned Transformation**
+- **From**: 5 specialized agents → **To**: 57+ specialized agents (52 Guardian + 5 existing)
+- **From**: Research-only capabilities → **To**: Full product development lifecycle
+- **From**: Single-threaded analysis → **To**: Multi-agent collaborative intelligence
+- **From**: Manual orchestration → **To**: Intelligent automatic routing with three-tier oversight
+
+### **🎯 Key Integration Areas**
+- **🧠 Research Intelligence**: Enhanced with Think-Tank reasoning agents (First Principles, Creative Thinking, Mathematical Analysis)
+- **🏗️ Technical Architecture**: Enterprise-grade technical planning with CTO and Principal Architect agents
+- **⚙️ Development Engineering**: Full-stack development capabilities with quality assurance workflows
+- **🛡️ Operations & Security**: Production-ready deployment with security compliance analysis
+- **📊 Strategic Management**: Complete product management and stakeholder analysis capabilities
+
+**📋 [View Detailed Integration Roadmap →](INTEGRATION_ROADMAP.md)**
+
+---
+
+## Introduction
+
+<p align="center">
+  <img src="./docs/assets/integration_workflow.svg" alt="DeepResearchAgent to Guardian Agents Integration Workflow" width="800"/>
+</p>
+
+**Original Vision**: DeepResearchAgent was conceived by [SkyworkAI](https://github.com/SkyworkAI/DeepResearchAgent) as a hierarchical multi-agent system designed for deep research tasks and general-purpose task solving. The framework leverages a top-level planning agent to coordinate multiple specialized lower-level agents, enabling automated task decomposition and efficient execution across diverse and complex domains.
+
+**Fork Evolution**: This enhanced fork transforms the original research-focused framework into a **complete AI-powered product development platform**. By integrating 52 specialized Guardian Agents, we expand from 5 research agents to 57+ comprehensive agents covering the entire product development lifecycle - from first-principles research and strategic planning to technical architecture, development engineering, and production operations.
+
+> 🌐 **Original Research**: [https://skyworkai.github.io/DeepResearchAgent/](https://skyworkai.github.io/DeepResearchAgent/) - Explore the foundational architecture, experiments, and academic research.
+> 🚀 **Enhanced Platform**: See [INTEGRATION_ROADMAP.md](INTEGRATION_ROADMAP.md) for our comprehensive Guardian Agents integration strategy.
 
 ## Architecture
 
