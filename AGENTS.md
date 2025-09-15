@@ -4,225 +4,169 @@
 
 ## Project Overview
 
-DeepResearchAgent (AgentOrchestra) is a hierarchical multi-agent framework designed for general-purpose task solving and deep research. The system uses a conductor-orchestra metaphor where a central planning agent coordinates specialized lower-level agents to tackle complex, multi-step tasks.
+DeepResearchAgent is a hierarchical multi-agent framework designed for general-purpose task solving and deep research. The system uses a conductor-orchestra metaphor where a central planning agent coordinates specialized lower-level agents to tackle complex, multi-step tasks.
 
-### Architecture
-- **Two-layer hierarchical structure** with top-level planning and specialized execution agents
-- **Planning Agent**: Decomposes tasks, coordinates workflow, and manages inter-agent communication
-- **Specialized Agents**: Deep Analyzer, Deep Researcher, Browser Use, MCP Manager, and General Tool Calling agents
-- **Asynchronous framework** enabling efficient parallel task execution
+**Quick Links:**
+- 📚 [Complete Architecture Guide](docs/architecture/OVERVIEW.md)
+- ⚡ [Quick Start Guide](docs/usage/QUICK_START.md)
+- 🔧 [Environment Setup](docs/setup/ENVIRONMENT_SETUP.md)
+- 🤖 [Model Configuration](docs/models/CONFIGURATION.md)
 
-## Development Environment
+### Core Architecture
+- **Two-layer hierarchical structure** with planning and execution agents
+- **Asynchronous framework** enabling parallel task execution
+- **Tool-based architecture** with pluggable components
+- **Multi-provider model support** (OpenAI, Anthropic, Google, Local)
 
-### Setup Commands
+## Quick Setup
+
 ```bash
-# Install uv (if not already installed)
+# Install uv package manager
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Quick setup with uv
+# Install dependencies and setup
 uv sync --all-extras
-uv run playwright install chromium --with-deps --no-shell
+uv run playwright install chromium --with-deps
+cp .env.template .env
 
-# Or use make commands for full setup
-make venv        # Create virtual environment
-make install     # Install all dependencies
-
-# Ubuntu 25.04+ with Python 3.13 (Recommended - Default)
-make venv-system # Use system Python (preferred)
-PYTHON_VERSION=3.13 make venv  # Or specify version explicitly
-```
-
-### Environment Configuration
-1. Copy `.env.template` to `.env`
-2. Configure API keys for supported providers:
-   - OpenAI: `OPENAI_API_KEY`
-   - Anthropic: `ANTHROPIC_API_KEY`
-   - Google: `GOOGLE_API_KEY` and `GOOGLE_APPLICATION_CREDENTIALS`
-   - Local models: `QWEN_API_BASE` and `QWEN_API_KEY`
-
-### Local Model Setup (vLLM)
-```bash
-# Launch vLLM inference service
-CUDA_VISIBLE_DEVICES=0,1 python -m vllm.entrypoints.openai.api_server \
-  --model /path/to/Qwen3-32B \
-  --served-model-name Qwen \
-  --host 0.0.0.0 \
-  --port 8000 \
-  --max-num-seqs 16 \
-  --enable-auto-tool-choice \
-  --tool-call-parser hermes \
-  --tensor_parallel_size 2
-```
-
-## Build and Test Commands
-
-### Running the Framework
-```bash
-# Main example with hierarchical agents
+# Run examples
 uv run python main.py
-# or: make run
-
-# Single agent examples
-uv run python examples/run_general.py    # or: make run-general
-uv run python examples/run_gaia.py       # or: make run-gaia
-uv run python examples/run_hle.py        # or: make run-hle
-uv run python examples/run_oai_deep_research.py
-
-# Run tests
-uv run pytest                            # or: make test
-
-# Code formatting and linting
-uv run black . && uv run isort .         # or: make format
-uv run ruff check .                      # or: make lint
-uv run ruff check --fix .                # or: make lint-fix
 ```
 
-### GAIA Benchmark Evaluation
+**Detailed Setup:** [docs/setup/ENVIRONMENT_SETUP.md](docs/setup/ENVIRONMENT_SETUP.md)
+
+## Essential Commands
+
+### Running
 ```bash
-# Download GAIA dataset
-mkdir data && cd data
-git clone https://huggingface.co/datasets/gaia-benchmark/GAIA
-
-# Run evaluation
-python examples/run_gaia.py
+uv run python main.py                    # Full hierarchical system
+uv run python examples/run_general.py   # Single agent
+uv run pytest                           # Run tests
 ```
 
-### Configuration
-- Main config: `configs/config_main.py`
-- Use `--config` flag to specify custom config files
-- Override settings with `--cfg-options key=value`
-
-### Dependency Management
+### Development
 ```bash
-# Add new dependency
-uv add package-name                      # or: make add PKG=package-name
-
-# Remove dependency
-uv remove package-name                   # or: make remove PKG=package-name
-
-# Update all dependencies
-uv lock --upgrade                        # or: make update
-
-# Install from lock file only
-uv sync --frozen                         # or: make install-locked
+uv add package-name                      # Add dependency
+uv sync --all-extras                     # Install dependencies
+uv run black . && uv run isort .         # Format code
+uv run ruff check .                      # Lint code
 ```
 
-## 🚨 CRITICAL: Git Archive Strategy (NON-NEGOTIABLE)
+**Complete Command Reference:** [docs/usage/COMMANDS.md](docs/usage/COMMANDS.md)
 
-### Mandatory Branching Workflow
+## Configuration
 
-**EVERY SINGLE COMMIT** must follow this archive-first strategy to protect all work:
-
+### Basic Configuration
 ```bash
-# 1. Create archive branch (NEVER skip this step)
-DATETIME=$(date +"%Y%m%d-%H%M%S")
-BRANCH_NAME="archive/${DATETIME}-brief-description"
-git checkout -b "$BRANCH_NAME"
+# Use default config
+uv run python main.py
 
-# 2. Commit and push archive branch
-git add . && git commit -m "Commit message"
-git push -u origin "$BRANCH_NAME"
+# Custom config
+uv run python main.py --config configs/config_local_only.py
 
-# 3. Merge to main
-git checkout main && git merge "$BRANCH_NAME" --no-ff
-git push origin main
+# Override settings
+uv run python main.py --cfg-options agent_config.max_steps=10
 ```
 
-### Branch Naming Pattern
-- **Format**: `archive/YYYYMMDD-HHMMSS-brief-description`
-- **Example**: `archive/20250915-194049-poetry-to-uv-migration-python313`
+### Environment Setup
+```bash
+# Copy template and edit
+cp .env.template .env
 
-### Critical Rules
-- ✅ **ALWAYS** create archive branch first
-- ✅ **ALWAYS** push archive branch to GitHub
-- ✅ **NEVER** delete archive branches (permanent history)
-- ❌ **NEVER** commit directly to main
-- ❌ **NEVER** skip archive branch creation
+# Add API keys (choose one or more)
+OPENAI_API_KEY=sk-your-key-here
+ANTHROPIC_API_KEY=sk-ant-your-key-here
+GOOGLE_API_KEY=your-google-key-here
+```
 
-See [GIT_STRATEGY.md](docs/development/GIT_STRATEGY.md) for complete documentation.
+**Full Configuration Guide:** [docs/models/CONFIGURATION.md](docs/models/CONFIGURATION.md)
 
-## Code Style
+## Development
 
-### Architecture Patterns
-- **Modular design**: Each agent type in separate modules under `src/agent/`
-- **Async/await**: All agent operations use asyncio for concurrency
-- **Tool-based**: Agents interact through standardized tool interfaces
+### Code Style & Architecture
+- **Modular design**: Agents in `src/agent/`, tools in `src/tools/`
+- **Async/await**: All operations use asyncio for concurrency
 - **Config-driven**: MMEngine-based configuration system
+- **Registry pattern**: Dynamic model and tool registration
 
-### Key Directories
-- `src/agent/`: Agent implementations (planning, deep_researcher, deep_analyzer, etc.)
-- `src/tools/`: Tool implementations (web_searcher, python_interpreter, etc.)
-- `src/models/`: LLM model adapters (OpenAI, Anthropic, Google, local)
-- `src/mcp/`: Model Context Protocol integration
-- `configs/`: Configuration files for different use cases
+**Detailed Guidelines:** [docs/development/CONTRIBUTING.md](docs/development/CONTRIBUTING.md)
 
-### Agent Development
-- Inherit from base classes in `src/base/`
-- Implement async `run()` method for task execution
-- Use `tool_calling_agent.py` for function calling capabilities
-- Follow the registry pattern for model and tool registration
+### Testing
+```bash
+uv run pytest                           # Run all tests
+uv run python examples/run_gaia.py      # GAIA benchmark
+```
 
-## Testing
+**Performance**: 83.39% average on GAIA benchmark
 
-### Framework Testing
-- Unit tests in `tests/` directory
-- Run specific agent tests: `python tests/test_analyzer.py`
-- Integration tests use GAIA benchmark for validation
+### 🚨 Git Archive Strategy
 
-### Supported Models
-- **Commercial**: GPT-4.1, Claude-3.7-Sonnet, Gemini-2.5-Pro
-- **Local**: Qwen 2.5 series (7B, 14B, 32B) via vLLM or HuggingFace
-- **Evaluation**: Function calling works best with GPT-4.1 and Gemini-2.5-Pro
+**EVERY COMMIT** must use archive branches:
 
-## Security Considerations
+```bash
+DATETIME=$(date +"%Y%m%d-%H%M%S")
+git checkout -b "archive/${DATETIME}-description"
+git add . && git commit -m "Message"
+git push -u origin "archive/${DATETIME}-description"
+git checkout main && git merge "archive/${DATETIME}-description" --no-ff
+```
 
-### Sandboxed Execution
-- Python code execution uses restricted environment with:
-  - Configurable import controls
-  - Restricted built-ins
-  - Attribute access limitations
-  - Resource limits
-- See `docs/python_interpreter_sandbox.md` for details
+**Full Git Guidelines:** [docs/development/GIT_STRATEGY.md](docs/development/GIT_STRATEGY.md)
 
-### API Security
-- Store API keys in `.env` file (never commit to repository)
-- Use separate API keys for different environments
-- Monitor API usage and rate limits
+## Supported Models
 
-### Browser Automation
-- Browser Use agent operates in isolated browser instances
-- Automatic cleanup of browser processes
-- Configurable security policies for web interactions
+### Commercial APIs
+- **OpenAI**: GPT-4.1, GPT-4o, o1, o3
+- **Anthropic**: Claude-3.7-Sonnet, Claude-4-Sonnet
+- **Google**: Gemini-2.5-Pro
 
-## Model Context Protocol (MCP)
+### CLI Tools
+- **Claude Code CLI**: `npm install -g @anthropics/claude-code`
+- **Gemini CLI**: `gcloud auth application-default login`
 
-### MCP Integration
-- MCP Manager Agent enables dynamic tool discovery and execution
-- Supports both local and remote MCP tool integration
-- Load local MCP tools from JSON configuration files
-- Tool evolution through automated creation, retrieval, and reuse
+### Local Models
+- **vLLM**: Qwen 2.5 series (7B, 14B, 32B)
+- **HuggingFace**: Direct model loading
 
-### Tool Management
-- Tools registered in `src/registry.py`
-- Custom tools follow the base tool interface
-- Async tool execution with proper error handling
+**Model Configuration:** [docs/models/CONFIGURATION.md](docs/models/CONFIGURATION.md)
 
-## Performance Notes
+## Security & MCP
 
-- **GAIA Benchmark Results**: 83.39% average (93.55% Level 1, 83.02% Level 2, 65.31% Level 3)
-- **Asynchronous execution** enables parallel agent operations
-- **Hierarchical coordination** reduces redundant computations
-- **Tool caching** improves response times for repeated operations
+### Security Features
+- Sandboxed Python execution with configurable restrictions
+- Isolated browser instances with automatic cleanup
+- API key security and monitoring
+
+### Model Context Protocol
+- Dynamic tool discovery and execution
+- Local and remote MCP tool integration
+- Tool evolution and reuse capabilities
+
+**Security Details:** [docs/security/GUIDELINES.md](docs/security/GUIDELINES.md)
 
 ## Troubleshooting
 
-### Common Issues
-1. **Browser automation failures**: Reinstall with `uv sync --all-extras`
-2. **Model loading errors**: Check API keys and base URLs in `.env`
-3. **vLLM issues**: Ensure CUDA setup and model path configuration
-4. **MCP connection problems**: Verify MCP server endpoints and authentication
+### Quick Fixes
+```bash
+# Dependency issues
+uv sync --reinstall
 
-### Debug Mode
-- Enable detailed logging in config files
-- Use `logger.info()` for debugging agent interactions
-- Monitor resource usage during multi-agent execution
+# Browser automation
+uv run playwright install --force
+
+# API validation
+uv run python -c "from src.models.api_validator import APIConfigValidator; APIConfigValidator().validate_all_configs()"
+```
+
+**Complete Troubleshooting:** [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
+
+## Documentation Structure
+
+- 📁 **[docs/setup/](docs/setup/)** - Installation and environment setup
+- 📁 **[docs/usage/](docs/usage/)** - Usage guides and examples
+- 📁 **[docs/architecture/](docs/architecture/)** - System architecture and design
+- 📁 **[docs/models/](docs/models/)** - Model configuration and integration
+- 📁 **[docs/development/](docs/development/)** - Development guidelines and contribution
+- 📁 **[docs/security/](docs/security/)** - Security considerations and best practices
+
+**Documentation Index:** [docs/DOCUMENTATION_INDEX.md](docs/DOCUMENTATION_INDEX.md)
