@@ -139,7 +139,7 @@ git push origin main
 - ❌ **NEVER** commit directly to main
 - ❌ **NEVER** skip archive branch creation
 
-See [GIT_STRATEGY.md](GIT_STRATEGY.md) for complete documentation.
+See [GIT_STRATEGY.md](docs/development/GIT_STRATEGY.md) for complete documentation.
 
 ## Code Style
 

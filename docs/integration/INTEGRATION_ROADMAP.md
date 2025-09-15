@@ -606,8 +606,8 @@ DeepResearchAgent v1.0 (Current)          →    GuardianDeepAgent v2.0 (Target)
 
 ### **📖 Documentation**
 - [DeepResearchAgent Paper](https://arxiv.org/abs/2506.12508) - Academic foundation
-- [FORK_MANAGEMENT.md](FORK_MANAGEMENT.md) - Git strategy and sync procedures
-- [CHANGELOG.md](CHANGELOG.md) - Migration history and updates
+- [FORK_MANAGEMENT.md](../management/FORK_MANAGEMENT.md) - Git strategy and sync procedures
+- [CHANGELOG.md](../../CHANGELOG.md) - Migration history and updates
 
 ### **🛠️ Technical Resources**
 - [uv Documentation](https://docs.astral.sh/uv/) - Python package management
