@@ -6,7 +6,7 @@
 
 English | [🌐 **Website**](https://skyworkai.github.io/DeepResearchAgent/)
 
-> 🔧 **Migration Notice**: This fork has been migrated from Poetry to uv and upgraded to Python 3.13. See [CHANGELOG.md](CHANGELOG.md) for details and [FORK_MANAGEMENT.md](FORK_MANAGEMENT.md) for sync strategies.
+> 🔧 **Migration Notice**: This fork has been migrated from Poetry to uv and upgraded to Python 3.13. See [CHANGELOG.md](CHANGELOG.md) for details and [FORK_MANAGEMENT.md](docs/management/FORK_MANAGEMENT.md) for sync strategies.
 
 ---
 
@@ -27,7 +27,7 @@ English | [🌐 **Website**](https://skyworkai.github.io/DeepResearchAgent/)
 - **🛡️ Operations & Security**: Production-ready deployment with security compliance analysis
 - **📊 Strategic Management**: Complete product management and stakeholder analysis capabilities
 
-**📋 [View Detailed Integration Roadmap →](INTEGRATION_ROADMAP.md)**
+**📋 [View Detailed Integration Roadmap →](docs/integration/INTEGRATION_ROADMAP.md)**
 
 ---
 
@@ -42,7 +42,7 @@ English | [🌐 **Website**](https://skyworkai.github.io/DeepResearchAgent/)
 **Fork Evolution**: This enhanced fork transforms the original research-focused framework into a **complete AI-powered product development platform**. By integrating 52 specialized Guardian Agents, we expand from 5 research agents to 57+ comprehensive agents covering the entire product development lifecycle - from first-principles research and strategic planning to technical architecture, development engineering, and production operations.
 
 > 🌐 **Original Research**: [https://skyworkai.github.io/DeepResearchAgent/](https://skyworkai.github.io/DeepResearchAgent/) - Explore the foundational architecture, experiments, and academic research.
-> 🚀 **Enhanced Platform**: See [INTEGRATION_ROADMAP.md](INTEGRATION_ROADMAP.md) for our comprehensive Guardian Agents integration strategy.
+> 🚀 **Enhanced Platform**: See [INTEGRATION_ROADMAP.md](docs/integration/INTEGRATION_ROADMAP.md) for our comprehensive Guardian Agents integration strategy.
 
 ## Architecture
 
@@ -349,7 +349,7 @@ If validation fails:
 
 ## Fork Management
 
-This fork maintains significant changes from the upstream repository. See [FORK_MANAGEMENT.md](FORK_MANAGEMENT.md) for:
+This fork maintains significant changes from the upstream repository. See [FORK_MANAGEMENT.md](docs/management/FORK_MANAGEMENT.md) for:
 - Sync strategies to protect your changes
 - Conflict resolution guidelines
 - Critical file identification

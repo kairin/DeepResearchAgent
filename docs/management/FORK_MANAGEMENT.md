@@ -37,7 +37,7 @@ These files are specific to your fork and won't conflict:
 | File | Description |
 |------|-------------|
 | `CHANGELOG.md` | Migration documentation |
-| `FORK_MANAGEMENT.md` | This file |
+| `docs/management/FORK_MANAGEMENT.md` | This file |
 | `scripts/validate_migration.py` | Validation script |
 | `migration_validation_report.json` | Validation results |
 
