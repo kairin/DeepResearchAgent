@@ -39,9 +39,10 @@ uv run python main.py
 
 ### Running
 ```bash
-uv run python main.py                    # Full hierarchical system
-uv run python examples/run_general.py   # Single agent
-uv run pytest                           # Run tests
+uv run python main.py --config configs/config_cli_fallback.py  # CLI-first (recommended)
+uv run python main.py                                          # Full hierarchical system
+uv run python examples/run_general.py                          # Single agent
+uv run pytest                                                  # Run tests
 ```
 
 ### Development
@@ -56,10 +57,22 @@ uv run ruff check .                      # Lint code
 
 ## Configuration
 
+### CLI-First Setup (Recommended)
+The system automatically detects CLI tools and provides intelligent fallbacks:
+
+```bash
+# Install CLI tools (optional but recommended)
+npm install -g @anthropics/claude-code
+uv add google-generativeai
+
+# Run with CLI-first priority
+uv run python main.py --config configs/config_cli_fallback.py
+```
+
 ### Basic Configuration
 ```bash
-# Use default config
-uv run python main.py
+# Minimal setup - just add HuggingFace token to .env
+HUGGINGFACE_API_KEY=hf_your-token-here
 
 # Custom config
 uv run python main.py --config configs/config_local_only.py
@@ -122,7 +135,6 @@ git checkout main && git merge "archive/${DATETIME}-description" --no-ff
 
 ### CLI Tools
 - **Claude Code CLI**: `npm install -g @anthropics/claude-code`
-- **Gemini CLI**: `gcloud auth application-default login`
 
 ### Local Models
 - **vLLM**: Qwen 2.5 series (7B, 14B, 32B)

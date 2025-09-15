@@ -1,5 +1,5 @@
 import os
-from typing import Any
+from typing import Any, Dict, List
 
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
@@ -10,6 +10,8 @@ from langchain_openai import ChatOpenAI
 
 from src.logger import logger
 from src.models.api_validator import APIConfigValidator
+from src.models.cli_detector import cli_detector
+from src.models.cli_models import CLIModelFactory
 from src.models.hfllm import InferenceClientModel
 from src.models.litellm import LiteLLMModel
 from src.models.openaillm import OpenAIServerModel
@@ -35,46 +37,143 @@ class ModelManager(metaclass=Singleton):
         self.validation_results = {}
 
     def init_models(self, use_local_proxy: bool = False):
-        # Validate API configurations before initializing models
+        # PRIORITY 1: Check for CLI tools first
+        logger.info("Detecting CLI tools...")
+        cli_tools = cli_detector.detect_all_cli_tools()
+        cli_detector.log_detection_results()
+
+        # Register CLI models if available
+        cli_models = CLIModelFactory.create_from_detection(cli_tools)
+        for model_name, model_instance in cli_models.items():
+            self.registed_models[model_name] = model_instance
+            logger.info(f"Registered CLI model: {model_name}")
+
+        # PRIORITY 2: Validate API configurations for fallback
         logger.info("Validating API configurations...")
         self.validation_results = self.validator.validate_all_configs()
+        available_providers = self.validator.get_available_providers()
 
-        if not self.validator.has_any_valid_provider():
-            logger.error("No valid API configurations found!")
+        # Register API models only if CLI equivalents are not available
+        self._register_api_models_with_cli_priority(available_providers, use_local_proxy, cli_tools)
+
+        # PRIORITY 3: Always register local models as final fallback
+        self._register_fallback_models(use_local_proxy)
+
+        # PRIORITY 4: Register model aliases for missing CLI/API models
+        self._register_model_aliases(cli_tools)
+
+        # Check if we have any models registered
+        if not self.registed_models:
+            logger.error("No models could be registered!")
+            logger.error("CLI Setup Instructions:")
+            logger.error(cli_detector.get_setup_instructions())
+            logger.error("API Configuration Issues:")
             logger.error(self.validator.get_configuration_guidance())
             raise RuntimeError(
-                "No valid API configurations found. Please check your .env file or install CLI tools. "
+                "No models available. Please set up CLI tools or configure API keys. "
                 "See logs above for detailed guidance."
             )
 
-        # Only register models for available providers
-        available_providers = self.validator.get_available_providers()
-        logger.info(f"Initializing models for available providers: {available_providers}")
+        logger.info(f"Successfully registered {len(self.registed_models)} models")
 
-        if 'openai' in available_providers:
+    def _register_api_models_with_cli_priority(self, available_providers: List[str], use_local_proxy: bool, cli_tools: Dict):
+        """Register API models only if CLI equivalents are not available"""
+
+        # Check if we need OpenAI models (not covered by CLI)
+        has_claude_cli = cli_tools.get('claude_code_cli', {}).get('available', False)
+        if 'openai' in available_providers and not has_claude_cli:
             self._register_openai_models(use_local_proxy=use_local_proxy)
+        elif 'openai' in available_providers:
+            logger.info("Skipping OpenAI models - Claude Code CLI available")
         else:
             logger.warning("Skipping OpenAI models - configuration invalid")
 
-        if 'anthropic' in available_providers:
+        # Check if we need Anthropic models (covered by Claude CLI)
+        if 'anthropic' in available_providers and not has_claude_cli:
             self._register_anthropic_models(use_local_proxy=use_local_proxy)
+        elif 'anthropic' in available_providers:
+            logger.info("Skipping Anthropic models - Claude Code CLI available")
         else:
             logger.warning("Skipping Anthropic models - configuration invalid")
 
-        if 'google' in available_providers:
+        # Check if we need Google models (covered by Gemini CLI)
+        has_gemini_cli = cli_tools.get('gemini_cli', {}).get('available', False)
+        if 'google' in available_providers and not has_gemini_cli:
             self._register_google_models(use_local_proxy=use_local_proxy)
+        elif 'google' in available_providers:
+            logger.info("Skipping Google models - Gemini CLI available")
         else:
             logger.warning("Skipping Google models - configuration invalid")
 
-        if 'local' in available_providers:
-            self._register_qwen_models(use_local_proxy=use_local_proxy)
-            self._register_vllm_models(use_local_proxy=use_local_proxy)
-        else:
-            logger.warning("Skipping local models - configuration invalid")
+    def _register_fallback_models(self, use_local_proxy: bool):
+        """Register local models and other fallbacks"""
+        # Always register local HuggingFace models as fallbacks
+        self._register_qwen_models(use_local_proxy=use_local_proxy)
 
-        # Always try to register these (they have different validation logic)
+        # Register vLLM models if available
+        if 'local' in self.validator.get_available_providers():
+            self._register_vllm_models(use_local_proxy=use_local_proxy)
+
+        # Register other models that don't conflict with CLI
         self._register_langchain_models(use_local_proxy=use_local_proxy)
         self._register_deepseek_models(use_local_proxy=use_local_proxy)
+
+    def _register_model_aliases(self, cli_tools: Dict):
+        """Register model aliases to prevent KeyError for missing models"""
+
+        # Common model mappings for fallbacks
+        model_mappings = {
+            # Claude models -> local fallback if CLI not available
+            'claude-3.7-sonnet-thinking': 'qwen2.5-32b-instruct',
+            'claude37-sonnet': 'qwen2.5-32b-instruct',
+            'claude-4-sonnet': 'qwen2.5-32b-instruct',
+
+            # Gemini models -> local fallback if CLI not available
+            'gemini-2.5-pro': 'qwen2.5-14b-instruct',
+            'gemini-vision': 'qwen2.5-14b-instruct',
+
+            # GPT models -> local fallback if API not available
+            'gpt-4.1': 'qwen2.5-32b-instruct',
+            'gpt-4o': 'qwen2.5-32b-instruct',
+            'o1': 'qwen2.5-32b-instruct',
+            'o3': 'qwen2.5-32b-instruct',
+
+            # Special models -> local fallbacks
+            'o3-deep-research': 'qwen2.5-32b-instruct',
+            'imagen': 'local-image-placeholder',
+            'veo3-predict': 'local-video-placeholder',
+            'veo3-fetch': 'local-video-placeholder',
+        }
+
+        # Check which models are missing and create aliases
+        for requested_model, fallback_model in model_mappings.items():
+            if requested_model not in self.registed_models:
+                if fallback_model in self.registed_models:
+                    # Use existing fallback model
+                    self.registed_models[requested_model] = self.registed_models[fallback_model]
+                    logger.info(f"Aliased '{requested_model}' -> '{fallback_model}'")
+                else:
+                    # Create a placeholder that will warn when used
+                    self.registed_models[requested_model] = self._create_placeholder_model(requested_model, fallback_model)
+                    logger.warning(f"Created placeholder for '{requested_model}' -> '{fallback_model}'")
+
+    def _create_placeholder_model(self, requested_model: str, fallback_model: str):
+        """Create a placeholder model that shows helpful error messages"""
+
+        class PlaceholderModel:
+            def __init__(self, requested: str, fallback: str):
+                self.model_id = requested
+                self.fallback = fallback
+
+            def __getattr__(self, name):
+                logger.error(f"Model '{self.model_id}' not available. Requested fallback '{self.fallback}' also not found.")
+                logger.error("To resolve this:")
+                logger.error("1. Install CLI tools: npm install -g @anthropics/claude-code")
+                logger.error("2. Configure API keys in .env file")
+                logger.error("3. Use local models only with appropriate configuration")
+                raise RuntimeError(f"Model '{self.model_id}' not available and no fallback found")
+
+        return PlaceholderModel(requested_model, fallback_model)
 
     def _check_local_api_key(self, local_api_key_name: str, remote_api_key_name: str) -> str:
         api_key = os.getenv(local_api_key_name, PLACEHOLDER)
@@ -459,6 +558,9 @@ class ModelManager(metaclass=Singleton):
             model = InferenceClientModel(
                 model_id=model_id,
                 custom_role_conversions=custom_role_conversions,
+                timeout=300,  # Increase timeout to 5 minutes
+                max_tokens=4096,  # Set reasonable token limit
+                temperature=0.1,  # Lower temperature for more consistent tool calls
             )
             self.registed_models[model_name] = model
 

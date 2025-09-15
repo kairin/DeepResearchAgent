@@ -4,19 +4,42 @@ Comprehensive guide for configuring and using different LLM providers with DeepR
 
 ## Overview
 
-DeepResearchAgent supports multiple model providers:
-- **Commercial APIs**: OpenAI, Anthropic, Google AI
-- **CLI Tools**: Claude Code CLI, Gemini CLI
-- **Local Models**: vLLM, HuggingFace Transformers
-- **Hybrid Setups**: Mix of different providers
+DeepResearchAgent uses a **CLI-first model system** that automatically detects and prioritizes available tools:
+
+1. **CLI Tools** (Highest Priority): Claude Code CLI, Gemini CLI
+2. **Commercial APIs**: OpenAI, Anthropic, Google AI
+3. **Local Models**: vLLM, HuggingFace Transformers
+4. **Intelligent Fallbacks**: Automatic model aliasing for missing providers
+
+## CLI-First Architecture
+
+### Priority System
+The model system follows this detection and registration order:
+
+1. **CLI Detection**: Automatically detects Claude Code CLI and Gemini CLI
+2. **API Validation**: Checks API keys and endpoints for commercial providers
+3. **Local Registration**: Registers HuggingFace and vLLM models
+4. **Intelligent Aliasing**: Maps missing models to available alternatives
+
+### Model Aliasing
+When preferred models aren't available, the system automatically creates aliases:
+
+```
+claude-3.7-sonnet-thinking → qwen2.5-32b-instruct
+gemini-2.5-pro → qwen2.5-14b-instruct
+gpt-4.1, o1, o3 → qwen2.5-32b-instruct
+```
 
 ## Configuration Methods
 
 ### 1. Environment Variables (.env)
 
-The primary configuration method using environment variables:
+**CRITICAL**: Ensure correct spelling for HuggingFace API key:
 
 ```bash
+# HuggingFace Configuration (Note: Correct spelling!)
+HUGGINGFACE_API_KEY=hf_your-huggingface-token-here
+
 # OpenAI Configuration
 OPENAI_API_KEY=sk-your-openai-key-here
 OPENAI_API_BASE=https://api.openai.com/v1
@@ -33,6 +56,15 @@ GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
 QWEN_API_BASE=http://localhost:8000/v1
 QWEN_API_KEY=local-key
 ```
+
+### 1.1. HuggingFace Integration
+
+DeepResearchAgent uses HuggingFace Inference API for Qwen models with enhanced configuration:
+
+- **Timeout**: 300 seconds (5 minutes) for stability
+- **Token Limit**: 4096 tokens maximum
+- **Temperature**: 0.1 for consistent tool calling
+- **Authentication**: Uses `HUGGINGFACE_API_KEY` environment variable
 
 ### 2. Agent Configuration Files
 
@@ -63,6 +95,76 @@ uv run python main.py --cfg-options planning_agent_config.model_id=gpt-4o
 uv run python main.py --cfg-options \
     planning_agent_config.model_id=claude37-sonnet \
     deep_researcher_agent_config.model_id=gemini-2.5-pro
+```
+
+## CLI Tools Setup (Recommended)
+
+### Claude Code CLI
+
+Claude Code CLI provides the best integration with Anthropic models.
+
+#### Installation
+```bash
+# Install Claude Code CLI globally
+npm install -g @anthropics/claude-code
+
+# Verify installation
+claude-code --version
+```
+
+#### Authentication
+Follow the official Claude Code CLI authentication setup.
+
+#### Benefits
+- Direct integration with Claude models
+- Better tool calling support
+- No API rate limits (uses your Claude subscription)
+- Enhanced coding capabilities
+
+### Gemini CLI
+
+#### Installation
+```bash
+# Install Google Cloud SDK
+# See: https://cloud.google.com/sdk/docs/install
+
+# Install Google Generative AI library
+uv add google-generativeai
+
+# Authenticate
+gcloud auth application-default login
+```
+
+#### Verification
+```bash
+# Check authentication
+gcloud auth list
+
+# Test Gemini access
+python -c "import google.generativeai; print('✓ Gemini CLI ready')"
+```
+
+### CLI Detection Results
+
+The system automatically detects CLI tools on startup:
+
+```
+INFO     [src.models.cli_detector] CLI Tool Detection Results:
+✅ claude_code_cli: Available (Version: 1.2.3)
+✅ gemini_cli: Available (Account: user@gmail.com)
+
+Available CLI model mappings:
+  claude-3.7-sonnet-thinking → claude-code-cli
+  gemini-2.5-pro → gemini-cli
+```
+
+### CLI Fallback Configuration
+
+Use the CLI-first configuration for automatic fallbacks:
+
+```bash
+# Run with CLI-first priority
+uv run python main.py --config configs/config_cli_fallback.py
 ```
 
 ## Provider-Specific Setup
@@ -454,6 +556,91 @@ uv run python main.py
 - Use fallback models for critical tasks
 - Monitor model availability
 - Set reasonable timeout values
+
+## Troubleshooting
+
+### Common Issues
+
+#### 1. HuggingFace API Key Error
+**Problem**: `HUGGINGFACE_API_KEY appears too short` or authentication failures
+
+**Solution**:
+```bash
+# Ensure correct spelling (common typo: HUGGINEFACE_API_KEY)
+HUGGINGFACE_API_KEY=hf_your-token-here
+
+# Verify token format (should start with hf_)
+# Get token from: https://huggingface.co/settings/tokens
+```
+
+#### 2. KeyError: 'model-name'
+**Problem**: `KeyError: 'gemini-2.5-pro'` or similar model not found errors
+
+**Solution**: The CLI-first system automatically handles this with model aliasing. If you see this error:
+```bash
+# Use CLI-first configuration
+uv run python main.py --config configs/config_cli_fallback.py
+
+# Or install the missing CLI tool:
+npm install -g @anthropics/claude-code  # For Claude models
+uv add google-generativeai              # For Gemini models
+```
+
+#### 3. HuggingFace 504 Gateway Timeout
+**Problem**: `504 Server Error: Gateway Time-out` from HuggingFace
+
+**Solutions**:
+- **Temporary issue**: Retry after a few minutes (HuggingFace endpoint overloaded)
+- **Persistent issue**: Switch to CLI tools or local models
+- **Configuration**: The system now uses 300s timeout (increased from 120s)
+
+#### 4. CLI Tool Not Detected
+**Problem**: `❌ claude_code_cli: claude-code command not found`
+
+**Solution**:
+```bash
+# Install CLI tools
+npm install -g @anthropics/claude-code
+uv add google-generativeai
+
+# Verify installation
+claude-code --version
+python -c "import google.generativeai"
+```
+
+#### 5. Tool Call Parsing Errors
+**Problem**: `Error while parsing tool call from model output: 'function'`
+
+**Solution**: The system now uses lower temperature (0.1) for more consistent tool calling. If issues persist:
+```python
+# In model configuration, ensure:
+temperature=0.1          # Lower temperature
+max_tokens=4096         # Sufficient token limit
+timeout=300             # Extended timeout
+```
+
+### Model Aliasing Reference
+
+When models are unavailable, the system automatically creates these aliases:
+
+| Requested Model | Fallback Model | Provider |
+|----------------|----------------|----------|
+| `claude-3.7-sonnet-thinking` | `qwen2.5-32b-instruct` | HuggingFace |
+| `claude37-sonnet` | `qwen2.5-32b-instruct` | HuggingFace |
+| `gemini-2.5-pro` | `qwen2.5-14b-instruct` | HuggingFace |
+| `gpt-4.1`, `o1`, `o3` | `qwen2.5-32b-instruct` | HuggingFace |
+
+### Debug Mode
+
+Enable detailed logging for troubleshooting:
+
+```bash
+# Set debug environment
+export DEBUG=true
+
+# Run with verbose output
+uv run python main.py --config configs/config_cli_fallback.py
+```
 
 For additional configuration examples and advanced setups, see:
 - [Model Integration Examples](../examples/MODEL_INTEGRATION.md)

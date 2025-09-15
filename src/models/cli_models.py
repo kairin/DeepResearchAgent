@@ -311,3 +311,48 @@ class InteractiveCLIModel(Model):
             self.process.terminate()
             await self.process.wait()
             self.session_active = False
+
+
+class CLIModelFactory:
+    """Factory for creating CLI model instances based on detection results"""
+
+    @staticmethod
+    def create_claude_code_cli() -> ClaudeCodeModel:
+        """Create Claude Code CLI model"""
+        return ClaudeCodeModel(model_id="claude-code-cli")
+
+    @staticmethod
+    def create_gemini_cli() -> GeminiCLIModel:
+        """Create Gemini CLI model"""
+        return GeminiCLIModel(model_id="gemini-cli")
+
+    @classmethod
+    def create_from_detection(cls, detected_tools: dict) -> dict:
+        """Create CLI models based on detection results
+
+        Args:
+            detected_tools: Results from CLIToolDetector
+
+        Returns:
+            Dictionary mapping model names to CLI model instances
+        """
+        models = {}
+
+        # Create Claude Code CLI models if available
+        if detected_tools.get('claude_code_cli', {}).get('available', False):
+            claude_model = cls.create_claude_code_cli()
+            models['claude-code-cli'] = claude_model
+            # Also register under API model names for easy substitution
+            models['claude-3.7-sonnet-thinking'] = claude_model
+            models['claude37-sonnet'] = claude_model
+            logger.info("Registered Claude Code CLI models")
+
+        # Create Gemini CLI models if available
+        if detected_tools.get('gemini_cli', {}).get('available', False):
+            gemini_model = cls.create_gemini_cli()
+            models['gemini-cli'] = gemini_model
+            # Also register under API model names for easy substitution
+            models['gemini-2.5-pro'] = gemini_model
+            logger.info("Registered Gemini CLI models")
+
+        return models
