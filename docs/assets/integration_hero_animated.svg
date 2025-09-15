@@ -94,13 +94,13 @@
       begin="1s"
       repeatCount="indefinite"/>
   </rect>
-  <text x="660" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#a855f7">Enterprise Ready</text>
-  <text x="660" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#e2e8f0">10x Research Quality</text>
-  <text x="660" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#94a3b8">Production Platform</text>
+  <text x="660" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#a855f7">Enhanced Platform</text>
+  <text x="660" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#e2e8f0">Expanded Capabilities</text>
+  <text x="660" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#94a3b8">Specialized Agents</text>
 
   <!-- Bottom Stats -->
   <text x="400" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#64748b">
-    Transform from research tool → Complete AI-powered product development platform
+    Transform from research tool → Expanded multi-agent development platform
   </text>
 
   <!-- Progress Dots with staggered pulsing -->

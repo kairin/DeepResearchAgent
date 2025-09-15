@@ -12,20 +12,20 @@ English | [🌐 **Website**](https://skyworkai.github.io/DeepResearchAgent/)
 
 ## 🚀 **Upcoming Major Enhancement: Guardian Agents Integration**
 
-> **🎯 Vision**: Transform DeepResearchAgent from a research-focused tool into a **complete AI-powered product development platform** by integrating [Claude Guardian Agents](https://github.com/kairin/claude-guardian-agents).
+> **🎯 Vision**: Enhance DeepResearchAgent's research capabilities by integrating specialized agents from [Claude Guardian Agents](https://github.com/kairin/claude-guardian-agents) while maintaining focus on research excellence.
 
-### **📊 Planned Transformation**
-- **From**: 5 specialized agents → **To**: 57+ specialized agents (52 Guardian + 5 existing)
-- **From**: Research-only capabilities → **To**: Full product development lifecycle
-- **From**: Single-threaded analysis → **To**: Multi-agent collaborative intelligence
-- **From**: Manual orchestration → **To**: Intelligent automatic routing with three-tier oversight
+### **📊 Planned Integration**
+- **Agent Expansion**: 5 existing agents + 52 Guardian agents for broader specialization
+- **Enhanced Capabilities**: Research focus + development workflow support
+- **Coordination**: Multi-agent collaboration alongside existing functionality
+- **Framework**: Guardian Agents oversight and quality assurance integration
 
 ### **🎯 Key Integration Areas**
-- **🧠 Research Intelligence**: Enhanced with Think-Tank reasoning agents (First Principles, Creative Thinking, Mathematical Analysis)
-- **🏗️ Technical Architecture**: Enterprise-grade technical planning with CTO and Principal Architect agents
-- **⚙️ Development Engineering**: Full-stack development capabilities with quality assurance workflows
-- **🛡️ Operations & Security**: Production-ready deployment with security compliance analysis
-- **📊 Strategic Management**: Complete product management and stakeholder analysis capabilities
+- **🧠 Research Intelligence**: Additional Think-Tank reasoning agents (First Principles, Creative Thinking, Mathematical Analysis)
+- **🏗️ Technical Architecture**: Technical planning agents including CTO and Principal Architect specializations
+- **⚙️ Development Engineering**: Development-focused agents covering full-stack and quality engineering
+- **🛡️ Operations & Security**: Operations and security-focused agents for deployment and compliance
+- **📊 Strategic Management**: Product management and business development specialized agents
 
 **📋 [View Detailed Integration Roadmap →](docs/integration/INTEGRATION_ROADMAP.md)**
 
@@ -102,11 +102,11 @@ graph TB
     end
 
     subgraph Benefits["✨ Integration Benefits"]
-        B1["🧠 10x Research Intelligence<br/>Multi-perspective analysis<br/>First principles reasoning"]
-        B2["🏗️ Enterprise Architecture<br/>CTO-level capabilities<br/>System design excellence"]
-        B3["⚙️ Complete Development<br/>Full lifecycle support<br/>Quality engineering"]
-        B4["🛡️ Production Ready<br/>Security compliance<br/>Operations management"]
-        B5["📊 Strategic Platform<br/>Product management<br/>Business intelligence"]
+        B1["🧠 Enhanced Research<br/>Multi-perspective analysis<br/>First principles reasoning"]
+        B2["🏗️ Technical Planning<br/>Architecture specialization<br/>System design support"]
+        B3["⚙️ Development Support<br/>Engineering workflows<br/>Quality processes"]
+        B4["🛡️ Operations Focus<br/>Security awareness<br/>Deployment processes"]
+        B5["📊 Strategic Planning<br/>Product management<br/>Business development"]
     end
 
     Current --> Arrow
@@ -126,10 +126,10 @@ graph TB
 
 **Original Vision**: DeepResearchAgent was conceived by [SkyworkAI](https://github.com/SkyworkAI/DeepResearchAgent) as a hierarchical multi-agent system designed for deep research tasks and general-purpose task solving. The framework leverages a top-level planning agent to coordinate multiple specialized lower-level agents, enabling automated task decomposition and efficient execution across diverse and complex domains.
 
-**Fork Evolution**: This enhanced fork transforms the original research-focused framework into a **complete AI-powered product development platform**. By integrating 52 specialized Guardian Agents, we expand from 5 research agents to 57+ comprehensive agents covering the entire product development lifecycle - from first-principles research and strategic planning to technical architecture, development engineering, and production operations.
+**Fork Enhancement**: This enhanced fork extends the original research-focused framework with additional specialized agents from the Guardian Agents collection. The integration adds complementary capabilities while preserving DeepResearchAgent's core research mission and proven architecture.
 
 > 🌐 **Original Research**: [https://skyworkai.github.io/DeepResearchAgent/](https://skyworkai.github.io/DeepResearchAgent/) - Explore the foundational architecture, experiments, and academic research.
-> 🚀 **Enhanced Platform**: See [INTEGRATION_ROADMAP.md](docs/integration/INTEGRATION_ROADMAP.md) for our comprehensive Guardian Agents integration strategy.
+> 🚀 **Integration Plan**: See [INTEGRATION_ROADMAP.md](docs/integration/INTEGRATION_ROADMAP.md) for the Guardian Agents integration approach.
 
 ## Architecture
 
