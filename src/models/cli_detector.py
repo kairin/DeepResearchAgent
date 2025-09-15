@@ -94,24 +94,16 @@ class CLIToolDetector:
                     'install_cmd': 'gcloud auth application-default login'
                 }
 
-            # Check if google-generativeai is installed
-            try:
-                import google.generativeai
-                return {
-                    'available': True,
-                    'authenticated_account': result.stdout.strip().split('\n')[0],
-                    'model_mappings': {
-                        # Map API model names to CLI equivalents
-                        'gemini-2.5-pro': 'gemini-cli',
-                        'gemini-vision': 'gemini-cli'
-                    }
+            # For CLI usage, we don't need google-generativeai package
+            return {
+                'available': True,
+                'authenticated_account': result.stdout.strip().split('\n')[0],
+                'model_mappings': {
+                    # Map API model names to CLI equivalents
+                    'gemini-2.5-pro': 'gemini-cli',
+                    'gemini-vision': 'gemini-cli'
                 }
-            except ImportError:
-                return {
-                    'available': False,
-                    'reason': 'google-generativeai not installed',
-                    'install_cmd': 'uv add google-generativeai'
-                }
+            }
 
         except subprocess.TimeoutExpired:
             return {
