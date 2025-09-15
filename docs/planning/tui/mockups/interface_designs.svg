@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1000" height="1400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .terminal-bg { fill: #1e1e1e; }
+      .terminal-border { stroke: #4a4a4a; stroke-width: 2; fill: none; }
+      .header-bg { fill: #2d2d2d; }
+      .active-bg { fill: #0066cc; }
+      .success-bg { fill: #28a745; }
+      .warning-bg { fill: #ffc107; }
+      .error-bg { fill: #dc3545; }
+      .panel-bg { fill: #252525; }
+      .text-primary { fill: #ffffff; font-family: 'Courier New', monospace; font-size: 12px; }
+      .text-secondary { fill: #cccccc; font-family: 'Courier New', monospace; font-size: 10px; }
+      .text-accent { fill: #61dafb; font-family: 'Courier New', monospace; font-size: 11px; }
+      .text-success { fill: #28a745; font-family: 'Courier New', monospace; font-size: 11px; }
+      .text-warning { fill: #ffc107; font-family: 'Courier New', monospace; font-size: 11px; }
+      .button { fill: #404040; stroke: #606060; stroke-width: 1; }
+      .button-text { fill: #ffffff; font-family: 'Courier New', monospace; font-size: 10px; }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="500" y="30" class="text-primary" text-anchor="middle" font-size="16" font-weight="bold">
+    🤖 DeepResearchAgent TUI Interface Mockups
+  </text>
+
+  <!-- Main Dashboard Interface -->
+  <g id="main-dashboard" transform="translate(50, 50)">
+    <text x="0" y="-10" class="text-accent" font-size="14" font-weight="bold">Main Dashboard Interface</text>
+
+    <!-- Terminal Window -->
+    <rect x="0" y="0" width="900" height="600" class="terminal-bg terminal-border" rx="5"/>
+
+    <!-- Header Bar -->
+    <rect x="5" y="5" width="890" height="40" class="header-bg" rx="3"/>
+    <text x="20" y="25" class="text-primary" font-weight="bold">🤖 DeepResearchAgent v2.0</text>
+    <text x="700" y="25" class="text-secondary">Status: ✅ Ready | Models: 23 Active | Config: CLI-First</text>
+
+    <!-- Quick Actions Panel -->
+    <rect x="20" y="60" width="280" height="200" class="panel-bg" stroke="#444" stroke-width="1" rx="3"/>
+    <text x="30" y="80" class="text-accent" font-weight="bold">┌─ Quick Actions ──────────────┐</text>
+
+    <rect x="35" y="95" width="250" height="25" class="button" rx="2"/>
+    <text x="45" y="110" class="button-text">🔬 New Research Task</text>
+
+    <rect x="35" y="125" width="250" height="25" class="button" rx="2"/>
+    <text x="45" y="140" class="button-text">📊 Analysis Task</text>
+
+    <rect x="35" y="155" width="250" height="25" class="button" rx="2"/>
+    <text x="45" y="170" class="button-text">🌐 Web Research</text>
+
+    <rect x="35" y="185" width="250" height="25" class="button" rx="2"/>
+    <text x="45" y="200" class="button-text">📝 Custom Agent Workflow</text>
+
+    <text x="30" y="240" class="text-accent">└─────────────────────────────┘</text>
+
+    <!-- Recent Tasks Panel -->
+    <rect x="320" y="60" width="280" height="200" class="panel-bg" stroke="#444" stroke-width="1" rx="3"/>
+    <text x="330" y="80" class="text-accent" font-weight="bold">┌─ Recent Tasks ───────────────┐</text>
+
+    <text x="340" y="105" class="text-secondary">📚 Search AI safety papers</text>
+    <text x="340" y="125" class="text-secondary">🌐 Web scraping analysis</text>
+    <text x="340" y="145" class="text-secondary">📈 Market trend research</text>
+    <text x="340" y="165" class="text-secondary">💡 Tech comparison study</text>
+
+    <text x="330" y="240" class="text-accent">└─────────────────────────────┘</text>
+
+    <!-- System Status Panel -->
+    <rect x="20" y="280" width="580" height="160" class="panel-bg" stroke="#444" stroke-width="1" rx="3"/>
+    <text x="30" y="300" class="text-accent" font-weight="bold">┌─ System Status ─────────────────────────────────────┐</text>
+
+    <circle cx="45" cy="325" r="4" class="success-bg"/>
+    <text x="60" y="330" class="text-success">🧠 Planning Agent: claude-3.7-sonnet → qwen2.5-32b (Active)</text>
+
+    <circle cx="45" cy="350" r="4" class="success-bg"/>
+    <text x="60" y="355" class="text-success">🔍 Deep Researcher: qwen2.5-32b-instruct (Ready)</text>
+
+    <circle cx="45" cy="375" r="4" class="success-bg"/>
+    <text x="60" y="380" class="text-success">📊 Deep Analyzer: qwen2.5-32b-instruct (Ready)</text>
+
+    <circle cx="45" cy="400" r="4" class="success-bg"/>
+    <text x="60" y="405" class="text-success">🌐 Browser Agent: qwen2.5-32b-instruct (Ready)</text>
+
+    <text x="30" y="425" class="text-accent">└───────────────────────────────────────────────────┘</text>
+
+    <!-- Footer Actions -->
+    <rect x="5" y="555" width="890" height="40" class="header-bg" rx="3"/>
+    <text x="20" y="575" class="text-secondary">[N]ew Task  [H]istory  [S]ettings  [L]ogs  [Q]uit</text>
+  </g>
+
+  <!-- Task Execution Interface -->
+  <g id="task-execution" transform="translate(50, 700)">
+    <text x="0" y="-10" class="text-accent" font-size="14" font-weight="bold">Task Execution Interface</text>
+
+    <!-- Terminal Window -->
+    <rect x="0" y="0" width="900" height="500" class="terminal-bg terminal-border" rx="5"/>
+
+    <!-- Header -->
+    <rect x="5" y="5" width="890" height="40" class="header-bg" rx="3"/>
+    <text x="20" y="25" class="text-primary" font-weight="bold">🔄 Executing: Quantum Computing ML Research</text>
+
+    <!-- Progress Overview -->
+    <rect x="20" y="60" width="860" height="120" class="panel-bg" stroke="#444" stroke-width="1" rx="3"/>
+    <text x="30" y="80" class="text-accent" font-weight="bold">┌─ Progress Overview ────────────────────────────────┐</text>
+
+    <!-- Progress Bars -->
+    <text x="40" y="100" class="text-secondary">Phase 1: Planning</text>
+    <rect x="200" y="90" width="200" height="12" fill="#333" stroke="#555" stroke-width="1" rx="6"/>
+    <rect x="200" y="90" width="200" height="12" class="success-bg" rx="6"/>
+    <text x="420" y="100" class="text-success">100% ✅</text>
+
+    <text x="40" y="120" class="text-secondary">Phase 2: Research</text>
+    <rect x="200" y="110" width="200" height="12" fill="#333" stroke="#555" stroke-width="1" rx="6"/>
+    <rect x="200" y="110" width="130" height="12" class="active-bg" rx="6"/>
+    <text x="420" y="120" class="text-accent">65% 🔄</text>
+
+    <text x="40" y="140" class="text-secondary">Phase 3: Analysis</text>
+    <rect x="200" y="130" width="200" height="12" fill="#333" stroke="#555" stroke-width="1" rx="6"/>
+    <text x="420" y="140" class="text-secondary">0% ⏳</text>
+
+    <text x="40" y="160" class="text-secondary">Elapsed: 2m 34s    Estimated: 5m 12s remaining</text>
+
+    <!-- Current Activity -->
+    <rect x="20" y="200" width="420" height="140" class="panel-bg" stroke="#444" stroke-width="1" rx="3"/>
+    <text x="30" y="220" class="text-accent" font-weight="bold">┌─ Current Activity ─────────────────┐</text>
+
+    <text x="40" y="240" class="text-warning">🔍 Deep Researcher Agent</text>
+    <text x="40" y="255" class="text-secondary">└─ Searching arXiv for quantum ML papers (2024-2025)</text>
+    <text x="50" y="270" class="text-secondary">└─ Found 23 relevant papers, analyzing abstracts...</text>
+
+    <text x="40" y="295" class="text-secondary">📊 Step 2/3: Processing search results</text>
+    <text x="40" y="310" class="text-secondary">⏱️  Duration: 0m 45s</text>
+
+    <!-- Live Results -->
+    <rect x="460" y="200" width="420" height="140" class="panel-bg" stroke="#444" stroke-width="1" rx="3"/>
+    <text x="470" y="220" class="text-accent" font-weight="bold">┌─ Live Results ─────────────────────┐</text>
+
+    <text x="480" y="240" class="text-primary">📄 Found Papers:</text>
+    <text x="480" y="255" class="text-secondary">• "Quantum-Classical Hybrid ML for..." (Nature, 2024)</text>
+    <text x="480" y="270" class="text-secondary">• "Variational Quantum Algorithms in..." (Science, 2024)</text>
+    <text x="480" y="285" class="text-secondary">• "Quantum Feature Maps for Deep..." (arXiv, 2025)</text>
+
+    <text x="480" y="310" class="text-accent">[↓ Scroll] [More results loading...]</text>
+
+    <!-- Footer Controls -->
+    <rect x="5" y="455" width="890" height="40" class="header-bg" rx="3"/>
+    <text x="20" y="475" class="text-secondary">[Space] Pause  [Ctrl+C] Stop  [L] View Logs  [F] Full Screen Results</text>
+  </g>
+
+</svg>

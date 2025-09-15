@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .agent-active { fill: #28a745; stroke: #1e7e34; stroke-width: 2; }
+      .agent-waiting { fill: #6c757d; stroke: #5a6268; stroke-width: 2; }
+      .agent-complete { fill: #007bff; stroke: #0056b3; stroke-width: 2; }
+      .agent-error { fill: #dc3545; stroke: #bd2130; stroke-width: 2; }
+      .connection-line { stroke: #666; stroke-width: 2; fill: none; }
+      .connection-active { stroke: #28a745; stroke-width: 3; fill: none; }
+      .text-title { fill: #333; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; }
+      .text-status { fill: #666; font-family: Arial, sans-serif; font-size: 11px; }
+      .text-progress { fill: #333; font-family: 'Courier New', monospace; font-size: 10px; }
+      .progress-bg { fill: #e9ecef; stroke: #ced4da; stroke-width: 1; }
+      .progress-bar { fill: #007bff; }
+      .shadow { filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+    </marker>
+    <marker id="arrowhead-active" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#28a745"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="400" y="30" class="text-title" text-anchor="middle" font-size="18">
+    🤖 Agent State Visualization - Real-Time Execution
+  </text>
+
+  <!-- Planning Agent (Central) -->
+  <g class="shadow">
+    <rect x="300" y="80" width="200" height="120" class="agent-active" rx="10"/>
+    <text x="400" y="105" class="text-title" text-anchor="middle">🧠 Planning Agent</text>
+    <text x="400" y="125" class="text-status" text-anchor="middle">Status: Active</text>
+
+    <!-- Progress bar -->
+    <rect x="320" y="140" width="160" height="12" class="progress-bg" rx="6"/>
+    <rect x="320" y="140" width="120" height="12" class="progress-bar" rx="6"/>
+    <text x="400" y="155" class="text-progress" text-anchor="middle">●●●○ Step 3/4</text>
+
+    <!-- Current task -->
+    <text x="400" y="175" class="text-status" text-anchor="middle">Coordinating sub-agents</text>
+    <text x="400" y="190" class="text-status" text-anchor="middle">Duration: 2m 34s</text>
+  </g>
+
+  <!-- Deep Researcher Agent (Top Right) -->
+  <g class="shadow">
+    <rect x="550" y="50" width="180" height="100" class="agent-complete" rx="8"/>
+    <text x="640" y="75" class="text-title" text-anchor="middle">🔍 Deep Researcher</text>
+    <text x="640" y="95" class="text-status" text-anchor="middle">Status: Complete</text>
+
+    <!-- Progress bar (complete) -->
+    <rect x="565" y="105" width="150" height="10" class="progress-bg" rx="5"/>
+    <rect x="565" y="105" width="150" height="10" class="agent-complete" rx="5"/>
+    <text x="640" y="125" class="text-progress" text-anchor="middle">✅ 23 papers found</text>
+
+    <!-- Results -->
+    <text x="640" y="140" class="text-status" text-anchor="middle">Duration: 1m 12s</text>
+  </g>
+
+  <!-- Deep Analyzer Agent (Right) -->
+  <g class="shadow">
+    <rect x="550" y="200" width="180" height="100" class="agent-active" rx="8"/>
+    <text x="640" y="225" class="text-title" text-anchor="middle">📊 Deep Analyzer</text>
+    <text x="640" y="245" class="text-status" text-anchor="middle">Status: Processing</text>
+
+    <!-- Progress bar (in progress) -->
+    <rect x="565" y="255" width="150" height="10" class="progress-bg" rx="5"/>
+    <rect x="565" y="255" width="90" height="10" class="agent-active" rx="5"/>
+    <text x="640" y="275" class="text-progress" text-anchor="middle">🔄 60% complete</text>
+
+    <!-- Current task -->
+    <text x="640" y="290" class="text-status" text-anchor="middle">Analyzing abstracts</text>
+  </g>
+
+  <!-- Browser Agent (Bottom Right) -->
+  <g class="shadow">
+    <rect x="550" y="350" width="180" height="100" class="agent-waiting" rx="8"/>
+    <text x="640" y="375" class="text-title" text-anchor="middle">🌐 Browser Agent</text>
+    <text x="640" y="395" class="text-status" text-anchor="middle">Status: Waiting</text>
+
+    <!-- Progress bar (waiting) -->
+    <rect x="565" y="405" width="150" height="10" class="progress-bg" rx="5"/>
+    <text x="640" y="425" class="text-progress" text-anchor="middle">⏳ Queue position: 1</text>
+
+    <!-- Waiting info -->
+    <text x="640" y="440" class="text-status" text-anchor="middle">Ready to execute</text>
+  </g>
+
+  <!-- Python Interpreter Tool (Left) -->
+  <g class="shadow">
+    <rect x="70" y="200" width="160" height="80" class="agent-complete" rx="8"/>
+    <text x="150" y="225" class="text-title" text-anchor="middle">🐍 Python Tool</text>
+    <text x="150" y="245" class="text-status" text-anchor="middle">Status: Available</text>
+    <text x="150" y="265" class="text-progress" text-anchor="middle">✅ Ready for analysis</text>
+  </g>
+
+  <!-- MCP Tools (Bottom Left) -->
+  <g class="shadow">
+    <rect x="70" y="350" width="160" height="80" class="agent-waiting" rx="8"/>
+    <text x="150" y="375" class="text-title" text-anchor="middle">🔧 MCP Tools</text>
+    <text x="150" y="395" class="text-status" text-anchor="middle">Status: Standby</text>
+    <text x="150" y="415" class="text-progress" text-anchor="middle">⏳ Local server ready</text>
+  </g>
+
+  <!-- Connection Lines -->
+
+  <!-- Planning to Deep Researcher (completed) -->
+  <path d="M500 110 L550 90" class="connection-line" marker-end="url(#arrowhead)"/>
+  <text x="520" y="95" class="text-status" font-size="9px">Task Complete</text>
+
+  <!-- Planning to Deep Analyzer (active) -->
+  <path d="M500 140 L550 240" class="connection-active" marker-end="url(#arrowhead-active)"/>
+  <text x="520" y="185" class="text-status" font-size="9px">Analyzing...</text>
+
+  <!-- Planning to Browser Agent (waiting) -->
+  <path d="M500 170 L550 390" class="connection-line" marker-end="url(#arrowhead)" stroke-dasharray="5,5"/>
+  <text x="520" y="285" class="text-status" font-size="9px">Queued</text>
+
+  <!-- Planning to Python Tool -->
+  <path d="M300 140 L230 240" class="connection-line" marker-end="url(#arrowhead)"/>
+  <text x="250" y="185" class="text-status" font-size="9px">Available</text>
+
+  <!-- Planning to MCP Tools -->
+  <path d="M300 170 L230 380" class="connection-line" marker-end="url(#arrowhead)" stroke-dasharray="3,3"/>
+  <text x="250" y="280" class="text-status" font-size="9px">Standby</text>
+
+  <!-- Legend -->
+  <g transform="translate(50, 500)">
+    <text x="0" y="0" class="text-title">Legend:</text>
+
+    <rect x="0" y="10" width="20" height="15" class="agent-active" rx="2"/>
+    <text x="30" y="22" class="text-status">Active/Processing</text>
+
+    <rect x="150" y="10" width="20" height="15" class="agent-complete" rx="2"/>
+    <text x="180" y="22" class="text-status">Complete/Available</text>
+
+    <rect x="300" y="10" width="20" height="15" class="agent-waiting" rx="2"/>
+    <text x="330" y="22" class="text-status">Waiting/Standby</text>
+
+    <rect x="450" y="10" width="20" height="15" class="agent-error" rx="2"/>
+    <text x="480" y="22" class="text-status">Error/Failed</text>
+
+    <!-- Connection legend -->
+    <line x1="0" y1="40" x2="30" y2="40" class="connection-active" marker-end="url(#arrowhead-active)"/>
+    <text x="40" y="45" class="text-status">Active Communication</text>
+
+    <line x1="180" y1="40" x2="210" y2="40" class="connection-line" marker-end="url(#arrowhead)"/>
+    <text x="220" y="45" class="text-status">Completed/Available</text>
+
+    <line x1="360" y1="40" x2="390" y2="40" class="connection-line" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+    <text x="400" y="45" class="text-status">Queued/Waiting</text>
+  </g>
+
+  <!-- Real-time timestamp -->
+  <text x="750" y="570" class="text-status" text-anchor="end">Updated: 2025-01-16 14:23:45</text>
+
+</svg>
