@@ -33,6 +33,8 @@ English | [🌐 **Website**](https://skyworkai.github.io/DeepResearchAgent/)
 
 ## Introduction
 
+![Integration Overview](docs/assets/integration_hero.svg)
+
 ```mermaid
 graph TB
     subgraph Current["🔄 Current State: 5 Agents"]
