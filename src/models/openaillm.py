@@ -1,14 +1,16 @@
-from typing import Any
 from collections.abc import Generator
+from typing import Any
 
-from src.models.base import (ApiModel,
-                             ChatMessage,
-                             tool_role_conversions,
-                             MessageRole,
-                             TokenUsage,
-                             ChatMessageStreamDelta,
-                             ChatMessageToolCallStreamDelta)
+from src.models.base import (
+    ApiModel,
+    ChatMessage,
+    ChatMessageStreamDelta,
+    ChatMessageToolCallStreamDelta,
+    TokenUsage,
+    tool_role_conversions,
+)
 from src.models.message_manager import MessageManager
+
 
 class OpenAIServerModel(ApiModel):
     """This model connects to an OpenAI-compatible API server.

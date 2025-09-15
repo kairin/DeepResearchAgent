@@ -1,23 +1,25 @@
 import json
-from typing import Dict, List, Optional, Any
-from collections.abc import Generator
-from openai.types.chat import ChatCompletion
-import requests
 import os
+from collections.abc import Generator
+from typing import Any
+
+import requests
+from openai.types.chat import ChatCompletion
 from PIL import Image
 
-from src.models.base import (ApiModel,
-                             Model,
-                             ChatMessage,
-                             tool_role_conversions,
-                             ChatMessageStreamDelta,
-                             ChatMessageToolCallStreamDelta)
-from src.models.message_manager import MessageManager
 from src.logger import TokenUsage, logger
+from src.models.base import (
+    ApiModel,
+    ChatMessage,
+    ChatMessageStreamDelta,
+    ChatMessageToolCallStreamDelta,
+    tool_role_conversions,
+)
+from src.models.message_manager import MessageManager
 from src.utils import encode_image_base64
 
 
-class RestfulClient():
+class RestfulClient:
     def __init__(self,
                  api_base: str,
                  api_key: str,
@@ -59,7 +61,7 @@ class RestfulClient():
 
         return response.json()
 
-class RestfulResponseClient():
+class RestfulResponseClient:
     def __init__(self,
                  api_base: str,
                  api_key: str,
@@ -115,7 +117,7 @@ class RestfulResponseClient():
                     logger.error(f"Error parsing line: {line}, error: {e}")
 
 
-class RestfulTranscribeClient():
+class RestfulTranscribeClient:
     def __init__(self,
                  api_base: str,
                  api_key: str,
@@ -142,7 +144,7 @@ class RestfulTranscribeClient():
 
         return response.json()
 
-class RestfulImagenClient():
+class RestfulImagenClient:
     def __init__(self,
                  api_base: str,
                  api_key: str,
@@ -190,7 +192,7 @@ class RestfulImagenClient():
         return response.json()
 
 
-class RestfulVeoPredictClient():
+class RestfulVeoPredictClient:
     def __init__(self,
                  api_base: str,
                  api_key: str,
@@ -246,7 +248,7 @@ class RestfulVeoPredictClient():
 
         return response.json()
 
-class RestfulVeoFetchClient():
+class RestfulVeoFetchClient:
     def __init__(self,
                  api_base: str,
                  api_key: str,
@@ -313,9 +315,9 @@ class RestfulModel(ApiModel):
     def __init__(
         self,
         model_id: str,
-        api_base: Optional[str] = None,
+        api_base: str | None = None,
         api_type: str = "chat/completions",
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
         custom_role_conversions: dict[str, str] | None = None,
         flatten_messages_as_text: bool = False,
         http_client=None,
@@ -517,8 +519,8 @@ class RestfulTranscribeModel(ApiModel):
 
     def __init__(self,
                  model_id: str,
-                 api_base: Optional[str] = None,
-                 api_key: Optional[str] = None,
+                 api_base: str | None = None,
+                 api_key: str | None = None,
                  api_type: str = "wisper",
                  http_client=None,
                  **kwargs):
@@ -585,8 +587,8 @@ class RestfulImagenModel(ApiModel):
 
     def __init__(self,
                  model_id: str,
-                 api_base: Optional[str] = None,
-                 api_key: Optional[str] = None,
+                 api_base: str | None = None,
+                 api_key: str | None = None,
                  api_type: str = "imagen",
                  http_client=None,
                  **kwargs):
@@ -655,8 +657,8 @@ class RestfulVeoPridictModel(ApiModel):
 
     def __init__(self,
                  model_id: str,
-                 api_base: Optional[str] = None,
-                 api_key: Optional[str] = None,
+                 api_base: str | None = None,
+                 api_key: str | None = None,
                  api_type: str = "veo/predict",
                  http_client=None,
                  **kwargs):
@@ -729,8 +731,8 @@ class RestfulVeoFetchModel(ApiModel):
 
     def __init__(self,
                  model_id: str,
-                 api_base: Optional[str] = None,
-                 api_key: Optional[str] = None,
+                 api_base: str | None = None,
+                 api_key: str | None = None,
                  api_type: str = "veo/fetch",
                  http_client=None,
                  **kwargs):
@@ -813,9 +815,9 @@ class RestfulResponseModel(ApiModel):
     def __init__(
         self,
         model_id: str,
-        api_base: Optional[str] = None,
+        api_base: str | None = None,
         api_type: str = "chat/completions",
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
         custom_role_conversions: dict[str, str] | None = None,
         flatten_messages_as_text: bool = False,
         http_client=None,

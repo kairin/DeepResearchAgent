@@ -1,7 +1,7 @@
-from typing import Dict, List, Optional, Any
 from copy import deepcopy
+from typing import Any
 
-from src.models.base import MessageRole, ChatMessage
+from src.models.base import ChatMessage, MessageRole
 from src.utils import encode_image_base64, make_image_url
 
 DEFAULT_ANTHROPIC_MODELS = [
@@ -18,7 +18,7 @@ UNSUPPORTED_TOOL_CHOICE_MODELS = [
     'claude37-sonnet',
 ]
 
-class MessageManager():
+class MessageManager:
     def __init__(self, model_id: str, api_type: str = "chat/completions"):
         self.model_id = model_id
         self.api_type = api_type
@@ -119,7 +119,7 @@ class MessageManager():
         """
         output_message_list: list[dict[str, Any]] = []
         message_list = deepcopy(message_list)  # Avoid modifying the original list
-        
+
         for message in message_list:
             role = message.role
             if role not in MessageRole.roles():
@@ -127,14 +127,14 @@ class MessageManager():
 
             if role in role_conversions:
                 message.role = role_conversions[role]  # type: ignore
-            
+
             # Handle content processing
             if isinstance(message.content, list):
                 # Process each content element
                 processed_content = []
                 for element in message.content:
                     assert isinstance(element, dict), "Error: this element should be a dict:" + str(element)
-                    
+
                     if element["type"] == "image":
                         assert not flatten_messages_as_text, f"Cannot use images with {flatten_messages_as_text=}"
                         if convert_images_to_image_urls:
@@ -151,7 +151,7 @@ class MessageManager():
                         processed_content.append(element)
                     else:
                         processed_content.append(element)
-                
+
                 content = processed_content
             else:
                 # Handle string content
@@ -180,7 +180,7 @@ class MessageManager():
                 "role": message.role,
                 "content": content,
             }
-            
+
             if tool_calls:
                 message_dict["tool_calls"] = tool_calls
 
@@ -197,7 +197,7 @@ class MessageManager():
                         output_message_list[-1]["content"].extend(content)
                     else:
                         output_message_list[-1]["content"] = content
-                
+
                 # Merge tool calls
                 if tool_calls and "tool_calls" in output_message_list[-1]:
                     output_message_list[-1]["tool_calls"].extend(tool_calls)
@@ -210,8 +210,8 @@ class MessageManager():
 
     def get_tool_json_schema(self,
                              tool: Any,
-                             model_id: Optional[str] = None
-                             ) -> Dict:
+                             model_id: str | None = None
+                             ) -> dict:
         properties = deepcopy(tool.parameters['properties'])
 
         required = []
@@ -247,7 +247,7 @@ class MessageManager():
                 },
             }
 
-    def get_clean_completion_kwargs(self, completion_kwargs: Dict[str, Any]):
+    def get_clean_completion_kwargs(self, completion_kwargs: dict[str, Any]):
 
         model_id = self.model_id.split("/")[-1]
 

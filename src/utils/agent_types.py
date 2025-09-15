@@ -1,4 +1,3 @@
-# coding=utf-8
 # Copyright 2024 HuggingFace Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +11,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import logging
 import os
 import pathlib
 import tempfile
 import uuid
 from io import BytesIO
+
 import PIL
 import PIL.Image
 import requests
 
-from src.utils import _is_package_available
 
 class AgentType:
     """
@@ -168,6 +166,9 @@ class AgentAudio(AgentType, str):
     """
 
     def __init__(self, value, samplerate=16_000):
+        # Import here to avoid circular imports
+        from src.utils.utils import _is_package_available
+
         if not _is_package_available("soundfile") or not _is_package_available("torch"):
             raise ModuleNotFoundError(
                 "Please install 'audio' extra to use AgentAudio: `pip install 'smolagents[audio]'`"

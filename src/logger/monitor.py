@@ -1,5 +1,7 @@
-from rich.text import Text
 from dataclasses import dataclass, field
+
+from rich.text import Text
+
 
 @dataclass
 class TokenUsage:

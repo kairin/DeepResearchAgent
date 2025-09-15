@@ -1,17 +1,17 @@
 import warnings
-from typing import Dict, List, Optional, Any
 from collections.abc import Generator
+from typing import Any
 
-from src.models.base import (ApiModel,
-                             ChatMessage,
-                             ChatMessageStreamDelta,
-                             ChatMessageToolCallStreamDelta,
-                             tool_role_conversions,
-                             TokenUsage
-                             )
-from src.models.message_manager import (
-    MessageManager
+from src.models.base import (
+    ApiModel,
+    ChatMessage,
+    ChatMessageStreamDelta,
+    ChatMessageToolCallStreamDelta,
+    TokenUsage,
+    tool_role_conversions,
 )
+from src.models.message_manager import MessageManager
+
 
 class LiteLLMModel(ApiModel):
     """Model to use [LiteLLM Python SDK](https://docs.litellm.ai/docs/#litellm-python-sdk) to access hundreds of LLMs.
@@ -34,7 +34,7 @@ class LiteLLMModel(ApiModel):
 
     def __init__(
         self,
-        model_id: Optional[str] = None,
+        model_id: str | None = None,
         api_base=None,
         api_type: str = "chat/completions",
         api_key=None,

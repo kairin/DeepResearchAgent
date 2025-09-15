@@ -1,7 +1,6 @@
-import logging
 import json
+import logging
 from enum import IntEnum
-from typing import List, Optional
 
 from rich import box
 from rich.console import Console, Group
@@ -11,10 +10,7 @@ from rich.syntax import Syntax
 from rich.table import Table
 from rich.tree import Tree
 
-from src.utils import (
-    escape_code_brackets,
-    Singleton
-)
+from src.utils import Singleton, escape_code_brackets
 
 YELLOW_HEX = "#d4b702"
 

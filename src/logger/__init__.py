@@ -1,4 +1,4 @@
-from .logger import logger, LogLevel, AgentLogger, YELLOW_HEX
+from .logger import YELLOW_HEX, AgentLogger, LogLevel, logger
 from .monitor import Monitor, Timing, TokenUsage
 
 __all__ = ["logger",

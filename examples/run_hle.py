@@ -1,27 +1,26 @@
 import warnings
+
 warnings.simplefilter("ignore", DeprecationWarning)
 
+import argparse
+import asyncio
+import json
 import os
 import sys
-from pathlib import Path
-import pandas as pd
-from typing import List
-import json
-from datetime import datetime
-import asyncio
 import threading
-import argparse
+from datetime import datetime
+from pathlib import Path
+
+import pandas as pd
 from mmengine import DictAction
 
 root = str(Path(__file__).resolve().parents[1])
 sys.path.append(root)
 
-from src.logger import logger
-from src.config import config
-from src.models import model_manager
 from src.agent import create_agent, prepare_response
-from src.dataset import HLEDataset
-from src.utils import assemble_project_path
+from src.config import config
+from src.logger import logger
+from src.models import model_manager
 
 append_answer_lock = threading.Lock()
 
@@ -33,17 +32,17 @@ def append_answer(entry: dict, jsonl_file: str) -> None:
     assert os.path.exists(jsonl_file), "File not found!"
     print("Answer exported to file:", jsonl_file.resolve())
 
-def get_tasks_to_run(answers_file, dataset) -> List[dict]:
+def get_tasks_to_run(answers_file, dataset) -> list[dict]:
 
     data = dataset.data
 
     logger.info(f"Loading answers from {answers_file}...")
     try:
         if os.path.exists(answers_file):
-            
+
             done_questions = pd.read_json(answers_file, lines=True)["task_id"].tolist()
             logger.info(f"Found {len(done_questions)} previous results!")
-            
+
         else:
             done_questions = []
     except Exception as e:

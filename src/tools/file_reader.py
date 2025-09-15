@@ -1,9 +1,6 @@
-from src.tools import AsyncTool, ToolResult
-from src.models import Model
-from src.tools.markdown.mdconvert import MarkitdownConverter
 from src.registry import TOOL
-
-
+from src.tools.tools import AsyncTool, ToolResult
+from src.tools.markdown.mdconvert import MarkitdownConverter
 
 _FILE_READER_DESCRIPTION = """Call this tool to read a file as markdown.
 This tool handles the following file extensions: [".html", ".htm", ".xlsx", ".pptx", ".wav", ".mp3", ".m4a", ".flac", ".pdf", ".docx", ".pdb", '.zip'], and all other types of files.

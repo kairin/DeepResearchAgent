@@ -1,14 +1,14 @@
 import os
-from typing import Optional, Dict, Any, List
+from typing import Any
+
 from PIL import Image
 
-from src.tools import AsyncTool, ToolResult
-from src.models import model_manager, ChatMessage
-from src.models.base import MessageRole
-from src.tools.markdown.mdconvert import MarkitdownConverter
 from src.logger import logger
+from src.models import ChatMessage, model_manager
+from src.models.base import MessageRole
 from src.registry import TOOL
-
+from src.tools.tools import AsyncTool, ToolResult
+from src.tools.markdown.mdconvert import MarkitdownConverter
 
 _DEEP_ANALYZER_DESCRIPTION = """A tool that performs systematic, step-by-step analysis or calculation of a given task, optionally leveraging information from external resources such as attached file or uri to provide comprehensive reasoning and answers.
 * At least one of `task` or `source` must be provided. When both are available, the tool will analyze and solve the task in the context of the provided source.
@@ -57,8 +57,8 @@ class DeepAnalyzerTool(AsyncTool):
 
     def __init__(self,
                  *args,
-                 analyzer_model_ids: Optional[List[str]] = None,
-                 summarizer_model_id: Optional[str] = None,
+                 analyzer_model_ids: list[str] | None = None,
+                 summarizer_model_id: str | None = None,
                  **kwargs
                  ):
 
@@ -77,8 +77,8 @@ class DeepAnalyzerTool(AsyncTool):
 
     async def _analyze(self,
                  model,
-                 task: Optional[str] = None,
-                 source: Optional[str] = None) -> str:
+                 task: str | None = None,
+                 source: str | None = None) -> str:
         add_note = False
         if not task:
             add_note = True
@@ -138,7 +138,7 @@ class DeepAnalyzerTool(AsyncTool):
 
     async def _summarize(self,
                  model,
-                 analysis: Dict[str, Any],
+                 analysis: dict[str, Any],
                  ) -> str:
         """
         Summarize the analysis and provide a final answer.
@@ -173,7 +173,7 @@ class DeepAnalyzerTool(AsyncTool):
 
         return output
 
-    async def forward(self, task: Optional[str] = None, source: Optional[str] = None) -> ToolResult:
+    async def forward(self, task: str | None = None, source: str | None = None) -> ToolResult:
         """
         Forward the task and/or source to the analyzer model and get the analysis.
         """

@@ -1,22 +1,22 @@
 import argparse
+import json
 import os
 import sys
-import asyncio
-from pathlib import Path
-from mmengine import DictAction
-import base64
-from PIL import Image
 from copy import deepcopy
-import json
+from pathlib import Path
 from typing import Any
+
+from mmengine import DictAction
+from PIL import Image
 
 root = str(Path(__file__).resolve().parents[1])
 sys.path.append(root)
 
-from src.logger import logger
 from src.config import config
-from src.models import model_manager, ChatMessage, MessageManager
+from src.logger import logger
+from src.models import ChatMessage, MessageManager, model_manager
 from src.utils import assemble_project_path
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='main')
@@ -67,17 +67,17 @@ if __name__ == "__main__":
     model_manager.init_models(use_local_proxy=False)
     image = Image.open(assemble_project_path("docs/assets/architecture.png"))
     logger.info("Registed models: %s", ", ".join(model_manager.registed_models.keys()))
-    
+
     # Test message manager
     message_manager = MessageManager(model_id="gpt-4.1", api_type="chat/completions")
-    
+
     # Test Single Text Message
     text_messages = [
         ChatMessage(role="user", content="What is the capital of France?"),
     ]
     message_list = message_manager.get_clean_message_list(text_messages)
     log_message_list("Single Text Message", message_list)
-    
+
     # Test Multiple Text Messages
     text_messages = [
         ChatMessage(role="user", content=[
@@ -93,7 +93,7 @@ if __name__ == "__main__":
     ]
     message_list = message_manager.get_clean_message_list(text_messages)
     log_message_list("Multiple Text Messages", message_list)
-    
+
     # Test Single Text Message with Image
     text_messages = [
         ChatMessage(role="user", content=[
@@ -111,14 +111,14 @@ if __name__ == "__main__":
     log_message_list("Single Text Message with Image", message_list)
     message_list = message_manager.get_clean_message_list(text_messages, convert_images_to_image_urls=False)
     log_message_list("Single Text Message with Image (No Convert)", message_list)
-    
+
     # Test Single Text Message with Response API
     text_messages = [
         ChatMessage(role="user", content="What is the capital of France?")
     ]
     message_list = message_manager.get_clean_message_list(text_messages, api_type="responses")
     log_message_list("Single Text Message with Response API", message_list)
-    
+
     # Test Multiple Text Messages with Response API
     text_messages = [
         ChatMessage(role="user", content=[

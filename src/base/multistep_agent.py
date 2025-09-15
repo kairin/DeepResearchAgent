@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=utf-8
 
 # Copyright 2024 The HuggingFace Inc. team. All rights reserved.
 #
@@ -17,47 +16,46 @@
 import importlib
 import inspect
 import json
-import json5
 import os
 import re
 import tempfile
 import textwrap
 import time
-from abc import ABC, abstractmethod
 import warnings
-from pathlib import Path
+from abc import ABC, abstractmethod
+from collections.abc import Callable, Generator
 from dataclasses import dataclass
-from collections.abc import Generator
-from typing import TYPE_CHECKING, Any, Callable, TypedDict, Union, Literal, TypeAlias, List
+from pathlib import Path
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Literal,
+    TypeAlias,
+    TypedDict,
+)
 
 import jinja2
 import yaml
-from huggingface_hub import create_repo, metadata_update, snapshot_download, upload_folder
+from huggingface_hub import (
+    create_repo,
+    metadata_update,
+    snapshot_download,
+    upload_folder,
+)
 from jinja2 import StrictUndefined, Template
-from rich.console import Group
 from rich.live import Live
 from rich.markdown import Markdown
-from rich.panel import Panel
 from rich.rule import Rule
 from rich.text import Text
-
 
 if TYPE_CHECKING:
     import PIL.Image
 
-from src.tools.default_tools import TOOL_MAPPING, FinalAnswerTool
-from src.tools.executor.local_python_executor import BASE_BUILTIN_MODULES
-from src.memory import (ActionStep,
-                        AgentMemory,
-                        FinalAnswerStep,
-                        PlanningStep,
-                        SystemPromptStep,
-                        TaskStep)
-from src.models import (
-    ChatMessage,
-    ChatMessageStreamDelta,
-    ChatMessageToolCall,
-    MessageRole,
+from src.exception import (
+    AgentError,
+    AgentGenerationError,
+    AgentMaxStepsError,
+    AgentParsingError,
 )
 from src.logger import (
     AgentLogger,
@@ -65,26 +63,32 @@ from src.logger import (
     Monitor,
     Timing,
     TokenUsage,
+    logger,
 )
-
+from src.memory import (
+    ActionStep,
+    AgentMemory,
+    FinalAnswerStep,
+    PlanningStep,
+    SystemPromptStep,
+    TaskStep,
+)
+from src.models import (
+    ChatMessage,
+    ChatMessageStreamDelta,
+    ChatMessageToolCall,
+    MessageRole,
+    Model,
+)
 from src.tools import Tool
-from src.exception import (
-    AgentError,
-    AgentGenerationError,
-    AgentMaxStepsError,
-    AgentParsingError,
-
-)
-
+from src.tools.default_tools import TOOL_MAPPING, FinalAnswerTool
+from src.tools.executor.local_python_executor import BASE_BUILTIN_MODULES
 from src.utils import (
+    handle_agent_output_types,
     is_valid_name,
     make_init_file,
     truncate_content,
-    handle_agent_output_types,
 )
-
-from src.logger import logger
-from src.models import Model
 
 
 def get_variable_names(self, template: str) -> set[str]:
@@ -199,15 +203,7 @@ class RunResult:
     timing: Timing
 
 
-StreamEvent: TypeAlias = Union[
-    ChatMessageStreamDelta,
-    ChatMessageToolCall,
-    ActionOutput,
-    ToolOutput,
-    PlanningStep,
-    ActionStep,
-    FinalAnswerStep,
-]
+StreamEvent: TypeAlias = ChatMessageStreamDelta | ChatMessageToolCall | ActionOutput | ToolOutput | PlanningStep | ActionStep | FinalAnswerStep
 
 class MultiStepAgent(ABC):
     """

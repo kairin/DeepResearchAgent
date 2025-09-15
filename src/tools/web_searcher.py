@@ -1,19 +1,19 @@
-from typing import Any, Dict, List, Optional
+import asyncio
+import time
+from typing import Any
+
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from tenacity import retry, stop_after_attempt, wait_exponential
-import time
-import asyncio
 
-from src.tools.web_fetcher import WebFetcherTool
-from src.tools.search import (
-    GoogleSearchEngine,
-    FirecrawlSearchEngine,
-    WebSearchEngine,
-    SearchItem
-)
-from src.tools import AsyncTool, ToolResult
 from src.logger import logger
 from src.registry import TOOL
+from src.tools.tools import AsyncTool, ToolResult
+from src.tools.search import (
+    FirecrawlSearchEngine,
+    SearchItem,
+    WebSearchEngine,
+)
+from src.tools.web_fetcher import WebFetcherTool
 
 _WEB_SEARCHER_DESCRIPTION = """Search the web for real-time information about any topic.
 This tool returns comprehensive search results with relevant information, URLs, titles, and descriptions.
@@ -31,7 +31,7 @@ class SearchResult(BaseModel):
         default="", description="Description or snippet of the search result"
     )
     source: str = Field(description="The search engine that provided this result")
-    raw_content: Optional[str] = Field(
+    raw_content: str | None = Field(
         default=None, description="Raw content from the search result page if available"
     )
 
@@ -53,8 +53,8 @@ class SearchMetadata(BaseModel):
 class SearchResponse(ToolResult):
     """Structured response from the web search tool, inheriting ToolResult."""
     query: str = Field(description="The search query that was executed")
-    results: List[SearchResult] = Field(default_factory=list, description="List of search results")
-    metadata: Optional[SearchMetadata] = Field(default=None, description="Metadata about the search")
+    results: list[SearchResult] = Field(default_factory=list, description="List of search results")
+    metadata: SearchMetadata | None = Field(default=None, description="Metadata about the search")
 
     @model_validator(mode="after")
     def populate_output(self) -> "SearchResponse":
@@ -86,7 +86,7 @@ class SearchResponse(ToolResult):
         if self.metadata:
             result_text.extend(
                 [
-                    f"\nMetadata:",
+                    "\nMetadata:",
                     f"- Total results: {self.metadata.total_results}",
                     f"- Language: {self.metadata.language}",
                     f"- Country: {self.metadata.country}",
@@ -155,7 +155,7 @@ class WebSearcherTool(AsyncTool):
     async def forward(
         self,
         query: str,
-        filter_year: Optional[int] = None,
+        filter_year: int | None = None,
     ) -> SearchResponse:
         """
         Execute a Web search and return detailed search results.
@@ -210,8 +210,8 @@ class WebSearcherTool(AsyncTool):
                 )
 
     async def _try_all_engines(
-        self, query: str, num_results: int, search_params: Dict[str, Any]
-    ) -> List[SearchResult]:
+        self, query: str, num_results: int, search_params: dict[str, Any]
+    ) -> list[SearchResult]:
         """Try all search engines in the configured order."""
         engine_order = self._get_engine_order()
         failed_engines = []
@@ -249,8 +249,8 @@ class WebSearcherTool(AsyncTool):
         return []
 
     async def _fetch_content_for_results(
-            self, results: List[SearchResult]
-    ) -> List[SearchResult]:
+            self, results: list[SearchResult]
+    ) -> list[SearchResult]:
         """Fetch and add web content to search results."""
         if not results:
             return []
@@ -282,7 +282,7 @@ class WebSearcherTool(AsyncTool):
                 result.raw_content = content
         return result
 
-    def _get_engine_order(self) -> List[str]:
+    def _get_engine_order(self) -> list[str]:
         """Determines the order in which to try search engines."""
         preferred = (
             self.engine if self.engine else "firecrawl"
@@ -310,8 +310,8 @@ class WebSearcherTool(AsyncTool):
         engine: WebSearchEngine,
         query: str,
         num_results: int,
-        search_params: Dict[str, Any],
-    ) -> List[SearchItem]:
+        search_params: dict[str, Any],
+    ) -> list[SearchItem]:
         """Execute search with the given engine and parameters."""
 
         results = [result

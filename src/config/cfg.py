@@ -1,12 +1,14 @@
 import os
-from mmengine import Config as MMConfig
 from argparse import Namespace
 
 from dotenv import load_dotenv
+from mmengine import Config as MMConfig
+
 load_dotenv(verbose=True)
 
-from src.utils import assemble_project_path, Singleton
 from src.logger import logger
+from src.utils import Singleton, assemble_project_path
+
 
 def process_general(config: MMConfig) -> MMConfig:
 

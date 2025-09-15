@@ -1,49 +1,41 @@
 import asyncio
-from typing import (
-    Any,
-    Callable,
-    Optional
-)
 import json
+from collections.abc import AsyncGenerator
+from typing import Any
+
 import yaml
-from rich.panel import Panel
-from rich.text import Text
 from rich.live import Live
 from rich.markdown import Markdown
-from collections.abc import AsyncGenerator
+from rich.panel import Panel
+from rich.text import Text
 
-from src.tools import AsyncTool
+from src.base import StreamEvent, ToolOutput
+from src.base.async_multistep_agent import (
+    AsyncMultiStepAgent,
+    PromptTemplates,
+    populate_template,
+)
 from src.exception import (
     AgentGenerationError,
     AgentParsingError,
+    AgentToolCallError,
     AgentToolExecutionError,
-    AgentToolCallError
 )
-from src.base.async_multistep_agent import (PromptTemplates,
-                                            populate_template,
-                                            AsyncMultiStepAgent,
-                                            )
-from src.base import (ToolOutput,
-                      ActionOutput,
-                      StreamEvent)
-
-from src.memory import (ActionStep,
-                        ToolCall,
-                        AgentMemory)
-from src.logger import (LogLevel,
-                        YELLOW_HEX,
-                        logger)
-from src.models import (Model,
-                        parse_json_if_needed,
-                        agglomerate_stream_deltas,
-                        ChatMessage,
-                        ChatMessageStreamDelta)
+from src.logger import YELLOW_HEX, LogLevel
+from src.memory import ActionStep, AgentMemory, ToolCall
+from src.models import (
+    ChatMessage,
+    ChatMessageStreamDelta,
+    Model,
+    agglomerate_stream_deltas,
+    parse_json_if_needed,
+)
+from src.registry import AGENT
+from src.utils import assemble_project_path
 from src.utils.agent_types import (
     AgentAudio,
     AgentImage,
 )
-from src.registry import AGENT
-from src.utils import assemble_project_path
 
 
 @AGENT.register_module(name="general_agent", force=True)
@@ -70,7 +62,7 @@ class GeneralAgent(AsyncMultiStepAgent):
         )
 
         template_path = assemble_project_path(self.config.template_path)
-        with open(template_path, "r") as f:
+        with open(template_path) as f:
             self.prompt_templates = yaml.safe_load(f)
 
         self.system_prompt = self.initialize_system_prompt()

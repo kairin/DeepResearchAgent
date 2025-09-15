@@ -1,7 +1,7 @@
 import copy
 
-from src.models import MessageRole, Model, ChatMessage
 from src.logger import logger
+from src.models import ChatMessage, MessageRole, Model
 
 
 async def prepare_response(original_task: str, inner_messages, reformulation_model: Model) -> str:

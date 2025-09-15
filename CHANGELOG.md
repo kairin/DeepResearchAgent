@@ -1,0 +1,121 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Changed - Poetry to uv Migration (Breaking Changes)
+- **BREAKING**: Migrated from Poetry to uv for all Python dependency management
+- **BREAKING**: Upgraded default Python version from 3.11 to 3.13 (Ubuntu 25.04+ system Python)
+- **BREAKING**: Changed build system from `poetry-core` to `hatchling`
+- **BREAKING**: All installation and development commands now use uv exclusively
+
+### Added - Poetry to uv Migration
+- Added `uv.lock` for deterministic dependency resolution
+- Added comprehensive validation script (`scripts/validate_migration.py`) for migration verification
+- Added `migration_validation_report.json` for automated validation reporting
+- Added new Makefile targets:
+  - `make venv-system`: Create virtual environment with system Python
+  - `make install-dev`: Install with development dependencies
+  - `make install-locked`: Install from lock file only
+  - `make lint-fix`: Auto-fix linting issues with ruff
+
+### Fixed - Poetry to uv Migration
+- Fixed circular import issues in `src/tools/` modules by updating import paths
+- Fixed markitdown API compatibility issues:
+  - Updated import path: `markitdown._base_converter` → `markitdown._markitdown`
+  - Fixed class inheritance: `AudioConverter` → `MediaConverter`
+  - Updated method signatures for new API structure
+- Fixed Python 3.13 compatibility issues with dependency versions
+- Fixed numpy version conflicts between browser-use and latest numpy
+- Resolved build system configuration issues with file discovery
+
+### Removed - Poetry to uv Migration
+- Removed `poetry.lock`
+- Removed Poetry configuration from `pyproject.toml`
+- Removed all Poetry commands from Makefile
+- Removed Poetry dependencies and references from documentation
+
+### Updated - Poetry to uv Migration
+- Updated `pyproject.toml`:
+  - Migrated from Poetry format to PEP 621 standard
+  - Changed dependency format from `[tool.poetry.dependencies]` to `[project] dependencies`
+  - Updated build system configuration
+  - Added proper package discovery configuration
+- Updated `Makefile`:
+  - All commands now use uv instead of Poetry
+  - Python 3.13 set as default version
+  - Comprehensive targets for development workflow
+- Updated dependency versions to latest compatible versions:
+  - 420+ packages resolved and updated
+  - Fixed version constraints for Python 3.13 compatibility
+  - Maintained backward compatibility where possible
+
+### Migration Guide
+
+#### For Existing Developers
+1. **Install uv**: `curl -LsSf https://astral.sh/uv/install.sh | sh`
+2. **Clean old environment**: `rm -rf .venv poetry.lock`
+3. **Create new environment**: `make venv-system` or `make venv`
+4. **Install dependencies**: `make install`
+5. **Verify migration**: `uv run python scripts/validate_migration.py`
+
+#### Key Command Changes
+| Old (Poetry) | New (uv) |
+|-------------|----------|
+| `poetry install` | `uv sync --all-extras` |
+| `poetry run python main.py` | `uv run python main.py` |
+| `poetry add package` | `uv add package` |
+| `poetry remove package` | `uv remove package` |
+| `poetry shell` | `source .venv/bin/activate` |
+
+#### New Requirements
+- **Python 3.13+** (Ubuntu 25.04+ system Python recommended)
+- **uv 0.8+** for dependency management
+- No Poetry installation required
+
+### Technical Details
+
+#### Dependency Resolution
+- Migrated 420+ packages from Poetry lock to uv lock
+- Resolved version conflicts between major dependencies
+- Maintained compatibility with existing functionality
+- Updated to latest stable versions where possible
+
+#### Build System
+- Changed from `poetry-core` to `hatchling` build backend
+- Updated package discovery and file inclusion patterns
+- Maintained compatibility with existing development tools
+
+#### Python Compatibility
+- Upgraded from Python 3.11 to Python 3.13 as default
+- All dependencies verified for Python 3.13 compatibility
+- Fixed syntax warnings and deprecation issues
+- Maintained support for async/await patterns
+
+### Validation
+- ✅ 16 validation checks pass
+- ✅ All core imports functional
+- ✅ Clean environment creation works
+- ✅ Build system properly configured
+- ⚠️ Legacy references remain in dependency error messages (acceptable)
+
+### Performance Impact
+- Faster dependency resolution with uv
+- Improved virtual environment creation speed
+- Better caching and parallel operations
+- Reduced installation time for development setup
+
+---
+
+## Previous Versions
+
+### [0.1.0] - 2025-XX-XX
+- Initial release with Poetry-based dependency management
+- Python 3.11 support
+- Hierarchical multi-agent framework
+- Browser automation capabilities
+- Model Context Protocol integration

@@ -1,15 +1,16 @@
 from typing import (
     Any,
 )
+
 import yaml
 
 from src.agent.general_agent import GeneralAgent
 from src.base.async_multistep_agent import PromptTemplates
-
 from src.memory import AgentMemory
 from src.models import Model
 from src.registry import AGENT
 from src.utils import assemble_project_path
+
 
 @AGENT.register_module(name="browser_use_agent", force=True)
 class BrowserUseAgent(GeneralAgent):
@@ -36,7 +37,7 @@ class BrowserUseAgent(GeneralAgent):
         )
 
         template_path = assemble_project_path(self.config.template_path)
-        with open(template_path, "r") as f:
+        with open(template_path) as f:
             self.prompt_templates = yaml.safe_load(f)
 
         self.system_prompt = self.initialize_system_prompt()

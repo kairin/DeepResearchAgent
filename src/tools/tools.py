@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=utf-8
 
 # Copyright 2024 The HuggingFace Inc. team. All rights reserved.
 #
@@ -17,18 +16,20 @@
 import ast
 import inspect
 import json
-import logging
 import os
 import sys
 import tempfile
 import textwrap
 import types
+from collections.abc import Callable
 from contextlib import contextmanager
 from functools import wraps
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Union
-from pydantic import BaseModel, Field
-from typing import Any, get_type_hints
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Union,
+)
 
 from huggingface_hub import (
     CommitOperationAdd,
@@ -38,19 +39,18 @@ from huggingface_hub import (
     hf_hub_download,
     metadata_update,
 )
+from pydantic import BaseModel, Field
 
+from src.tools.tool_validation import MethodChecker, validate_tool_attributes
 from src.utils import (
     _convert_type_hints_to_json_schema,
+    _is_package_available,
     get_imports,
     get_json_schema,
-    _is_package_available,
     get_source,
     instance_to_source,
     is_valid_name,
 )
-
-from src.tools.tool_validation import MethodChecker, validate_tool_attributes
-
 
 if TYPE_CHECKING:
     import mcp
@@ -89,10 +89,10 @@ CONVERSION_DICT = {"str": "string", "int": "integer", "float": "number"}
 class ToolResult(BaseModel):
     """Represents the result of a tool execution."""
 
-    output: Optional[Any] = Field(default=None)
-    error: Optional[str] = Field(default=None)
-    base64_image: Optional[str] = Field(default=None)
-    system: Optional[str] = Field(default=None)
+    output: Any | None = Field(default=None)
+    error: str | None = Field(default=None)
+    base64_image: str | None = Field(default=None)
+    system: str | None = Field(default=None)
 
     class Config:
         arbitrary_types_allowed = True
@@ -102,7 +102,7 @@ class ToolResult(BaseModel):
 
     def __add__(self, other: "ToolResult"):
         def combine_fields(
-            field: Optional[str], other_field: Optional[str], concatenate: bool = True
+            field: str | None, other_field: str | None, concatenate: bool = True
         ):
             if field and other_field:
                 if concatenate:
@@ -733,8 +733,8 @@ class Tool:
                 return self.langchain_tool.run(tool_input)
 
         return LangChainToolWrapper(langchain_tool)
-    
-    
+
+
 class AsyncTool(Tool):
     async def forward(self, *args, **kwargs):
         return NotImplementedError("Write this method in your subclass of `Tool`.")
@@ -805,8 +805,8 @@ def launch_gradio_demo(tool: Tool):
 
 def load_tool(
     repo_id,
-    model_repo_id: Optional[str] = None,
-    token: Optional[str] = None,
+    model_repo_id: str | None = None,
+    token: str | None = None,
     trust_remote_code: bool = False,
     **kwargs,
 ):
@@ -869,14 +869,14 @@ class ToolCollection:
     For example and usage, see: [`ToolCollection.from_hub`] and [`ToolCollection.from_mcp`]
     """
 
-    def __init__(self, tools: List[Tool]):
+    def __init__(self, tools: list[Tool]):
         self.tools = tools
 
     @classmethod
     def from_hub(
         cls,
         collection_slug: str,
-        token: Optional[str] = None,
+        token: str | None = None,
         trust_remote_code: bool = False,
     ) -> "ToolCollection":
         """Loads a tool collection from the Hub.
@@ -1215,7 +1215,7 @@ class PipelineTool(Tool):
         return decoded_outputs
 
 
-def get_tools_definition_code(tools: Dict[str, Tool]) -> str:
+def get_tools_definition_code(tools: dict[str, Tool]) -> str:
     tool_codes = []
     for tool in tools.values():
         validate_tool_attributes(tool.__class__, check_imports=False)

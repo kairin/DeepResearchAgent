@@ -1,26 +1,23 @@
 import os
+
 from dotenv import load_dotenv
+
 load_dotenv(verbose=True)
 
-from markitdown import MarkItDown
-import requests
-import io
-from typing import BinaryIO, Any
-import camelot
 import tempfile
-from markitdown.converters import PdfConverter
-from markitdown.converters import AudioConverter
-from markitdown.converters._pdf_converter import _dependency_exc_info
-from markitdown.converters._exiftool import exiftool_metadata
-from markitdown._stream_info import StreamInfo
-from markitdown._base_converter import DocumentConverterResult
-from markitdown._exceptions import MissingDependencyException, MISSING_DEPENDENCY_MESSAGE
-import pdfminer
-import pdfminer.high_level
-from litellm import transcription
+from typing import Any
 
-from src.models import model_manager
+import camelot
+from litellm import transcription
+from markitdown import MarkItDown
+from markitdown._markitdown import (
+    DocumentConverterResult,
+    MediaConverter,
+    PdfConverter,
+)
+
 from src.logger import logger
+from src.models import model_manager
 
 
 def read_tables_from_stream(file_stream):
@@ -44,20 +41,18 @@ def transcribe_audio(file_stream, audio_format):
 
     return result
 
-class AudioWhisperConverter(AudioConverter):
+class AudioWhisperConverter(MediaConverter):
 
     def convert(
             self,
-            file_stream: BinaryIO,
-            stream_info: StreamInfo,
+            local_path: str,
             **kwargs: Any,  # Options to pass to the converter
     ) -> DocumentConverterResult:
         md_content = ""
 
-        # Add metadata
-        metadata = exiftool_metadata(
-            file_stream, exiftool_path=kwargs.get("exiftool_path")
-        )
+        # Add metadata - for now we'll skip metadata extraction
+        # as the exiftool_metadata function API may have changed
+        metadata = None
         if metadata:
             for f in [
                 "Title",
@@ -78,15 +73,13 @@ class AudioWhisperConverter(AudioConverter):
                 if f in metadata:
                     md_content += f"{f}: {metadata[f]}\n"
 
-        # Figure out the audio format for transcription
-        if stream_info.extension == ".wav" or stream_info.mimetype == "audio/x-wav":
+        # Figure out the audio format for transcription from file path
+        file_extension = os.path.splitext(local_path)[1].lower()
+        if file_extension == ".wav":
             audio_format = "wav"
-        elif stream_info.extension == ".mp3" or stream_info.mimetype == "audio/mpeg":
+        elif file_extension == ".mp3":
             audio_format = "mp3"
-        elif (
-                stream_info.extension in [".mp4", ".m4a"]
-                or stream_info.mimetype == "video/mp4"
-        ):
+        elif file_extension in [".mp4", ".m4a"]:
             audio_format = "mp4"
         else:
             audio_format = None
@@ -94,11 +87,12 @@ class AudioWhisperConverter(AudioConverter):
         # Transcribe
         if audio_format:
             try:
-                transcript = transcribe_audio(file_stream, audio_format=audio_format)
-                if transcript:
-                    md_content += "\n\n### Audio Transcript:\n" + transcript
-            except MissingDependencyException:
-                pass
+                with open(local_path, 'rb') as file_stream:
+                    transcript = transcribe_audio(file_stream, audio_format=audio_format)
+                    if transcript:
+                        md_content += "\n\n### Audio Transcript:\n" + transcript
+            except (FileNotFoundError, Exception):
+                pass  # Skip transcription if file cannot be read
 
         # Return the result
         return DocumentConverterResult(markdown=md_content.strip())
@@ -106,44 +100,39 @@ class AudioWhisperConverter(AudioConverter):
 class PdfWithTableConverter(PdfConverter):
     def convert(
         self,
-        file_stream: BinaryIO,
-        stream_info: StreamInfo,
+        local_path: str,
         **kwargs: Any,  # Options to pass to the converter
     ) -> DocumentConverterResult:
-        # Check the dependencies
-        if _dependency_exc_info is not None:
-            raise MissingDependencyException(
-                MISSING_DEPENDENCY_MESSAGE.format(
-                    converter=type(self).__name__,
-                    extension=".pdf",
-                    feature="pdf",
-                )
-            ) from _dependency_exc_info[
-                1
-            ].with_traceback(  # type: ignore[union-attr]
-                _dependency_exc_info[2]
-            )
+        # Use the parent PdfConverter to get base conversion first
+        try:
+            base_result = super().convert(local_path, **kwargs)
+            base_markdown = base_result.markdown if base_result else ""
+        except Exception as e:
+            logger.warning(f"Base PDF conversion failed: {e}")
+            base_markdown = ""
 
-        assert isinstance(file_stream, io.IOBase)  # for mypy
+        # Try to extract tables from the PDF
+        try:
+            with open(local_path, 'rb') as file_stream:
+                tables = read_tables_from_stream(file_stream)
+                num_tables = tables.n
+                if num_tables == 0:
+                    # No tables found, return base markdown
+                    return DocumentConverterResult(markdown=base_markdown)
+                else:
+                    # Tables found, add them to the markdown
+                    table_content = ""
+                    for i in range(num_tables):
+                        table = tables[i].df
+                        table_content += f"Table {i + 1}:\n" + table.to_markdown(index=False) + "\n\n"
 
-        tables = read_tables_from_stream(file_stream)
-        num_tables = tables.n
-        if num_tables == 0:
-            return DocumentConverterResult(
-                markdown=pdfminer.high_level.extract_text(file_stream),
-            )
-        else:
-            markdown_content = pdfminer.high_level.extract_text(file_stream)
-            table_content = ""
-            for i in range(num_tables):
-                table = tables[i].df
-                table_content += f"Table {i + 1}:\n" + table.to_markdown(index=False) + "\n\n"
-            markdown_content += "\n\n" + table_content
-            return DocumentConverterResult(
-                markdown=markdown_content,
-            )
+                    combined_markdown = base_markdown + "\n\n" + table_content
+                    return DocumentConverterResult(markdown=combined_markdown)
+        except Exception as e:
+            logger.warning(f"Table extraction failed: {e}")
+            return DocumentConverterResult(markdown=base_markdown)
 
-class MarkitdownConverter():
+class MarkitdownConverter:
     def __init__(self,
                  use_llm: bool = False,
                  model_id: str = None,

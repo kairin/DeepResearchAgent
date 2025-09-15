@@ -1,17 +1,20 @@
-import os
-import subprocess
 import atexit
+import os
 import signal
+import subprocess
+
 from dotenv import load_dotenv
+
 load_dotenv(verbose=True)
 
 from browser_use import Agent
 
-from src.tools import AsyncTool, ToolResult
+from src.models import model_manager
+from src.registry import TOOL
+from src.tools.tools import AsyncTool, ToolResult
 from src.tools.browser import Controller
 from src.utils import assemble_project_path
-from src.registry import TOOL
-from src.models import model_manager
+
 
 @TOOL.register_module(name="auto_browser_use_tool", force=True)
 class AutoBrowserUseTool(AsyncTool):
@@ -58,7 +61,7 @@ class AutoBrowserUseTool(AsyncTool):
             try:
                 server_proc.send_signal(signal.SIGTERM)
                 server_proc.wait(timeout=5)
-            except Exception as e:
+            except Exception:
                 print("Force killing server...")
                 server_proc.kill()
 

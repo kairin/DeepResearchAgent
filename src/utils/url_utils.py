@@ -1,11 +1,13 @@
 import os
-from typing import Optional
+
 from dotenv import load_dotenv
+
 load_dotenv(verbose=True)
 
-from markitdown._base_converter import DocumentConverterResult
 from crawl4ai import AsyncWebCrawler
 from firecrawl import FirecrawlApp
+from markitdown._markitdown import DocumentConverterResult
+
 
 async def firecrawl_fetch_url(url: str):
     try:
@@ -18,7 +20,7 @@ async def firecrawl_fetch_url(url: str):
         result = response.markdown
 
         return result
-    except Exception as e:
+    except Exception:
         return None
 
 async def fetch_crawl4ai_url(url: str):
@@ -34,10 +36,10 @@ async def fetch_crawl4ai_url(url: str):
                 return result
             else:
                 return None
-    except Exception as e:
+    except Exception:
         return None
 
-async def fetch_url(url: str) -> Optional[DocumentConverterResult]:
+async def fetch_url(url: str) -> DocumentConverterResult | None:
     # Fetch content from a URL using Firecrawl and Crawl4AI.
 
     try:
@@ -56,7 +58,7 @@ async def fetch_url(url: str) -> Optional[DocumentConverterResult]:
                 title=f"Fetched content from {url}",
             )
 
-    except Exception as e:
+    except Exception:
         return None
 
 if __name__ == '__main__':

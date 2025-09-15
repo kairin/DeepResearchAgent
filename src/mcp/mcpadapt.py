@@ -4,16 +4,18 @@ This module contains the core functionality for the MCPAdapt library. It provide
 basic interfaces and classes for adapting tools from MCP to the desired Agent framework.
 """
 import asyncio
-from typing import Any, Dict, Optional
+from typing import Any
+
 from fastmcp import Client
 
 from src.mcp.adapter import AsyncToolAdapter, ToolAdapter
 
-class MCPAdapt():
+
+class MCPAdapt:
     def __init__(
         self,
-        config: Dict[str, Any],
-        adapter: Optional[ToolAdapter] = None,
+        config: dict[str, Any],
+        adapter: ToolAdapter | None = None,
     ):
         """
         Manage the MCP server / client lifecycle and expose tools adapted with the adapter.

@@ -4,15 +4,17 @@ This module contains the core functionality for the MCPAdapt library. It provide
 basic interfaces and classes for adapting tools from MCP to the desired Agent framework.
 """
 
-from abc import ABC, abstractmethod
-from typing import Any, Callable, Coroutine
-from fastmcp.tools import Tool
-import json5
 import keyword
 import re
+from abc import ABC
+from typing import Any
+
 import inflection
+import json5
+from fastmcp.tools import Tool
 
 from src.tools import AsyncTool
+
 
 def _sanitize_function_name(name):
     """

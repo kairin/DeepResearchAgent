@@ -1,6 +1,8 @@
+import json
+
 from fastmcp import Client
 from openai import OpenAI
-import json
+
 
 def convert2function(tool):
     name = tool.name

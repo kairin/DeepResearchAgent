@@ -1,10 +1,11 @@
+from src.registry import TOOL
+from src.tools.tools import AsyncTool, ToolResult
 from src.tools.executor.local_python_executor import (
     BASE_BUILTIN_MODULES,
     BASE_PYTHON_TOOLS,
     evaluate_python_code,
 )
-from src.tools import AsyncTool, ToolResult
-from src.registry import TOOL
+
 
 @TOOL.register_module(name="python_interpreter_tool", force=True)
 class PythonInterpreterTool(AsyncTool):

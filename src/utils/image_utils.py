@@ -1,8 +1,9 @@
-import requests
-import os
-import base64
 import mimetypes
+import os
 import uuid
+
+import requests
+
 
 def download_image(image_url, download_path):
 

@@ -1,5 +1,6 @@
-from pathlib import Path
 import os
+from pathlib import Path
+
 
 def get_project_root():
     root = str(Path(__file__).resolve().parents[2])

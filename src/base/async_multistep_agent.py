@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=utf-8
 
 # Copyright 2024 The HuggingFace Inc. team. All rights reserved.
 #
@@ -17,49 +16,44 @@
 import importlib
 import inspect
 import json
-import json5
 import os
 import re
 import tempfile
 import textwrap
 import time
-from abc import ABC, abstractmethod
 import warnings
+from abc import ABC, abstractmethod
+from collections.abc import AsyncGenerator, Callable
 from pathlib import Path
-from dataclasses import dataclass
-from collections.abc import AsyncGenerator
-from typing import TYPE_CHECKING, Any, Callable, TypedDict, Union, Literal, TypeAlias, List
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    TypedDict,
+)
 
 import jinja2
 import yaml
-from huggingface_hub import create_repo, metadata_update, snapshot_download, upload_folder
+from huggingface_hub import (
+    create_repo,
+    metadata_update,
+    snapshot_download,
+    upload_folder,
+)
 from jinja2 import StrictUndefined, Template
-from rich.console import Group
 from rich.live import Live
 from rich.markdown import Markdown
-from rich.panel import Panel
 from rich.rule import Rule
 from rich.text import Text
-
 
 if TYPE_CHECKING:
     import PIL.Image
 
-from src.tools.final_answer import FinalAnswerTool
-from src.tools.default_tools import TOOL_MAPPING
-from src.tools.executor.local_python_executor import BASE_BUILTIN_MODULES
-from src.memory import (ActionStep,
-                        AgentMemory,
-                        FinalAnswerStep,
-                        PlanningStep,
-                        SystemPromptStep,
-                        UserPromptStep,
-                        TaskStep)
-from src.models import (
-    ChatMessage,
-    ChatMessageStreamDelta,
-    ChatMessageToolCall,
-    MessageRole,
+from src.base.multistep_agent import ActionOutput, RunResult, ToolOutput
+from src.exception import (
+    AgentError,
+    AgentGenerationError,
+    AgentMaxStepsError,
+    AgentParsingError,
 )
 from src.logger import (
     AgentLogger,
@@ -67,30 +61,33 @@ from src.logger import (
     Monitor,
     Timing,
     TokenUsage,
+    logger,
 )
-
+from src.memory import (
+    ActionStep,
+    AgentMemory,
+    FinalAnswerStep,
+    PlanningStep,
+    SystemPromptStep,
+    TaskStep,
+    UserPromptStep,
+)
+from src.models import (
+    ChatMessage,
+    ChatMessageStreamDelta,
+    MessageRole,
+    Model,
+)
 from src.tools import AsyncTool
-from src.exception import (
-    AgentError,
-    AgentGenerationError,
-    AgentMaxStepsError,
-    AgentParsingError,
-
-)
-
+from src.tools.default_tools import TOOL_MAPPING
+from src.tools.executor.local_python_executor import BASE_BUILTIN_MODULES
+from src.tools.final_answer import FinalAnswerTool
 from src.utils import (
+    handle_agent_output_types,
     is_valid_name,
     make_init_file,
     truncate_content,
-    handle_agent_output_types,
 )
-
-from src.logger import logger
-from src.models import Model
-from src.base.multistep_agent import (ActionOutput,
-                                      ToolOutput,
-                                      RunResult,
-                                      StreamEvent)
 
 
 def get_variable_names(self, template: str) -> set[str]:

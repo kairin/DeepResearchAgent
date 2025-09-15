@@ -4,7 +4,6 @@ from itertools import zip_longest
 
 from src.utils import BASE_BUILTIN_MODULES, get_source, is_valid_name
 
-
 _BUILTIN_NAMES = set(vars(builtins))
 
 

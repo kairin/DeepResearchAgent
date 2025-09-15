@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=utf-8
 
 # Copyright 2024 The HuggingFace Inc. team. All rights reserved.
 #
@@ -15,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
 
 from src.tools.executor.local_python_executor import (
     BASE_BUILTIN_MODULES,
@@ -24,10 +23,11 @@ from src.tools.executor.local_python_executor import (
 )
 from src.tools.tools import PipelineTool, Tool, ToolResult
 
+
 @dataclass
 class PreTool:
     name: str
-    inputs: Dict[str, str]
+    inputs: dict[str, str]
     output_type: type
     task: str
     description: str
@@ -180,7 +180,7 @@ class DuckDuckGoSearchTool(Tool):
             ) from e
         self.ddgs = DDGS(**kwargs)
 
-    def forward(self, query: str, max_results: Optional[int] = None) -> ToolResult:
+    def forward(self, query: str, max_results: int | None = None) -> ToolResult:
         if max_results is None:
             max_results = self.max_results
         results = self.ddgs.text(query, max_results = max_results)
@@ -231,7 +231,7 @@ class GoogleSearchTool(Tool):
         if self.api_key is None:
             raise ValueError(f"Missing API key. Make sure you have '{api_key_env_name}' in your env variables.")
 
-    def forward(self, query: str, filter_year: Optional[int] = None) -> str:
+    def forward(self, query: str, filter_year: int | None = None) -> str:
         import requests
 
         if self.provider == "serpapi":
@@ -322,7 +322,6 @@ class VisitWebpageTool(Tool):
             import requests
             from markdownify import markdownify
             from requests.exceptions import RequestException
-
             from smolagents.utils import truncate_content
         except ImportError as e:
             raise ImportError(

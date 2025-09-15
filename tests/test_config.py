@@ -2,13 +2,15 @@ import argparse
 import os
 import sys
 from pathlib import Path
+
 from mmengine import DictAction
 
 root = str(Path(__file__).resolve().parents[1])
 sys.path.append(root)
 
-from src.logger import logger
 from src.config import config
+from src.logger import logger
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='main')

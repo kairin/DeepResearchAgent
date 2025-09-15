@@ -1,17 +1,19 @@
 import argparse
-import os
 import asyncio
+import os
 import sys
 from pathlib import Path
+
 from mmengine import DictAction
 
 root = str(Path(__file__).resolve().parents[1])
 sys.path.append(root)
 
-from src.logger import logger
 from src.config import config
-from src.registry import TOOL
+from src.logger import logger
 from src.models import model_manager
+from src.registry import TOOL
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='main')

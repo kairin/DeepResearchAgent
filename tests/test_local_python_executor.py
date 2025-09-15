@@ -1,5 +1,11 @@
 import unittest
-from src.tools.executor.local_python_executor import evaluate_python_code, InterpreterError, BASE_PYTHON_TOOLS, BASE_BUILTIN_MODULES, DEFAULT_MAX_LEN_OUTPUT
+
+from src.tools.executor.local_python_executor import (
+    BASE_PYTHON_TOOLS,
+    DEFAULT_MAX_LEN_OUTPUT,
+    InterpreterError,
+    evaluate_python_code,
+)
 
 # It's good practice to define a small, fixed list for default authorized_imports in tests
 # unless a test specifically needs to modify it.

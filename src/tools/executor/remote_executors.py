@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=utf-8
 
 # Copyright 2024 The HuggingFace Inc. team. All rights reserved.
 #
@@ -27,10 +26,10 @@ from typing import Any
 import PIL.Image
 import requests
 
-from src.tools.executor.local_python_executor import PythonExecutor
-from src.logger import LogLevel
-from src.tools.tools import get_tools_definition_code
 from src.exception import AgentError
+from src.logger import LogLevel
+from src.tools.executor.local_python_executor import PythonExecutor
+from src.tools.tools import get_tools_definition_code
 
 try:
     from dotenv import load_dotenv

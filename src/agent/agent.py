@@ -1,10 +1,9 @@
-from typing import List, Dict, Any
 
-from src.registry import AGENT, TOOL
-from src.models import model_manager
-from src.tools import make_tool_instance
-from src.mcp.mcpadapt import MCPAdapt, AsyncToolAdapter
 from src.logger import logger
+from src.mcp.mcpadapt import AsyncToolAdapter, MCPAdapt
+from src.models import model_manager
+from src.registry import AGENT, TOOL
+from src.tools import make_tool_instance
 
 AUTHORIZED_IMPORTS = [
     "pandas",
@@ -101,7 +100,7 @@ async def create_agent(config):
     # Load MCP tools
     mcpadapt = MCPAdapt(config.mcp_tools_config, AsyncToolAdapter())
     mcpadapt_tools = await mcpadapt.tools()
-    
+
     if config.use_hierarchical_agent:
 
         logger.info("| Creating a hierarchical agent.")
@@ -134,7 +133,7 @@ async def create_agent(config):
         )
 
         return agent
-    
+
     else:
 
         logger.info("| Creating a single agent.")

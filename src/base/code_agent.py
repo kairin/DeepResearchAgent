@@ -1,4 +1,3 @@
-# coding=utf-8
 
 # Copyright 2024 The HuggingFace Inc. team. All rights reserved.
 #
@@ -14,47 +13,56 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import importlib
-from typing import TYPE_CHECKING, Any
-from collections.abc import Generator
-import yaml
 import json
+from collections.abc import Generator
+from typing import TYPE_CHECKING, Any
+
+import yaml
 from rich.console import Group
 from rich.live import Live
 from rich.markdown import Markdown
 from rich.text import Text
 
 if TYPE_CHECKING:
-    import PIL.Image
+    pass
 
-from src.memory import (ActionStep,
-                        ToolCall)
-from src.models import (
-    ChatMessage,
+from src.base.multistep_agent import (
+    ActionOutput,
+    MultiStepAgent,
+    PromptTemplates,
+    populate_template,
 )
-from src.logger import (
-    LogLevel,
-)
-
-from src.tools import Tool
-from src.tools.executor.local_python_executor import LocalPythonExecutor, PythonExecutor, fix_final_answer_code
-from src.tools.executor.remote_executors import DockerExecutor, E2BExecutor
 from src.exception import (
-    AgentParsingError,
     AgentExecutionError,
     AgentGenerationError,
+    AgentParsingError,
 )
-
+from src.logger import (
+    YELLOW_HEX,
+    LogLevel,
+)
+from src.memory import ActionStep, ToolCall
+from src.models import (
+    CODEAGENT_RESPONSE_FORMAT,
+    ChatMessage,
+    ChatMessageStreamDelta,
+    Model,
+    agglomerate_stream_deltas,
+)
+from src.tools import Tool
+from src.tools.executor.local_python_executor import (
+    LocalPythonExecutor,
+    PythonExecutor,
+    fix_final_answer_code,
+)
+from src.tools.executor.remote_executors import DockerExecutor, E2BExecutor
 from src.utils import (
     BASE_BUILTIN_MODULES,
-    truncate_content,
+    extract_code_from_text,
     parse_code_blobs,
-    extract_code_from_text
+    truncate_content,
 )
 
-from src.base.multistep_agent import MultiStepAgent, PromptTemplates, populate_template, ActionOutput
-from src.models import Model, ChatMessageStreamDelta, agglomerate_stream_deltas, CODEAGENT_RESPONSE_FORMAT
-
-from src.logger import YELLOW_HEX
 
 class CodeAgent(MultiStepAgent):
     """
