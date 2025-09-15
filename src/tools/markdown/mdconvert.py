@@ -11,8 +11,8 @@ import camelot
 from litellm import transcription
 from markitdown import MarkItDown
 from markitdown._markitdown import (
+    AudioConverter,
     DocumentConverterResult,
-    MediaConverter,
     PdfConverter,
 )
 
@@ -41,7 +41,7 @@ def transcribe_audio(file_stream, audio_format):
 
     return result
 
-class AudioWhisperConverter(MediaConverter):
+class AudioWhisperConverter(AudioConverter):
 
     def convert(
             self,
@@ -155,8 +155,8 @@ class MarkitdownConverter:
             PdfConverter
         ]
 
-        self.client._page_converters = [
-            converter for converter in self.client._page_converters
+        self.client._converters = [
+            converter for converter in self.client._converters
             if not isinstance(converter, tuple(removed_converters))
         ]
         self.client.register_page_converter(PdfWithTableConverter())

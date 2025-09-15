@@ -6,7 +6,7 @@ from pathlib import Path
 
 from mmengine import DictAction
 
-root = str(Path(__file__).resolve().parents[0])
+root = str(Path(__file__).resolve().parents[2])
 sys.path.append(root)
 
 # Apply compatibility fixes early
@@ -20,7 +20,7 @@ from src.models import model_manager
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='main')
+    parser = argparse.ArgumentParser(description='Interactive DeepResearchAgent TUI')
     parser.add_argument("--config", default=os.path.join(root, "configs", "config_main.py"), help="config file path")
     parser.add_argument("--task", type=str, help="Research task to execute")
 
@@ -39,6 +39,12 @@ def parse_args():
 
 
 async def main(task: str = None):
+    """
+    Main entry point for interactive DeepResearchAgent
+
+    Args:
+        task (str, optional): Research task to execute. If None, will use default demo task.
+    """
     try:
         # Parse command line arguments
         args = parse_args()
@@ -80,8 +86,12 @@ async def main(task: str = None):
     else:
         logger.info(f"| Executing custom task: {task[:100]}...")
 
+    # Run the task
     res = await agent.run(task)
     logger.info(f"| Result: {res}")
+
+    return res
+
 
 if __name__ == '__main__':
     asyncio.run(main())
