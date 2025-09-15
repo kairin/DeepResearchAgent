@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-09-15T19:38:21+08:00",
+  "timestamp": "2025-09-15T19:49:19+08:00",
   "project_root": "/home/kkk/Apps/DeepResearchAgent",
   "results": [
     {
@@ -96,7 +96,7 @@
       "name": "Legacy Package Manager References",
       "status": "WARN",
       "message": "Found legacy references",
-      "details": "pip install: 739 occurrences; poetry: 80 occurrences; conda install: 4 occurrences; pipenv: 3 occurrences"
+      "details": "pip install: 739 occurrences; poetry: 82 occurrences; conda install: 4 occurrences; pipenv: 3 occurrences"
     },
     {
       "name": "Clean Environment Creation",

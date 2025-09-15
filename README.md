@@ -4,7 +4,7 @@
 [![Paper](https://img.shields.io/badge/📄-arXiv%20Paper-red?style=for-the-badge&logo=arxiv)](https://arxiv.org/abs/2506.12508)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-English | [简体中文](README_CN.md) | [🌐 **Website**](https://skyworkai.github.io/DeepResearchAgent/)
+English | [🌐 **Website**](https://skyworkai.github.io/DeepResearchAgent/)
 
 > 🔧 **Migration Notice**: This fork has been migrated from Poetry to uv and upgraded to Python 3.13. See [CHANGELOG.md](CHANGELOG.md) for details and [FORK_MANAGEMENT.md](FORK_MANAGEMENT.md) for sync strategies.
 
@@ -320,6 +320,15 @@ This fork maintains significant changes from the upstream repository. See [FORK_
 - Critical file identification
 - Git protection mechanisms
 
+### Documentation Structure
+
+This repository uses a unified documentation approach:
+- **`AGENTS.md`**: Master documentation file with comprehensive project information
+- **`CLAUDE.md`**: Symlink to `AGENTS.md` (for Claude Code users)
+- **`GEMINI.md`**: Symlink to `AGENTS.md` (for Gemini users)
+
+All three files contain identical content, ensuring consistency while providing familiar entry points for different user bases.
+
 ## Acknowledgement
 
 DeepResearchAgent is primarily inspired by the architecture of smolagents. The following improvements have been made:
@@ -358,4 +367,4 @@ Contributions and suggestions are welcome! Feel free to open issues or submit pu
 
 ### 🇨🇳 中文版说明文档
 
-如果你更习惯阅读中文说明文档，请查阅 [README_CN.md](./README_CN.md)。
+中文版文档已移除。本 fork 专注于 uv 迁移和 Python 3.13 升级。如需中文文档，请参考原始仓库：[SkyworkAI/DeepResearchAgent](https://github.com/SkyworkAI/DeepResearchAgent)。
