@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - CLI-First Model System
+- Added CLI tool detection system (`src/models/cli_detector.py`)
+  - Detects Claude Code CLI and Gemini CLI availability
+  - Provides installation instructions for missing CLI tools
+  - Maps API model names to CLI equivalents
+- Added CLI model factory (`src/models/cli_models.py`)
+  - Factory pattern for creating CLI model instances
+  - Support for ClaudeCodeModel, GeminiCLIModel, and CLIBridgeModel
+  - Interactive CLI session management
+- Added CLI-first configuration (`configs/config_cli_fallback.py`)
+  - Prioritizes CLI tools over API calls when available
+  - Uses local models as fallbacks when CLI tools unavailable
+
+### Fixed - HuggingFace Integration
+- **CRITICAL**: Fixed HuggingFace API key environment variable spelling
+  - Corrected `HUGGINEFACE_API_KEY` → `HUGGINGFACE_API_KEY` in both `.env` and code
+  - Ensures proper authentication with HuggingFace Inference API
+- Fixed HuggingFace model timeout issues
+  - Increased timeout from 120s to 300s for better stability
+  - Added proper token limits (4096) and temperature settings (0.1)
+  - Enhanced error handling for Gateway Timeout scenarios
+- Fixed model registration KeyError exceptions
+  - Implemented intelligent model aliasing system
+  - Maps unavailable API models to local alternatives
+  - Prevents crashes when models are not configured
+
+### Changed - Model Management
+- Restructured ModelManager initialization for CLI-first priority
+  - Step 1: Detect and register CLI tools
+  - Step 2: Validate API configurations
+  - Step 3: Register local fallback models
+  - Step 4: Create model aliases for missing models
+- Enhanced model aliasing with comprehensive mappings:
+  - `claude-3.7-sonnet-thinking` → `qwen2.5-32b-instruct`
+  - `gemini-2.5-pro` → `qwen2.5-14b-instruct`
+  - `gpt-4.1`, `o1`, `o3` → `qwen2.5-32b-instruct`
+
 ### Changed - Poetry to uv Migration (Breaking Changes)
 - **BREAKING**: Migrated from Poetry to uv for all Python dependency management
 - **BREAKING**: Upgraded default Python version from 3.11 to 3.13 (Ubuntu 25.04+ system Python)

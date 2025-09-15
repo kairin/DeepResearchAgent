@@ -99,7 +99,7 @@ class InferenceClientModel(ApiModel):
 
         token = token if token is not None else api_key
         if token is None:
-            token = os.getenv("HUGGINEFACE_API_KEY")
+            token = os.getenv("HUGGINGFACE_API_KEY")
 
         self.client_kwargs = {
             **(client_kwargs or {}),

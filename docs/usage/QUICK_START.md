@@ -46,34 +46,67 @@ uv run playwright install chromium --with-deps
 # Copy environment template
 cp .env.template .env
 
-# Edit .env file with your API keys (optional for basic testing)
+# Edit .env file with your API keys
 nano .env
+```
+
+**Minimal Configuration (HuggingFace only):**
+```bash
+# .env file - Add your HuggingFace token for basic functionality
+HUGGINGFACE_API_KEY=hf_your-token-here
+```
+
+**Recommended: CLI Tools Setup**
+```bash
+# Install Claude Code CLI (recommended)
+npm install -g @anthropics/claude-code
+
+# Install Gemini CLI support
+uv add google-generativeai
+gcloud auth application-default login
 ```
 
 ## Basic Usage
 
-### Option 1: Use Local Models (No API Keys Required)
+### Option 1: CLI-First Approach (Recommended)
 
 ```bash
-# Run with HuggingFace models (no API keys needed)
+# Run with automatic CLI detection and fallbacks
+uv run python main.py --config configs/config_cli_fallback.py
+```
+
+**Benefits:**
+- Automatically detects CLI tools (Claude Code, Gemini CLI)
+- Falls back to HuggingFace models when CLI unavailable
+- Prevents KeyError exceptions with intelligent model aliasing
+- Works with minimal configuration (just HuggingFace token)
+
+### Option 2: HuggingFace Models Only
+
+```bash
+# Ensure your .env has HuggingFace token
+HUGGINGFACE_API_KEY=hf_your-token-here
+
+# Run with HuggingFace models
 uv run python examples/run_general.py
 ```
 
-### Option 2: Use API Models
+### Option 3: Full API Configuration
 
-Add API keys to `.env` file:
+Add multiple API keys to `.env` file:
 
 ```bash
-# Add at least one API key
+# Commercial API providers
 OPENAI_API_KEY=sk-your-openai-key-here
-# or
 ANTHROPIC_API_KEY=sk-ant-your-anthropic-key-here
+GOOGLE_API_KEY=your-google-ai-key-here
+HUGGINGFACE_API_KEY=hf_your-token-here
 ```
 
 Then run:
 
 ```bash
-# Run full hierarchical system
+# Run full hierarchical system with all providers
 uv run python main.py
 ```
 
