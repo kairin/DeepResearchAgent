@@ -33,9 +33,96 @@ English | [🌐 **Website**](https://skyworkai.github.io/DeepResearchAgent/)
 
 ## Introduction
 
-<p align="center">
-  <img src="./docs/assets/integration_workflow_github.svg" alt="DeepResearchAgent to Guardian Agents Integration Workflow - Animated Transformation" width="100%"/>
-</p>
+![Integration Overview](docs/assets/integration_hero.svg)
+
+```mermaid
+graph TB
+    subgraph Current["🔄 Current State: 5 Agents"]
+        PA[🧠 Planning Agent<br/>Top-Level Coordination]
+        DA[🔍 Deep Analyzer<br/>Information Analysis]
+        DR[🔬 Deep Researcher<br/>Research & Synthesis]
+        BU[🌐 Browser Use<br/>Web Automation]
+        MM[🔧 MCP Manager<br/>Tool Orchestration]
+        GT[⚙️ General Tool<br/>Function Calling]
+
+        PA --> DA
+        PA --> DR
+        PA --> BU
+        PA --> MM
+        PA --> GT
+    end
+
+    subgraph Arrow["⚡ INTEGRATION TRANSFORMATION"]
+        Transform["5 → 57+ Agents<br/>Research Tool → Complete Platform<br/>Manual → Intelligent Auto-Routing"]
+    end
+
+    subgraph Target["🚀 Target State: 57+ Agents"]
+        MO[🎯 Meta-Orchestrator<br/>Intelligent Coordination]
+
+        subgraph RI["🧠 Research Intelligence (12)"]
+            RI1[Think-Tank Reasoning]
+            RI2[First Principles Analysis]
+            RI3[Creative Thinking]
+            RI4[Systems Analysis]
+        end
+
+        subgraph TA["🏗️ Technical Architecture (5)"]
+            TA1[CTO Agent]
+            TA2[Principal Architect]
+            TA3[System Design]
+            TA4[Tech Strategy]
+        end
+
+        subgraph DE["⚙️ Development Engineering (25)"]
+            DE1[Backend Development]
+            DE2[Frontend Development]
+            DE3[Quality Engineering]
+            DE4[Mobile Development]
+        end
+
+        subgraph OS["🛡️ Operations & Security (10)"]
+            OS1[DevOps Management]
+            OS2[Security Compliance]
+            OS3[Performance Optimization]
+            OS4[Infrastructure]
+        end
+
+        subgraph SM["📊 Strategic Management (25)"]
+            SM1[Product Leadership]
+            SM2[Business Strategy]
+            SM3[UX Research]
+            SM4[Market Analysis]
+        end
+
+        MO --> RI
+        MO --> TA
+        MO --> DE
+        MO --> OS
+        MO --> SM
+    end
+
+    subgraph Benefits["✨ Integration Benefits"]
+        B1["🧠 10x Research Intelligence<br/>Multi-perspective analysis<br/>First principles reasoning"]
+        B2["🏗️ Enterprise Architecture<br/>CTO-level capabilities<br/>System design excellence"]
+        B3["⚙️ Complete Development<br/>Full lifecycle support<br/>Quality engineering"]
+        B4["🛡️ Production Ready<br/>Security compliance<br/>Operations management"]
+        B5["📊 Strategic Platform<br/>Product management<br/>Business intelligence"]
+    end
+
+    Current --> Arrow
+    Arrow --> Target
+    Target --> Benefits
+
+    classDef currentBox fill:#1e293b,stroke:#fbbf24,stroke-width:2px,color:#fff
+    classDef targetBox fill:#0f172a,stroke:#10b981,stroke-width:2px,color:#fff
+    classDef benefitBox fill:#374151,stroke:#a855f7,stroke-width:2px,color:#fff
+    classDef agentBox fill:#059669,stroke:#047857,stroke-width:1px,color:#fff
+    classDef clusterBox fill:#1e40af,stroke:#1d4ed8,stroke-width:1px,color:#fff
+
+    class Current,PA,DA,DR,BU,MM,GT currentBox
+    class Target,MO,RI,TA,DE,OS,SM,RI1,RI2,RI3,RI4,TA1,TA2,TA3,TA4,DE1,DE2,DE3,DE4,OS1,OS2,OS3,OS4,SM1,SM2,SM3,SM4 targetBox
+    class Benefits,B1,B2,B3,B4,B5 benefitBox
+```
 
 **Original Vision**: DeepResearchAgent was conceived by [SkyworkAI](https://github.com/SkyworkAI/DeepResearchAgent) as a hierarchical multi-agent system designed for deep research tasks and general-purpose task solving. The framework leverages a top-level planning agent to coordinate multiple specialized lower-level agents, enabling automated task decomposition and efficient execution across diverse and complex domains.
 
