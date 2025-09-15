@@ -6,7 +6,7 @@ from pathlib import Path
 
 from mmengine import DictAction
 
-root = str(Path(__file__).resolve().parents[0])
+root = str(Path(__file__).resolve().parents[2])
 sys.path.append(root)
 
 # Apply compatibility fixes early
@@ -17,12 +17,14 @@ from src.agent import create_agent
 from src.config import config
 from src.logger import logger
 from src.models import model_manager
+from src.tui.task_collector import get_user_task
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='main')
+    parser = argparse.ArgumentParser(description='Interactive DeepResearchAgent TUI with Task Input')
     parser.add_argument("--config", default=os.path.join(root, "configs", "config_main.py"), help="config file path")
-    parser.add_argument("--task", type=str, help="Research task to execute")
+    parser.add_argument("--task", type=str, help="Research task to execute (skip interactive input)")
+    parser.add_argument("--interactive", action="store_true", help="Enable interactive task input")
 
     parser.add_argument(
         '--cfg-options',
@@ -39,9 +41,26 @@ def parse_args():
 
 
 async def main(task: str = None):
+    """
+    Main entry point for interactive DeepResearchAgent with task collection
+
+    Args:
+        task (str, optional): Research task to execute. If None, will collect from user interactively.
+    """
     try:
         # Parse command line arguments
         args = parse_args()
+
+        # Get task from interactive input if requested and no task provided
+        if task is None and args.task is None and args.interactive:
+            try:
+                task = get_user_task()
+            except KeyboardInterrupt:
+                logger.info("| Task input cancelled by user")
+                return
+            except Exception as e:
+                logger.error(f"| Error collecting task: {e}")
+                return
 
         # Initialize the configuration
         config.init_config(args.config, args)
@@ -80,8 +99,12 @@ async def main(task: str = None):
     else:
         logger.info(f"| Executing custom task: {task[:100]}...")
 
+    # Run the task
     res = await agent.run(task)
     logger.info(f"| Result: {res}")
+
+    return res
+
 
 if __name__ == '__main__':
     asyncio.run(main())
