@@ -64,6 +64,7 @@ dependencies = [
 dev = [
     "pytest",
     "pytest-asyncio",
+    "pytest-cov",
     "black",
     "isort",
     "flake8",
@@ -85,6 +86,7 @@ packages = ["src"]
 dev-dependencies = [
     "pytest",
     "pytest-asyncio",
+    "pytest-cov",
     "black",
     "isort",
     "ruff",

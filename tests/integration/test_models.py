@@ -1,23 +1,22 @@
 import argparse
 import asyncio
 import base64
-import os
-import sys
-from pathlib import Path
 
 from mmengine import DictAction
-
-root = str(Path(__file__).resolve().parents[1])
-sys.path.append(root)
 
 from src.config import config
 from src.logger import logger
 from src.models import ChatMessage, model_manager
+from src.utils import assemble_project_path
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='main')
-    parser.add_argument("--config", default=os.path.join(root, "configs", "config_general.py"), help="config file path")
+    parser.add_argument(
+        "--config",
+        default=assemble_project_path("configs/config_general.py"),
+        help="config file path"
+    )
 
     parser.add_argument(
         '--cfg-options',
@@ -60,6 +59,7 @@ async def video_generation():
         f.write(video_data)
     logger.info("Video saved as test_case_video.mp4")
 
+
 if __name__ == "__main__":
 
     # Parse command line arguments
@@ -75,7 +75,8 @@ if __name__ == "__main__":
 
     # Registed models
     model_manager.init_models(use_local_proxy=True)
-    logger.info("Registed models: %s", ", ".join(model_manager.registed_models.keys()))
+    registered_models = ", ".join(model_manager.registed_models.keys())
+    logger.info("Registed models: %s", registered_models)
 
     # Test video generation
     # asyncio.run(video_generation())
@@ -89,7 +90,16 @@ if __name__ == "__main__":
     # logger.info("Image saved as test_case_image.png")
 
     messages = [
-        ChatMessage(role="user", content="Riddle solution: 200 coins, 30 face-up, must divide into two piles with equal face-down coins, unable to distinguish coin sides in darkness. Picks 30 coins, flips all, rest 170 untouched. Larger pile has 14 face-down coins. What is the outcome for the adventurer? Number of coins won or if he died."),
+        ChatMessage(
+            role="user",
+            content=(
+                "Riddle: 200 coins, 30 face-up. Must divide into two piles "
+                "with equal face-down coins. Unable to distinguish coin sides "
+                "in darkness. Picks 30 coins, flips all, rest 170 untouched. "
+                "Larger pile has 14 face-down coins. What is the outcome for "
+                "the adventurer? Number of coins won or if he died."
+            )
+        ),
     ]
 
     response = asyncio.run(model_manager.registed_models["o3-deep-research"](
@@ -123,9 +133,11 @@ if __name__ == "__main__":
     ))
     print(response)
 
-    response = asyncio.run(model_manager.registed_models["claude-3.7-sonnet-thinking"](
-        messages=messages,
-    ))
+    response = asyncio.run(
+        model_manager.registed_models["claude-3.7-sonnet-thinking"](
+            messages=messages,
+        )
+    )
     print(response)
 
     response = asyncio.run(model_manager.registed_models["claude-4-sonnet"](
