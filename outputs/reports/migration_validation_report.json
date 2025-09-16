@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-09-16T07:31:39+08:00",
+  "timestamp": "2025-09-17T07:41:18+08:00",
   "project_root": "/home/kkk/Apps/DeepResearchAgent",
   "results": [
     {
@@ -22,9 +22,9 @@
     },
     {
       "name": "Virtual Environment Python Version",
-      "status": "FAIL",
-      "message": "Virtual environment not using Python 3.13",
-      "details": "home = /home/kkk/.local/share/uv/python/cpython-3.11.13-linux-x86_64-gnu/bin\nimplementation = CPython\nuv = 0.8.15\nversion_info = 3.11.13\ninclude-system-site-packages = false\nprompt = deepresearchagent\n"
+      "status": "PASS",
+      "message": "Virtual environment uses Python 3.13",
+      "details": null
     },
     {
       "name": "Build System Migration",
@@ -96,7 +96,7 @@
       "name": "Legacy Package Manager References",
       "status": "WARN",
       "message": "Found legacy references",
-      "details": "pip install: 769 occurrences; poetry: 81 occurrences; conda install: 5 occurrences; pipenv: 3 occurrences"
+      "details": "pip install: 758 occurrences; poetry: 82 occurrences; conda install: 4 occurrences; pipenv: 3 occurrences"
     },
     {
       "name": "Clean Environment Creation",
@@ -106,9 +106,9 @@
     }
   ],
   "summary": {
-    "passed": 15,
-    "failed": 1,
+    "passed": 16,
+    "failed": 0,
     "warnings": 1,
-    "success": false
+    "success": true
   }
 }
