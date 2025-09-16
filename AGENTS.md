@@ -126,6 +126,25 @@ git checkout main && git merge "archive/${DATETIME}-description" --no-ff
 
 **Full Git Guidelines:** [docs/development/GIT_STRATEGY.md](docs/development/GIT_STRATEGY.md)
 
+### 🤖 LLM Conversation Logging
+
+**MANDATORY REQUIREMENT**: All AI assistants (LLMs, Copilot, Claude, Gemini, etc.) working on this repository **MUST** save their complete conversation logs for the entire chat session.
+
+#### Requirements:
+- **Complete Logs**: Save the entire conversation from start to finish
+- **Exclude Sensitive Data**: Remove all personal information, passwords, API keys, tokens, or similar sensitive data before saving
+- **Storage Location**: Save logs in `docs/development/conversation_logs/` subdirectory
+- **Naming Convention**: Use format `CONVERSATION_LOG_YYYYMMDD_DESCRIPTION.md`
+- **Purpose**: Enable other developers to identify where errors occurred during LLM conversations and understand the full context of changes
+
+#### Example:
+```bash
+# After completing work, save the conversation log:
+cp /path/to/conversation_log.md docs/development/conversation_logs/CONVERSATION_LOG_20250917_test_improvements.md
+```
+
+**Why this matters**: LLM conversations often involve complex debugging, multiple iterations, and context that isn't captured in commit messages. These logs help future developers understand the reasoning behind changes and identify potential issues.
+
 ## Models
 Connected models are validated at startup. Typical configuration includes:
 - **CLI Tools**: Claude Code (`claude` command), Gemini (via `gcloud cloud-shell ssh`)
