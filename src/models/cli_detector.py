@@ -21,17 +21,17 @@ class CLIToolDetector:
     def detect_claude_code_cli(self) -> Dict[str, any]:
         """Detect Claude Code CLI availability"""
         try:
-            # Check if claude-code command exists
-            if not shutil.which('claude-code'):
+            # Check if claude command exists (actual command name)
+            if not shutil.which('claude'):
                 return {
                     'available': False,
-                    'reason': 'claude-code command not found',
+                    'reason': 'claude command not found',
                     'install_cmd': 'npm install -g @anthropics/claude-code'
                 }
 
-            # Try to get version
+            # Claude CLI doesn't support --version, so just check if it responds
             result = subprocess.run(
-                ['claude-code', '--version'],
+                ['claude', '--help'],
                 capture_output=True,
                 text=True,
                 timeout=10
@@ -40,7 +40,7 @@ class CLIToolDetector:
             if result.returncode == 0:
                 return {
                     'available': True,
-                    'version': result.stdout.strip(),
+                    'version': 'claude-code-cli',
                     'model_mappings': {
                         # Map API model names to CLI equivalents
                         'claude-3.7-sonnet-thinking': 'claude-code-cli',
@@ -51,7 +51,7 @@ class CLIToolDetector:
             else:
                 return {
                     'available': False,
-                    'reason': f'claude-code failed: {result.stderr}',
+                    'reason': f'claude failed: {result.stderr}',
                     'install_cmd': 'npm install -g @anthropics/claude-code'
                 }
 
