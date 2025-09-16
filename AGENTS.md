@@ -47,21 +47,21 @@ uv run ruff check .                      # Lint code
 
 ## Configuration
 ```bash
-# CLI-first (recommended)
-npm install -g @anthropics/claude-code
+# CLI-first (recommended for max subscriptions)
+claude                                    # Local Claude Code CLI
+gcloud cloud-shell ssh && gemini         # Google Cloud Shell Gemini
 uv run python main.py --config configs/config_cli_fallback.py
 
-# Local-only setup
-HUGGINGFACE_API_KEY=hf_your-token-here  # Add to .env
+# Local-only setup (offline development)
 uv run python main.py --config configs/config_local_only.py
+# Requires HUGGINGFACE_API_KEY in .env for model access
 
 # Override settings
 uv run python main.py --cfg-options agent_config.max_steps=10
-```
 
 # Environment setup
 cp .env.template .env
-# Add API keys: OPENAI_API_KEY, ANTHROPIC_API_KEY, GOOGLE_API_KEY
+# Configure as needed: HUGGINGFACE_API_KEY, optional: OPENAI_API_KEY, ANTHROPIC_API_KEY
 ```
 
 **Full Guide:** [docs/models/CONFIGURATION.md](docs/models/CONFIGURATION.md)
@@ -97,7 +97,7 @@ git checkout main && git merge "archive/${DATETIME}-description" --no-ff
 
 ## Models
 - **Commercial**: GPT-4.1/4o/o1/o3, Claude-3.7/4-Sonnet, Gemini-2.5-Pro
-- **CLI**: Claude Code (`npm install -g @anthropics/claude-code`)
+- **CLI**: Claude Code (`claude` command), Gemini (via `gcloud cloud-shell ssh`)
 - **Local**: vLLM Qwen 2.5 (7B/14B/32B), HuggingFace
 
 **Configuration:** [docs/models/CONFIGURATION.md](docs/models/CONFIGURATION.md)
