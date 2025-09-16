@@ -34,10 +34,18 @@ uv run python main.py --tui                              # TUI launcher (interac
 uv run python main.py --config configs/config_cli_fallback.py  # CLI-first (recommended)
 uv run python main.py                                          # Full hierarchical system
 uv run python examples/run_general.py                          # Single agent
-```bash
-uv run pytest                                                  # Run tests
-uv run python scripts/run_comprehensive_tests.py             # Comprehensive test runner
 ```
+
+### Testing
+```bash
+uv run pytest tests/unit/                               # Run unit tests only
+uv run pytest tests/integration/                       # Run integration tests only
+uv run python scripts/run_comprehensive_tests.py       # Comprehensive test runner (recommended)
+
+# Test outputs are saved to test_output/ with unique timestamps:
+# - test_run_YYYYMMDD_HHMMSS_microseconds_PID.log (detailed logs)
+# - test_results_YYYYMMDD_HHMMSS_microseconds_PID.json (results)
+# - test_results.json (latest results, backwards compatible)
 ```
 
 ### Development
@@ -79,10 +87,28 @@ cp .env.template .env
 - **Config-driven**: MMEngine configuration system
 - **Performance**: 83.39% GAIA benchmark average
 
+#### Test Structure & Commands
 ```bash
-uv run pytest                          # Run tests
-uv run python examples/run_gaia.py     # GAIA benchmark
+# Test Commands
+uv run pytest tests/unit/                    # Run unit tests only
+uv run pytest tests/integration/            # Run integration tests only
+uv run python scripts/run_comprehensive_tests.py --unit-only        # Comprehensive unit tests
+uv run python scripts/run_comprehensive_tests.py --integration-only # Comprehensive integration tests
+uv run python scripts/run_comprehensive_tests.py                    # Full test suite
+
+# Test Output Locations
+test_output/test_run_YYYYMMDD_HHMMSS_microseconds_PID.log    # Detailed logs (unique timestamps)
+test_output/test_results_YYYYMMDD_HHMMSS_microseconds_PID.json # Test results (unique timestamps)
+test_output/test_results.json                                 # Latest test results (backwards compatible)
 ```
+
+**Test Organization:**
+- `tests/unit/` - Unit tests for individual components
+- `tests/integration/` - Integration tests for end-to-end functionality
+- `scripts/run_comprehensive_tests.py` - Comprehensive test runner with logging
+- `test_output/` - All test logs and results with unique timestamps for historical tracking
+
+**When running tests:** Always check `test_output/` for detailed logs and results. Each test run creates uniquely timestamped files to preserve historical data.
 
 **Guidelines:** [docs/development/CONTRIBUTING.md](docs/development/CONTRIBUTING.md)
 
