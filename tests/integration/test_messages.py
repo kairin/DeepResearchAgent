@@ -62,11 +62,11 @@ if __name__ == "__main__":
     logger.info(f"| Logger initialized at: {config.log_path}")
     logger.info(f"| Config:\n{config.pretty_text}")
 
-    # Registed models
+    # Registered models
     model_manager.init_models(use_local_proxy=False)
     image = Image.open(assemble_project_path("docs/assets/architecture.png"))
-    registered_models = ", ".join(model_manager.registed_models.keys())
-    logger.info("Registed models: %s", registered_models)
+    registered_models = ", ".join(model_manager.registered_models.keys())
+    logger.info("Registered models: %s", registered_models)
 
     # Test message manager
     message_manager = MessageManager(

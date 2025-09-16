@@ -47,7 +47,7 @@ async def main():
 
     # Registed models
     model_manager.init_models(use_local_proxy=True)
-    logger.info("| Registed models: %s", ", ".join(model_manager.registed_models.keys()))
+    logger.info("| Registed models: %s", ", ".join(model_manager.registered_models.keys()))
 
     # Create agent
     agent = await create_agent(config)

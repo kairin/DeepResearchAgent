@@ -36,7 +36,7 @@ async def video_generation():
     # Video Generation with Veo3: Step1: Veo3 Predict, Step2: Veo3 Fetch
 
     # Veo3 Predict
-    response = model_manager.registed_models["veo3-predict"](
+    response = model_manager.registered_models["veo3-predict"](
         prompt="Please generate a video of a dancing girl.",
     )
     name = response
@@ -46,7 +46,7 @@ async def video_generation():
     while video_data is None:
         try:
             # Veo3 Fetch
-            response = model_manager.registed_models["veo3-fetch"](
+            response = model_manager.registered_models["veo3-fetch"](
                 # name="projects/veo-ai-video-463310/locations/us-central1/publishers/google/models/veo-3.0-generate-preview/operations/7ed511e2-7aef-4714-952f-e03467db1d4d",
                 name=name,
             )
@@ -73,15 +73,15 @@ if __name__ == "__main__":
     logger.info(f"| Logger initialized at: {config.log_path}")
     logger.info(f"| Config:\n{config.pretty_text}")
 
-    # Registed models
+    # Registered models
     model_manager.init_models(use_local_proxy=True)
-    registered_models = ", ".join(model_manager.registed_models.keys())
-    logger.info("Registed models: %s", registered_models)
+    registered_models = ", ".join(model_manager.registered_models.keys())
+    logger.info("Registered models: %s", registered_models)
 
     # Test video generation
     # asyncio.run(video_generation())
     #
-    # response = model_manager.registed_models["imagen"](
+    # response = model_manager.registered_models["imagen"](
     #     prompt="Generate an image of a futuristic city skyline at sunset.",
     # )
     # img_data = base64.b64decode(response)
@@ -102,55 +102,55 @@ if __name__ == "__main__":
         ),
     ]
 
-    response = asyncio.run(model_manager.registed_models["o3-deep-research"](
+    response = asyncio.run(model_manager.registered_models["o3-deep-research"](
         messages=messages,
     ))
     print(response)
     exit()
 
-    response = asyncio.run(model_manager.registed_models["deepseek-chat"](
+    response = asyncio.run(model_manager.registered_models["deepseek-chat"](
         messages=messages,
     ))
     print(response)
 
-    response = asyncio.run(model_manager.registed_models["deepseek-reasoner"](
+    response = asyncio.run(model_manager.registered_models["deepseek-reasoner"](
         messages=messages,
     ))
     print(response)
 
-    response = asyncio.run(model_manager.registed_models["o3"](
+    response = asyncio.run(model_manager.registered_models["o3"](
         messages=messages,
     ))
     print(response)
 
-    response = asyncio.run(model_manager.registed_models["gpt-4.1"](
+    response = asyncio.run(model_manager.registered_models["gpt-4.1"](
         messages=messages,
     ))
     print(response)
 
-    response = asyncio.run(model_manager.registed_models["claude37-sonnet"](
+    response = asyncio.run(model_manager.registered_models["claude37-sonnet"](
         messages=messages,
     ))
     print(response)
 
     response = asyncio.run(
-        model_manager.registed_models["claude-3.7-sonnet-thinking"](
+        model_manager.registered_models["claude-3.7-sonnet-thinking"](
             messages=messages,
         )
     )
     print(response)
 
-    response = asyncio.run(model_manager.registed_models["claude-4-sonnet"](
+    response = asyncio.run(model_manager.registered_models["claude-4-sonnet"](
         messages=messages,
     ))
     print(response)
 
-    response = asyncio.run(model_manager.registed_models["gemini-2.5-pro"](
+    response = asyncio.run(model_manager.registered_models["gemini-2.5-pro"](
         messages=messages,
     ))
     print(response)
 
     # test langchain models
-    model = model_manager.registed_models["langchain-gpt-4.1"]
+    model = model_manager.registered_models["langchain-gpt-4.1"]
     response = asyncio.run(model.ainvoke("What is the capital of France?"))
     print(response)

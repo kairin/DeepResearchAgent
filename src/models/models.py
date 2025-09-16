@@ -32,7 +32,7 @@ PLACEHOLDER = "PLACEHOLDER"
 
 class ModelManager(metaclass=Singleton):
     def __init__(self):
-        self.registed_models: dict[str, Any] = {}
+        self.registered_models: dict[str, Any] = {}
         self.validator = APIConfigValidator()
         self.validation_results = {}
 
@@ -45,7 +45,7 @@ class ModelManager(metaclass=Singleton):
         # Register CLI models if available
         cli_models = CLIModelFactory.create_from_detection(cli_tools)
         for model_name, model_instance in cli_models.items():
-            self.registed_models[model_name] = model_instance
+            self.registered_models[model_name] = model_instance
             logger.info(f"Registered CLI model: {model_name}")
 
         # PRIORITY 2: Validate API configurations for fallback
@@ -63,7 +63,7 @@ class ModelManager(metaclass=Singleton):
         self._register_model_aliases(cli_tools)
 
         # Check if we have any models registered
-        if not self.registed_models:
+        if not self.registered_models:
             logger.error("No models could be registered!")
             logger.error("CLI Setup Instructions:")
             logger.error(cli_detector.get_setup_instructions())
@@ -74,7 +74,7 @@ class ModelManager(metaclass=Singleton):
                 "See logs above for detailed guidance."
             )
 
-        logger.info(f"Successfully registered {len(self.registed_models)} models")
+        logger.info(f"Successfully registered {len(self.registered_models)} models")
 
     def _register_api_models_with_cli_priority(self, available_providers: List[str], use_local_proxy: bool, cli_tools: Dict):
         """Register API models only if CLI equivalents are not available"""
@@ -147,14 +147,14 @@ class ModelManager(metaclass=Singleton):
 
         # Check which models are missing and create aliases
         for requested_model, fallback_model in model_mappings.items():
-            if requested_model not in self.registed_models:
-                if fallback_model in self.registed_models:
+            if requested_model not in self.registered_models:
+                if fallback_model in self.registered_models:
                     # Use existing fallback model
-                    self.registed_models[requested_model] = self.registed_models[fallback_model]
+                    self.registered_models[requested_model] = self.registered_models[fallback_model]
                     logger.info(f"Aliased '{requested_model}' -> '{fallback_model}'")
                 else:
                     # Create a placeholder that will warn when used
-                    self.registed_models[requested_model] = self._create_placeholder_model(requested_model, fallback_model)
+                    self.registered_models[requested_model] = self._create_placeholder_model(requested_model, fallback_model)
                     logger.warning(f"Created placeholder for '{requested_model}' -> '{fallback_model}'")
 
     def _create_placeholder_model(self, requested_model: str, fallback_model: str):
@@ -210,7 +210,7 @@ class ModelManager(metaclass=Singleton):
                 http_client=client,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
             # gpt-4.1
             model_name = "gpt-4.1"
@@ -226,7 +226,7 @@ class ModelManager(metaclass=Singleton):
                 http_client=client,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
             # o1
             model_name = "o1"
@@ -242,7 +242,7 @@ class ModelManager(metaclass=Singleton):
                 http_client=client,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
             # o3
             model_name = "o3"
@@ -257,7 +257,7 @@ class ModelManager(metaclass=Singleton):
                 http_client=HTTP_CLIENT,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
             # gpt-4o-search-preview
             model_name = "gpt-4o-search-preview"
@@ -273,7 +273,7 @@ class ModelManager(metaclass=Singleton):
                 http_client=client,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
             # wisper
             model_name = "whisper"
@@ -287,7 +287,7 @@ class ModelManager(metaclass=Singleton):
                 http_client=HTTP_CLIENT,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
             # deep research
             model_name = "o3-deep-research"
@@ -302,7 +302,7 @@ class ModelManager(metaclass=Singleton):
                 http_client=HTTP_CLIENT,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
             # gpt-5
             model_name = "gpt-5"
@@ -318,7 +318,7 @@ class ModelManager(metaclass=Singleton):
                 http_client=client,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
         else:
             logger.info("Using remote API for OpenAI models")
@@ -359,7 +359,7 @@ class ModelManager(metaclass=Singleton):
                     api_base=api_base,
                     custom_role_conversions=custom_role_conversions,
                 )
-                self.registed_models[model_name] = model
+                self.registered_models[model_name] = model
 
 
     def _register_anthropic_models(self, use_local_proxy: bool = False):
@@ -383,7 +383,7 @@ class ModelManager(metaclass=Singleton):
                 http_client=client,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
             # claude37-sonnet-thinking
             model_name = "claude-3.7-sonnet-thinking"
@@ -399,7 +399,7 @@ class ModelManager(metaclass=Singleton):
                 http_client=client,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
             # claude-4-sonnet
             model_name = "claude-4-sonnet"
@@ -415,7 +415,7 @@ class ModelManager(metaclass=Singleton):
                 http_client=client,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
         else:
             logger.info("Using remote API for Anthropic models")
@@ -444,7 +444,7 @@ class ModelManager(metaclass=Singleton):
                     api_base=api_base,
                     custom_role_conversions=custom_role_conversions,
                 )
-                self.registed_models[model_name] = model
+                self.registered_models[model_name] = model
 
     def _register_google_models(self, use_local_proxy: bool = False):
         if use_local_proxy:
@@ -466,7 +466,7 @@ class ModelManager(metaclass=Singleton):
                 http_client=client,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
             # imagen
             model_name = "imagen"
@@ -480,7 +480,7 @@ class ModelManager(metaclass=Singleton):
                 http_client=HTTP_CLIENT,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
             # veo3
             model_name = "veo3-predict"
@@ -494,7 +494,7 @@ class ModelManager(metaclass=Singleton):
                 http_client=HTTP_CLIENT,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
             model_name = "veo3-fetch"
             model_id = "veo-3.0-generate-preview"
@@ -507,7 +507,7 @@ class ModelManager(metaclass=Singleton):
                 http_client=HTTP_CLIENT,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
 
         else:
@@ -533,7 +533,7 @@ class ModelManager(metaclass=Singleton):
                     # api_base=api_base,
                     custom_role_conversions=custom_role_conversions,
                 )
-                self.registed_models[model_name] = model
+                self.registered_models[model_name] = model
 
     def _register_qwen_models(self, use_local_proxy: bool = False):
         # qwen2.5-7b-instruct
@@ -562,7 +562,7 @@ class ModelManager(metaclass=Singleton):
                 max_tokens=4096,  # Set reasonable token limit
                 temperature=0.1,  # Lower temperature for more consistent tool calls
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
     def _register_langchain_models(self, use_local_proxy: bool = False):
         # langchain models
@@ -599,7 +599,7 @@ class ModelManager(metaclass=Singleton):
                     http_client=HTTP_CLIENT,
                     http_async_client=ASYNC_HTTP_CLIENT,
                 )
-                self.registed_models[model_name] = model
+                self.registered_models[model_name] = model
 
         else:
             logger.info("Using remote API for LangChain models")
@@ -617,7 +617,7 @@ class ModelManager(metaclass=Singleton):
                     api_key=api_key,
                     base_url=api_base,
                 )
-                self.registed_models[model_name] = model
+                self.registered_models[model_name] = model
     def _register_vllm_models(self, use_local_proxy: bool = False):
         # qwen
         api_key = self._check_local_api_key(local_api_key_name="QWEN_API_KEY",
@@ -643,7 +643,7 @@ class ModelManager(metaclass=Singleton):
                 http_client=client,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
         # Qwen-VL
         api_key_VL = self._check_local_api_key(local_api_key_name="QWEN_VL_API_KEY",
@@ -669,7 +669,7 @@ class ModelManager(metaclass=Singleton):
                 http_client=client,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
     def _register_deepseek_models(self, use_local_proxy: bool = False):
         # deepseek models
@@ -693,7 +693,7 @@ class ModelManager(metaclass=Singleton):
                 http_client=client,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
 
             # deepseek-reasoner
             api_key = self._check_local_api_key(local_api_key_name="SKYWORK_API_KEY",
@@ -713,6 +713,6 @@ class ModelManager(metaclass=Singleton):
                 http_client=client,
                 custom_role_conversions=custom_role_conversions,
             )
-            self.registed_models[model_name] = model
+            self.registered_models[model_name] = model
         else:
             logger.warning("DeepSeek models are not supported in remote API mode.")

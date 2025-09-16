@@ -455,7 +455,7 @@ class AgentIntegrationBridge:
     def get_system_status(self) -> dict:
         """Get current system status"""
         return {
-            "models_registered": len(self.model_manager.registed_models) if self.model_manager else 0,
+            "models_registered": len(self.model_manager.registered_models) if self.model_manager else 0,
             "config_loaded": self.config is not None,
             "agent_ready": self.agent is not None,
             "model_aliases": getattr(self.model_manager, 'model_aliases', {})

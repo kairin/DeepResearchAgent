@@ -75,7 +75,7 @@ async def answer_single_question(config, example):
 
         agent_memory = await agent.write_memory_to_messages(summary_mode=True)
 
-        final_result = await prepare_response(augmented_question, agent_memory, reformulation_model=model_manager.registed_models["o3"])
+        final_result = await prepare_response(augmented_question, agent_memory, reformulation_model=model_manager.registered_models["o3"])
 
         output = str(final_result)
         for memory_step in agent.memory.steps:
@@ -148,7 +148,7 @@ async def main():
 
     # Registed models
     model_manager.init_models(use_local_proxy=True)
-    logger.info("| Registed models: %s", ", ".join(model_manager.registed_models.keys()))
+    logger.info("| Registed models: %s", ", ".join(model_manager.registered_models.keys()))
 
     # Load dataset
     dataset = DATASET.build(config.dataset)

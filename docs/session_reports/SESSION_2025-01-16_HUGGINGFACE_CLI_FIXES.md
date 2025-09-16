@@ -116,7 +116,7 @@ def init_models(self, use_local_proxy: bool = False):
     # PRIORITY 2: Register CLI models if available
     cli_models = CLIModelFactory.create_from_detection(cli_tools)
     for model_name, model_instance in cli_models.items():
-        self.registed_models[model_name] = model_instance
+        self.registered_models[model_name] = model_instance
 
     # PRIORITY 3: Validate API configurations
     logger.info("Validating API configurations...")
