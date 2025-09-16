@@ -94,10 +94,10 @@ class VideoGeneratorTool(AsyncTool):
 
         self.analyzer_model_id = analyzer_model_id
         self.predict_model_id = predict_model_id
-        self.fecth_model_id = fetch_model_id
-        self.analyzer_model = model_manager.registed_models[self.analyzer_model_id]
-        self.predict_model = model_manager.registed_models[self.predict_model_id]
-        self.fetch_model = model_manager.registed_models[self.fecth_model_id]
+        self.fetch_model_id = fetch_model_id
+        self.analyzer_model = model_manager.registered_models[self.analyzer_model_id]
+        self.predict_model = model_manager.registered_models[self.predict_model_id]
+        self.fetch_model = model_manager.registered_models[self.fetch_model_id]
 
     async def forward(self,
                       prompt: str,
@@ -193,7 +193,7 @@ class VideoGeneratorTool(AsyncTool):
             while video_data is None:
                 try:
                     # Veo3 Fetch
-                    response = model_manager.registed_models["veo3-fetch"](
+                    response = model_manager.registered_models["veo3-fetch"](
                         name=name,
                     )
                     video_data = base64.b64decode(response)

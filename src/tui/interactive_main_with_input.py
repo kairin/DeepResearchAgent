@@ -75,7 +75,7 @@ async def main(task: str = None):
         # Initialize models with validation
         logger.info("| Initializing models...")
         model_manager.init_models(use_local_proxy=True)
-        logger.info("| Registered models: %s", ", ".join(model_manager.registed_models.keys()))
+        logger.info("| Registered models: %s", ", ".join(model_manager.registered_models.keys()))
 
     except RuntimeError as e:
         logger.error(f"| Startup failed: {e}")

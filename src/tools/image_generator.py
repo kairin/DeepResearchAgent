@@ -81,8 +81,8 @@ class ImageGeneratorTool(AsyncTool):
 
         self.analyzer_model_id = analyzer_model_id
         self.generator_model_id = generator_model_id
-        self.analyzer_model = model_manager.registed_models[self.analyzer_model_id]
-        self.generator_model = model_manager.registed_models[self.generator_model_id]
+        self.analyzer_model = model_manager.registered_models[self.analyzer_model_id]
+        self.generator_model = model_manager.registered_models[self.generator_model_id]
 
     async def forward(self, prompt, save_name) -> ToolResult:
         """Generate an image based on the provided prompt."""

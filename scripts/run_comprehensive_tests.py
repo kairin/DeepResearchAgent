@@ -239,11 +239,15 @@ class TestRunner:
         ]
         results["config_test"] = self.run_command(cmd, "Config Test")
 
-        # Test 3: TUI mode (non-interactive)
+        # Test 3: TUI mode (test launch with timeout)
         print("   Testing TUI mode...")
-        # Note: TUI will hang in non-interactive mode, so we'll skip this
-        # cmd = ["uv", "run", "python", "main.py", "--tui"]
-        # results["tui_test"] = self.run_command(cmd, "TUI Test")
+        cmd = ["timeout", "5", "uv", "run", "python", "main.py", "--tui"]
+        result = self.run_command(cmd, "TUI Launch Test")
+        # For TUI test, timeout (124) is expected and considered success
+        if result["returncode"] == 124:
+            result["success"] = True
+            result["description"] += " (timeout expected)"
+        results["tui_test"] = result
 
         self.test_logger.info("APPLICATION TESTS PHASE COMPLETED")
         return results

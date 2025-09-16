@@ -472,7 +472,7 @@ from src.models import model_manager
 
 async def test_model():
     model_manager.init_models()
-    model = model_manager.registed_models['gpt-4o']
+    model = model_manager.registered_models['gpt-4o']
     response = await model.acompletion('Hello, how are you?')
     print(f'Response: {response}')
 
@@ -512,7 +512,7 @@ print(f'Key format: {key[:7]}...{key[-4:] if len(key) > 10 else key}')
 uv run python -c "
 from src.models import model_manager
 model_manager.init_models()
-print('Available models:', list(model_manager.registed_models.keys()))
+print('Available models:', list(model_manager.registered_models.keys()))
 "
 ```
 

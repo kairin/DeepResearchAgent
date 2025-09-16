@@ -66,12 +66,12 @@ class DeepAnalyzerTool(AsyncTool):
 
         self.analyzer_model_ids = analyzer_model_ids
         self.analyzer_models = {
-            model_id: model_manager.registed_models[model_id]
+            model_id: model_manager.registered_models[model_id]
             for model_id in self.analyzer_model_ids
         }
 
         self.summarizer_model_id = summarizer_model_id
-        self.summary_model = model_manager.registed_models[self.summarizer_model_id]
+        self.summary_model = model_manager.registered_models[self.summarizer_model_id]
 
         self.converter: MarkitdownConverter = MarkitdownConverter()
 

@@ -29,9 +29,9 @@ def read_tables_from_stream(file_stream):
 
 def transcribe_audio(file_stream, audio_format):
 
-    if "whisper" in model_manager.registed_models:
+    if "whisper" in model_manager.registered_models:
         # Use the Whisper model for transcription
-        model = model_manager.registed_models["whisper"]
+        model = model_manager.registered_models["whisper"]
         result = model(
             file_stream=file_stream,
         )
@@ -143,7 +143,7 @@ class MarkitdownConverter:
         self.model_id = model_id
 
         if use_llm:
-            client = model_manager.registed_models(model_id).http_client
+            client = model_manager.registered_models(model_id).http_client
             self.client = MarkItDown(
                 llm_client=client,
                 llm_model=model_id,

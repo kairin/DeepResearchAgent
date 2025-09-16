@@ -75,7 +75,7 @@ class AutoBrowserUseTool(AsyncTool):
         else:
             model_id = self.model_id
 
-        model = model_manager.registed_models[model_id]
+        model = model_manager.registered_models[model_id]
 
         browser_agent = Agent(
             task=task,

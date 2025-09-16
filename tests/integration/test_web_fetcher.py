@@ -44,7 +44,7 @@ if __name__ == "__main__":
     logger.info(f"| Logger initialized at: {config.log_path}")
     logger.info(f"| Config:\n{config.pretty_text}")
 
-    # Registed tools
+    # Registered tools
     logger.info(f"| {TOOL}")
 
     web_fetcher_tool_config = config.web_fetcher_tool_config

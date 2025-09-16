@@ -45,12 +45,12 @@ if __name__ == "__main__":
     logger.info(f"| Logger initialized at: {config.log_path}")
     logger.info(f"| Config:\n{config.pretty_text}")
 
-    # Registed models
+    # Registered models
     model_manager.init_models(use_local_proxy=True)
-    registered_models = ", ".join(model_manager.registed_models.keys())
-    logger.info("Registed models: %s", registered_models)
+    registered_models = ", ".join(model_manager.registered_models.keys())
+    logger.info("Registered models: %s", registered_models)
 
-    # Registed tools
+    # Registered tools
     logger.info(f"| {TOOL}")
 
     video_generator_tool_config = config.video_generator_tool_config

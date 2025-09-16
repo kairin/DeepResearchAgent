@@ -25,7 +25,7 @@ class OAIDeepResearchTool(AsyncTool):
 
     def __init__(self, model_id):
         super().__init__()
-        self.model = model_manager.registed_models[model_id]
+        self.model = model_manager.registered_models[model_id]
 
     async def forward(self,
                 query: str) -> ToolResult:
