@@ -32,7 +32,7 @@ print_info() {
 
 # 1. Check GitHub CLI authentication
 echo ""
-print_info "1. Checking GitHub CLI authentication..."
+print_info("1. Checking GitHub CLI authentication...")
 if gh auth status >/dev/null 2>&1; then
     print_success "GitHub CLI authenticated"
 else
@@ -42,7 +42,7 @@ fi
 
 # 2. Check repository features
 echo ""
-print_info "2. Checking repository features..."
+print_info("2. Checking repository features...")
 REPO_INFO=$(gh repo view kairin/DeepResearchAgent --json hasIssuesEnabled,hasProjectsEnabled,hasWikiEnabled,hasDiscussionsEnabled,isSecurityPolicyEnabled 2>/dev/null || echo "{}")
 
 if echo "$REPO_INFO" | grep -q '"hasIssuesEnabled": false' && \
@@ -56,7 +56,7 @@ fi
 
 # 3. Check workflows on user's fork
 echo ""
-print_info "3. Checking workflows on fork..."
+print_info("3. Checking workflows on fork...")
 WORKFLOW_COUNT=$(gh workflow list --repo kairin/DeepResearchAgent 2>/dev/null | wc -l || echo "0")
 
 if [ "$WORKFLOW_COUNT" -eq 0 ] || [ "$WORKFLOW_COUNT" -eq 1 ]; then
@@ -67,7 +67,7 @@ fi
 
 # 4. Check upstream workflows (informational)
 echo ""
-print_info "4. Checking upstream repository workflows..."
+print_info("4. Checking upstream repository workflows...")
 UPSTREAM_WORKFLOWS=$(gh workflow list --repo SkyworkAI/DeepResearchAgent 2>/dev/null | grep -c "active" || echo "0")
 if [ "$UPSTREAM_WORKFLOWS" -gt 0 ]; then
     print_info "Upstream has $UPSTREAM_WORKFLOWS active workflows (does not affect fork)"
@@ -77,7 +77,7 @@ fi
 
 # 5. Check workflow file configurations
 echo ""
-print_info "5. Checking workflow file configurations..."
+print_info("5. Checking workflow file configurations...")
 check_workflow_disabled() {
     local file="$1"
     local name="$2"
@@ -102,7 +102,7 @@ check_workflow_disabled ".github/workflows/deploy.yml" "Deploy"
 
 # 6. Check branch protection
 echo ""
-print_info "6. Checking branch protection..."
+print_info("6. Checking branch protection...")
 BRANCH_PROTECTION=$(gh api repos/kairin/DeepResearchAgent/branches/main/protection 2>/dev/null || echo "404")
 if echo "$BRANCH_PROTECTION" | grep -q "404"; then
     print_success "No branch protection rules (no CI requirements)"
@@ -112,7 +112,7 @@ fi
 
 # 7. Check webhooks
 echo ""
-print_info "7. Checking webhooks..."
+print_info("7. Checking webhooks...")
 WEBHOOK_COUNT=$(gh api repos/kairin/DeepResearchAgent/hooks 2>/dev/null | jq '. | length' 2>/dev/null || echo "0")
 if [ "$WEBHOOK_COUNT" -eq 0 ]; then
     print_success "No webhooks configured"
@@ -122,7 +122,7 @@ fi
 
 # 8. Check local automation scripts
 echo ""
-print_info "8. Checking local automation scripts..."
+print_info("8. Checking local automation scripts...")
 if [ -x "scripts/local_ci_cd.sh" ]; then
     print_success "Local CI/CD script available"
 else
@@ -143,7 +143,7 @@ fi
 
 # 9. Check git hooks
 echo ""
-print_info "9. Checking git protection hooks..."
+print_info("9. Checking git protection hooks...")
 if [ -x ".git/hooks/pre-merge-commit" ]; then
     print_success "Pre-merge validation hook active"
 else
@@ -152,7 +152,7 @@ fi
 
 # 10. Check uv and Python setup
 echo ""
-print_info "10. Checking development environment..."
+print_info("10. Checking development environment...")
 if command -v uv >/dev/null 2>&1; then
     UV_VERSION=$(uv --version)
     print_success "uv installed: $UV_VERSION"
@@ -173,7 +173,7 @@ fi
 
 # 11. Check dependency lock
 echo ""
-print_info "11. Checking dependency management..."
+print_info("11. Checking dependency management...")
 if [ -f "uv.lock" ]; then
     print_success "uv.lock file exists"
 else
@@ -182,7 +182,7 @@ fi
 
 # 12. Check documentation
 echo ""
-print_info "12. Checking documentation..."
+print_info("12. Checking documentation...")
 if [ -f "LOCAL_DEVELOPMENT.md" ]; then
     print_success "Local development documentation available"
 else
@@ -216,8 +216,108 @@ echo "📖 DOCUMENTATION:"
 echo "  Local Development: LOCAL_DEVELOPMENT.md"
 echo "  Repository Guide: README.md"
 echo ""
-echo "��️ PROTECTION:"
+echo "🛡️ PROTECTION:"
 echo "  - All online automation disabled"
 echo "  - Local validation required"
 echo "  - Archive branch strategy enforced"
 echo "  - Zero-cost development guaranteed"
+WORKFLOW_COUNT=$(gh workflow list --repo kairin/DeepResearchAgent 2>/dev/null | wc -l || echo "0")
+
+if [ "$WORKFLOW_COUNT" -eq 0 ] || [ "$WORKFLOW_COUNT" -eq 1 ]; then
+    print_success "No workflows on fork (no charges)"
+else
+    print_warning "Found workflows on fork - should be disabled"
+fi
+
+# Check workflow files are disabled
+echo "📄 Checking workflow file configurations..."
+check_workflow_disabled() {
+    local file="$1"
+    local name="$2"
+
+    if [ -f "$file" ]; then
+        # Check if all triggers are commented out and workflow_call is present
+        if grep -q "workflow_call:" "$file" && \
+           ! grep -q "^  push:\|^  pull_request:\|^  workflow_dispatch:" "$file" && \
+           grep -q "# push:\|# pull_request:\|# workflow_dispatch:" "$file"; then
+            print_success "$name workflow properly disabled"
+        else
+            print_warning "$name workflow may still have active triggers"
+        fi
+    else
+        print_success "$name workflow file not found"
+    fi
+}
+
+check_workflow_disabled ".github/workflows/ci-cd.yml" "CI/CD Pipeline"
+check_workflow_disabled ".github/workflows/ci.yml" "CI"
+check_workflow_disabled ".github/workflows/deploy.yml" "Deploy"
+
+# Check local scripts exist
+echo "🛠️  Checking local automation scripts..."
+if [ -x "scripts/local_ci_cd.sh" ]; then
+    print_success "Local CI/CD script available"
+else
+    print_error "Local CI/CD script missing or not executable"
+fi
+
+if [ -x "scripts/run_comprehensive_tests.py" ]; then
+    print_success "Local test script available"
+else
+    print_error "Local test script missing or not executable"
+fi
+
+# Check git hooks
+echo "🪝 Checking git protection hooks..."
+if [ -x ".git/hooks/pre-merge-commit" ]; then
+    print_success "Pre-merge validation hook active"
+else
+    print_warning "Pre-merge validation hook missing"
+fi
+
+# Check uv installation
+echo "📦 Checking uv package manager..."
+if command -v uv >/dev/null 2>&1; then
+    UV_VERSION=$(uv --version)
+    print_success "uv installed: $UV_VERSION"
+else
+    print_error "uv not installed - required for local development"
+fi
+
+# Check Python version
+echo "🐍 Checking Python version..."
+if command -v python3 >/dev/null 2>&1; then
+    PYTHON_VERSION=$(python3 --version)
+    if echo "$PYTHON_VERSION" | grep -q "Python 3.13"; then
+        print_success "Python 3.13 available: $PYTHON_VERSION"
+    else
+        print_warning "Python 3.13 not detected: $PYTHON_VERSION"
+    fi
+else
+    print_error "Python 3 not found"
+fi
+
+# Check uv.lock exists
+echo "🔒 Checking dependency lock..."
+if [ -f "uv.lock" ]; then
+    print_success "uv.lock file exists"
+else
+    print_error "uv.lock file missing"
+fi
+
+# Final summary
+echo ""
+echo "=================================================="
+echo "🎉 Local-Only Development Verification Complete!"
+echo "=================================================="
+echo ""
+echo "💰 Cost Prevention Status:"
+echo "  ❌ GitHub Actions: Disabled"
+echo "  ❌ Repository Features: Disabled"
+echo "  ✅ Local Automation: Available"
+echo "  ✅ Git Protection: Active"
+echo ""
+echo "🚀 Ready for local development!"
+echo "  Run: ./scripts/local_ci_cd.sh"
+echo ""
+echo "📖 See: LOCAL_DEVELOPMENT.md for details"
