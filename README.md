@@ -314,6 +314,50 @@ uv run python examples/run_hle.py
 # or: make run-hle
 ```
 
+## 🔗 Using DeepResearchAgent on External Projects
+
+**DeepResearchAgent is designed to be used as a standalone research tool across multiple projects.** Keep DeepResearchAgent in its own directory and use it to analyze any project or dataset.
+
+### Recommended Multi-Project Usage
+
+```bash
+# 1. Keep DeepResearchAgent in its dedicated directory
+cd /path/to/DeepResearchAgent
+
+# 2. Create project-specific configurations
+cp configs/config_cli_fallback.py configs/config_my_project.py
+
+# 3. Run research tasks on any project
+uv run python main.py --config configs/config_my_project.py \
+    --task "Analyze the codebase in /path/to/my_project"
+
+# 4. Create wrapper scripts for convenience (optional)
+echo '#!/bin/bash
+cd /path/to/DeepResearchAgent
+uv run python main.py --config configs/config_my_project.py --task "$*"
+' > /path/to/my_project/research.sh
+chmod +x /path/to/my_project/research.sh
+```
+
+### Example: MonthlyKyocera Analysis
+
+```bash
+# From DeepResearchAgent directory
+uv run python main.py --task "Analyze the Kyocera device management system in /home/user/projects/MonthlyKyocera"
+
+# Or using a wrapper script
+cd /home/user/projects/MonthlyKyocera
+./research.sh "Generate maintenance recommendations for all devices"
+```
+
+### Benefits of This Approach
+
+- ✅ **Clean Separation**: Research tool stays independent
+- ✅ **Multi-Project**: Use on unlimited projects
+- ✅ **Easy Updates**: Update DeepResearchAgent without affecting projects
+- ✅ **Version Control**: Separate git histories
+- ✅ **Resource Efficiency**: Single installation for all projects
+
 ### GAIA Evaluation Setup
 
 ```bash
