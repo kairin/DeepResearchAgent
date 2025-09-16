@@ -17,6 +17,7 @@ Complete documentation structure for DeepResearchAgent with organized guides and
 
 ### 🛠️ **Development & Contributing**
 - **[development/GIT_STRATEGY.md](development/GIT_STRATEGY.md)** - **MANDATORY** git workflow
+- **[development/TEST_SYSTEM_IMPROVEMENTS_SUMMARY.md](development/TEST_SYSTEM_IMPROVEMENTS_SUMMARY.md)** - Test system improvements and validation fixes
 - **[development/CONTRIBUTING.md](development/CONTRIBUTING.md)** - Contribution guidelines
 - **[security/GUIDELINES.md](security/GUIDELINES.md)** - Security best practices
 - **[standards/DOCUMENTATION_STANDARDS.md](standards/DOCUMENTATION_STANDARDS.md)** - Documentation standards

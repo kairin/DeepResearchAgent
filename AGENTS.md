@@ -34,7 +34,10 @@ uv run python main.py --tui                              # TUI launcher (interac
 uv run python main.py --config configs/config_cli_fallback.py  # CLI-first (recommended)
 uv run python main.py                                          # Full hierarchical system
 uv run python examples/run_general.py                          # Single agent
+```bash
 uv run pytest                                                  # Run tests
+uv run python scripts/run_comprehensive_tests.py             # Comprehensive test runner
+```
 ```
 
 ### Development
