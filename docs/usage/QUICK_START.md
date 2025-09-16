@@ -167,6 +167,34 @@ uv run python examples/run_oai_deep_research.py
 uv run python main.py
 ```
 
+## 🔗 Using on External Projects
+
+**DeepResearchAgent works best as a standalone tool** that you can use across multiple projects without installing it in each project directory.
+
+### Quick External Project Usage
+
+```bash
+# From DeepResearchAgent directory, analyze any project
+cd ~/Apps/DeepResearchAgent
+
+# Analyze external project
+uv run python main.py --task "Analyze the codebase in ~/projects/my_app"
+
+# Create project-specific config (optional)
+cp configs/config_cli_fallback.py configs/config_my_project.py
+uv run python main.py --config configs/config_my_project.py \
+    --task "Research issues in ~/projects/my_project"
+```
+
+### Benefits of External Usage
+
+- ✅ **Single Installation**: Use on unlimited projects
+- ✅ **Clean Separation**: Research tool stays independent
+- ✅ **Easy Updates**: Update without affecting projects
+- ✅ **Resource Efficient**: No duplicate installations
+
+**[Complete External Projects Guide](EXTERNAL_PROJECTS.md)**
+
 ## Configuration Options
 
 ### Basic Configuration

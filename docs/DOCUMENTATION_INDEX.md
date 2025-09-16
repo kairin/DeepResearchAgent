@@ -8,6 +8,7 @@ Complete documentation structure for DeepResearchAgent with organized guides and
 - **[../AGENTS.md](../AGENTS.md)** - Main project documentation (concise overview)
 - **[setup/ENVIRONMENT_SETUP.md](setup/ENVIRONMENT_SETUP.md)** - Complete installation guide
 - **[usage/QUICK_START.md](usage/QUICK_START.md)** - Get running in 5 minutes
+- **[usage/EXTERNAL_PROJECTS.md](usage/EXTERNAL_PROJECTS.md)** - Using on external projects (recommended)
 - **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Common issues and solutions
 
 ### 🏗️ **Architecture & Design**

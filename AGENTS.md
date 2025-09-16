@@ -36,6 +36,22 @@ uv run python main.py                                          # Full hierarchic
 uv run python examples/run_general.py                          # Single agent
 ```
 
+### Using on External Projects (Recommended)
+```bash
+# Keep DeepResearchAgent separate and use on any project
+cd /path/to/DeepResearchAgent
+
+# Create project-specific config
+cp configs/config_cli_fallback.py configs/config_my_project.py
+
+# Analyze external projects
+uv run python main.py --config configs/config_my_project.py \
+    --task "Analyze codebase in /path/to/external_project"
+
+# Example: MonthlyKyocera analysis
+uv run python main.py --task "Research Kyocera device performance patterns in /home/kkk/Apps/MonthlyKyocera"
+```
+
 ### Testing
 ```bash
 uv run pytest tests/unit/                               # Run unit tests only
