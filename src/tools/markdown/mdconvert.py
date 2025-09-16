@@ -155,8 +155,8 @@ class MarkitdownConverter:
             PdfConverter
         ]
 
-        self.client._converters = [
-            converter for converter in self.client._converters
+        self.client._page_converters = [
+            converter for converter in self.client._page_converters
             if not isinstance(converter, tuple(removed_converters))
         ]
         self.client.register_page_converter(PdfWithTableConverter())

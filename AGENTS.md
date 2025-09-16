@@ -96,9 +96,10 @@ git checkout main && git merge "archive/${DATETIME}-description" --no-ff
 **Full Git Guidelines:** [docs/development/GIT_STRATEGY.md](docs/development/GIT_STRATEGY.md)
 
 ## Models
-- **Commercial**: GPT-4.1/4o/o1/o3, Claude-3.7/4-Sonnet, Gemini-2.5-Pro
-- **CLI**: Claude Code (`claude` command), Gemini (via `gcloud cloud-shell ssh`)
-- **Local**: vLLM Qwen 2.5 (7B/14B/32B), HuggingFace
+Connected models are validated at startup. Typical configuration includes:
+- **CLI Tools**: Claude Code (`claude` command), Gemini (via `gcloud cloud-shell ssh`)
+- **Local Models**: Qwen 2.5 series (7B/14B/32B) via HuggingFace API
+- **Routing**: Primary CLI access with local model fallbacks
 
 **Configuration:** [docs/models/CONFIGURATION.md](docs/models/CONFIGURATION.md)
 
@@ -113,6 +114,10 @@ git checkout main && git merge "archive/${DATETIME}-description" --no-ff
 ```bash
 uv sync --reinstall                     # Fix dependencies
 uv run playwright install --force       # Fix browser automation
+
+# Model validation (shows actual connected models)
+uv run python -c "from src.models.model_validator import validate_and_display_models; validate_and_display_models()"
+
 # API validation
 uv run python -c "from src.models.api_validator import APIConfigValidator; APIConfigValidator().validate_all_configs()"
 ```
