@@ -10,6 +10,26 @@ English | [🌐 **Website**](https://skyworkai.github.io/DeepResearchAgent/)
 
 ---
 
+## 🚫 **IMPORTANT: Local-Only Development**
+
+> ⚠️ **All GitHub Actions are DISABLED** to prevent charges. This repository runs **100% locally**.
+>
+> **📖 [Local Development Guide →](LOCAL_DEVELOPMENT.md)**
+>
+> **🧪 Run Local CI/CD**: `./scripts/local_ci_cd.sh` (no charges, full validation)
+
+---rchAgent
+
+[![Website](https://img.shields.io/badge/🌐-Website-blue?style=for-the-badge&logo=github)](https://skyworkai.github.io/DeepResearchAgent/)
+[![Paper](https://img.shields.io/badge/📄-arXiv%20Paper-red?style=for-the-badge&logo=arxiv)](https://arxiv.org/abs/2506.12508)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+
+English | [🌐 **Website**](https://skyworkai.github.io/DeepResearchAgent/)
+
+> 🔧 **Migration Notice**: This fork has been migrated from Poetry to uv and upgraded to Python 3.13. See [CHANGELOG.md](CHANGELOG.md) for details and [FORK_MANAGEMENT.md](docs/management/FORK_MANAGEMENT.md) for sync strategies.
+
+---
+
 ## 🚀 **Upcoming Major Enhancement: Guardian Agents Integration**
 
 > **🎯 Vision**: Enhance DeepResearchAgent's research capabilities by integrating specialized agents from [Claude Guardian Agents](https://github.com/kairin/claude-guardian-agents) while maintaining focus on research excellence.

@@ -1,12 +1,19 @@
 name: Deploy to GitHub Pages
 
+# 🚫 DISABLED: All deployment runs locally to avoid charges
+# Run locally with: ./scripts/build_and_deploy_docs.sh
+# See AGENTS.md for local development workflow
+
 on:
-  # Disabled to prevent costs - use local build script instead
+  # ❌ DISABLED - Never run online to prevent charges
   # push:
   #   branches: [ main ]
   # pull_request:
   #   branches: [ main ]
-  workflow_dispatch:  # Manual trigger only
+  # workflow_dispatch:  # Manual trigger disabled
+
+  # This workflow is intentionally disabled
+  workflow_call:  # Only callable from other workflows (none exist)
 
 permissions:
   contents: read

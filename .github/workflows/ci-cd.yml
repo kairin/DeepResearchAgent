@@ -1,11 +1,19 @@
 name: CI/CD Pipeline
 
+# 🚫 DISABLED: All automation runs locally to avoid charges
+# Run locally with: ./scripts/local_ci_cd.sh
+# See AGENTS.md for local development workflow
+
 on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main, develop ]
-  workflow_dispatch:
+  # ❌ DISABLED - Never run online to prevent charges
+  # push:
+  #   branches: [ main, develop ]
+  # pull_request:
+  #   branches: [ main, develop ]
+  # workflow_dispatch:  # Manual trigger disabled
+
+  # This workflow is intentionally disabled
+  workflow_call:  # Only callable from other workflows (none exist)
 
 jobs:
   test:
