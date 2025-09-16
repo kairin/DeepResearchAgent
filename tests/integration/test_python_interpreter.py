@@ -2,29 +2,25 @@ import warnings
 
 warnings.simplefilter("ignore", DeprecationWarning)
 
+import argparse
 import asyncio
-import sys
-from pathlib import Path
 
-root = str(Path(__file__).resolve().parents[1])
-sys.path.append(root)
-
-from src.config import config
-from src.logger import logger
-from src.models import model_manager
 from src.tools.python_interpreter import PythonInterpreterTool
 from src.utils import assemble_project_path
 
-if __name__ == "__main__":
-    # Init config and logger
-    config.init_config(config_path=assemble_project_path("configs/config_general.toml"))
-    logger.init_logger(config.log_path)
-    logger.info(f"Initializing logger: {config.log_path}")
-    logger.info(f"Load config: {config}")
 
-    # Registed models
-    model_manager.init_models(use_local_proxy=True)
-    logger.info("Registed models: %s", ", ".join(model_manager.registed_models.keys()))
+def parse_args():
+    parser = argparse.ArgumentParser(description='main')
+    parser.add_argument(
+        "--config",
+        default=assemble_project_path("configs/config_general.py"),
+        help="config file path"
+    )
+    args = parser.parse_args()
+    return args
+
+
+if __name__ == "__main__":
 
     pit = PythonInterpreterTool()
     code = """
@@ -44,3 +40,12 @@ result = fibonacci(10)
     """
     content = asyncio.run(pit.forward(code))
     print(content)
+
+    # Validate the output
+    expected_fibonacci = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+    expected_output = f"Output: {expected_fibonacci}"
+    if content.output is None or expected_output not in content.output:
+        print("ERROR: Expected fibonacci sequence not found")
+        exit(1)
+
+    print("SUCCESS: Fibonacci sequence validation passed")

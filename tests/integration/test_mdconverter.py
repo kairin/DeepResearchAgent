@@ -1,26 +1,24 @@
-import os
+import argparse
 import warnings
 
 warnings.simplefilter("ignore", DeprecationWarning)
 
-import argparse
-import sys
-from pathlib import Path
-
 from mmengine import DictAction
-
-root = str(Path(__file__).resolve().parents[1])
-sys.path.append(root)
 
 from src.config import config
 from src.logger import logger
 from src.models import model_manager
 from src.tools.markdown.mdconvert import MarkitdownConverter
+from src.utils import assemble_project_path
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='main')
-    parser.add_argument("--config", default=os.path.join(root, "configs", "config_general.py"), help="config file path")
+    parser.add_argument(
+        "--config",
+        default=assemble_project_path("configs/config_general.py"),
+        help="config file path"
+    )
 
     parser.add_argument(
         '--cfg-options',
@@ -34,6 +32,7 @@ def parse_args():
         'is allowed.')
     args = parser.parse_args()
     return args
+
 
 if __name__ == "__main__":
 
@@ -50,8 +49,13 @@ if __name__ == "__main__":
 
     # Registed models
     model_manager.init_models(use_local_proxy=True)
-    logger.info("Registed models: %s", ", ".join(model_manager.registed_models.keys()))
+    registered_models = ", ".join(model_manager.registed_models.keys())
+    logger.info("Registed models: %s", registered_models)
 
     mdconvert = MarkitdownConverter()
-    md = mdconvert.convert("https://www.theguardian.com/food/2021/may/01/yotam-ottolenghis-recipes-for-takeaway-classics")
+    url = (
+        "https://www.theguardian.com/food/2021/may/01/"
+        "yotam-ottolenghis-recipes-for-takeaway-classics"
+    )
+    md = mdconvert.convert(url)
     print(md)

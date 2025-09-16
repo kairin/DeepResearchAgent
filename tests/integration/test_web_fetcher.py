@@ -1,22 +1,21 @@
 import argparse
 import asyncio
-import os
-import sys
-from pathlib import Path
 
 from mmengine import DictAction
-
-root = str(Path(__file__).resolve().parents[1])
-sys.path.append(root)
 
 from src.config import config
 from src.logger import logger
 from src.registry import TOOL
+from src.utils import assemble_project_path
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='main')
-    parser.add_argument("--config", default=os.path.join(root, "configs", "config_general.py"), help="config file path")
+    parser.add_argument(
+        "--config",
+        default=assemble_project_path("configs/config_general.py"),
+        help="config file path"
+    )
 
     parser.add_argument(
         '--cfg-options',
@@ -30,6 +29,7 @@ def parse_args():
         'is allowed.')
     args = parser.parse_args()
     return args
+
 
 if __name__ == "__main__":
 
@@ -50,7 +50,11 @@ if __name__ == "__main__":
     web_fetcher_tool_config = config.web_fetcher_tool_config
     web_fetcher_tool = TOOL.build(web_fetcher_tool_config)
 
-    url = "https://www.quora.com/If-Eliud-Kipchoge-can-maintain-such-a-fast-pace-over-26-2-miles-why-can-t-he-manage-to-break-the-single-mile-world-record"
+    url = (
+        "https://www.quora.com/If-Eliud-Kipchoge-can-maintain-"
+        "such-a-fast-pace-over-26-2-miles-why-can-t-he-manage-to-"
+        "break-the-single-mile-world-record"
+    )
 
     content = asyncio.run(web_fetcher_tool.forward(url))
     print(content)

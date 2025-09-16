@@ -1,20 +1,22 @@
 import argparse
-import os
-import sys
-from pathlib import Path
+import asyncio
 
 from mmengine import DictAction
 
-root = str(Path(__file__).resolve().parents[1])
-sys.path.append(root)
-
 from src.config import config
 from src.logger import logger
+from src.models import model_manager
+from src.registry import TOOL
+from src.utils import assemble_project_path
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='main')
-    parser.add_argument("--config", default=os.path.join(root, "configs", "config_general.py"), help="config file path")
+    parser.add_argument(
+        "--config",
+        default=assemble_project_path("configs/config_general.py"),
+        help="config file path"
+    )
 
     parser.add_argument(
         '--cfg-options',
@@ -29,6 +31,7 @@ def parse_args():
     args = parser.parse_args()
     return args
 
+
 if __name__ == "__main__":
 
     # Parse command line arguments
@@ -42,3 +45,20 @@ if __name__ == "__main__":
     logger.info(f"| Logger initialized at: {config.log_path}")
     logger.info(f"| Config:\n{config.pretty_text}")
 
+    # Registed models
+    model_manager.init_models(use_local_proxy=True)
+    registered_models = ", ".join(model_manager.registed_models.keys())
+    logger.info("Registed models: %s", registered_models)
+
+    # Registed tools
+    logger.info(f"| {TOOL}")
+
+    task = (
+        "Atlantic Puffin Fratercula arctica Wikipedia page revision "
+        "history visual edit tags before 2020"
+    )
+
+    deep_researcher_tool_config = config.deep_researcher_tool_config
+    deep_researcher_tool = TOOL.build(deep_researcher_tool_config)
+    results = asyncio.run(deep_researcher_tool.forward(task))
+    print(results)
