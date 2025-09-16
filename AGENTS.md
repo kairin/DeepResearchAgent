@@ -20,7 +20,8 @@ uv run playwright install chromium --with-deps
 cp .env.template .env
 
 # Run examples
-uv run python main.py
+uv run python main.py --tui    # Interactive TUI launcher
+uv run python main.py          # Default agent run
 ```
 
 **Detailed Setup:** [docs/setup/ENVIRONMENT_SETUP.md](docs/setup/ENVIRONMENT_SETUP.md)
@@ -29,6 +30,7 @@ uv run python main.py
 
 ### Running
 ```bash
+uv run python main.py --tui                              # TUI launcher (interactive menu)
 uv run python main.py --config configs/config_cli_fallback.py  # CLI-first (recommended)
 uv run python main.py                                          # Full hierarchical system
 uv run python examples/run_general.py                          # Single agent
