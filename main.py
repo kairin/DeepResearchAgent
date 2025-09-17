@@ -5,6 +5,19 @@ import subprocess
 import sys
 from pathlib import Path
 
+# EMERGENCY: Clean up terminal state immediately to prevent mouse flood
+try:
+    # Disable all mouse tracking modes immediately
+    emergency_sequences = ["\033[?1000l", "\033[?1002l", "\033[?1003l",
+                          "\033[?1006l", "\033[?1015l", "\033[?25h",
+                          "\033[?1049l", "\033[?1004l", "\033[?2004l"]
+    for seq in emergency_sequences:
+        sys.stdout.write(seq)
+        sys.stdout.flush()
+    os.system('stty sane 2>/dev/null || true')
+except Exception:
+    pass  # Fail silently
+
 from mmengine import DictAction
 from textual import work
 from textual.app import App, ComposeResult
@@ -32,14 +45,24 @@ def test_textual():
     """Simple test to check if Textual works in this environment."""
     from textual.app import App
     from textual.widgets import Label
-    
+    import sys
+
     class TestApp(App):
         def compose(self) -> ComposeResult:
             yield Label("Textual Test - If you see this, Textual is working!")
-    
+
+        def on_key(self, event):
+            if event.key == "q":
+                self.exit()
+
+    # Check if stdout is a terminal
+    if not sys.stdout.isatty():
+        print("Warning: stdout is not a terminal")
+        return False
+
     app = TestApp()
     try:
-        asyncio.run(app.run_async())
+        app.run()
     except Exception as e:
         print(f"Textual test failed: {e}")
         return False
@@ -331,13 +354,6 @@ class DeepResearchTUI(App):
         # Bottom: Log
         yield Log(id="log")
 
-        # Log initialization info
-        log = self.query_one("#log", Log)
-        log.write("🚀 DeepResearchTUI initialized")
-        log.write(f"📊 Menu items: {len(self.MENU_ITEMS)}")
-        for i, item in enumerate(self.MENU_ITEMS):
-            log.write(f"   {i}: {item['name']} ({item['id']})")
-
     def on_mount(self) -> None:
         """Called when the app is mounted - setup terminal mode."""
         # Ensure we're in the right terminal mode
@@ -362,7 +378,12 @@ class DeepResearchTUI(App):
         
         sys.stdout.flush()
         
+        # Log initialization info now that widgets are mounted
         log = self.query_one("#log", Log)
+        log.write("🚀 DeepResearchTUI initialized")
+        log.write(f"📊 Menu items: {len(self.MENU_ITEMS)}")
+        for i, item in enumerate(self.MENU_ITEMS):
+            log.write(f"   {i}: {item['name']} ({item['id']})")
         log.write("🖥️  Terminal mode configured - mouse tracking disabled")
         log.write("🎯 Use keyboard navigation: ↑/↓ to select, Enter to activate")
         log.write("ℹ️  If you see mouse coordinates, try: reset && python main.py --tui")
@@ -713,6 +734,42 @@ class DeepResearchTUI(App):
         except Exception as e:
             log.write(f"✗ {name} encountered an error: {e}")
 
+    def action_quit(self) -> None:
+        """Quit the TUI with proper cleanup."""
+        self._cleanup_terminal()
+        self.exit()
+
+    def _cleanup_terminal(self) -> None:
+        """Comprehensive terminal cleanup to disable mouse tracking."""
+        import sys
+
+        # Disable all mouse tracking modes
+        cleanup_sequences = [
+            "\033[?1000l",    # Disable X11 mouse reporting
+            "\033[?1002l",    # Disable cell motion mouse tracking
+            "\033[?1003l",    # Disable all motion mouse tracking
+            "\033[?1006l",    # Disable SGR mouse mode
+            "\033[?1015l",    # Disable urxvt mouse mode
+            "\033[?25h",      # Show cursor
+            "\033[?1049l",    # Exit alternate screen
+            "\033[?1004l",    # Disable focus reporting
+            "\033[?2004l",    # Disable bracketed paste
+        ]
+
+        for seq in cleanup_sequences:
+            sys.stdout.write(seq)
+            sys.stdout.flush()
+
+    def on_key(self, event) -> None:
+        """Handle key presses including quit."""
+        if event.key == "q":
+            self.action_quit()
+        # Let other keys be handled by default bindings
+
+    def on_shutdown(self) -> None:
+        """Called when app shuts down - ensure cleanup."""
+        self._cleanup_terminal()
+
 
 async def main(args, task: str | None = None):
     try:
@@ -804,13 +861,61 @@ if __name__ == '__main__':
 
     # Handle TUI mode - either explicitly requested or default when no command
     if getattr(args, 'tui', False) or args.command is None:
-        # Reset terminal to a known state
-        import os
-        os.system('reset')
-        os.system('stty sane')
-        
-        app = DeepResearchTUI()
-        asyncio.run(app.run_async())
+        # Check terminal compatibility first
+        import sys
+        if not sys.stdin.isatty() or not sys.stdout.isatty():
+            print("❌ TUI requires an interactive terminal (TTY)")
+            print()
+            print("The current environment is not a proper TTY:")
+            print(f"  stdin.isatty(): {sys.stdin.isatty()}")
+            print(f"  stdout.isatty(): {sys.stdout.isatty()}")
+            print()
+            print("🔧 Solutions:")
+            print("  1. Run in a proper terminal emulator (not IDE terminal)")
+            print("  2. Use: python main.py --config configs/config_cli_fallback.py")
+            print("  3. Or run without --tui flag to use CLI mode")
+            print()
+            print("Falling back to CLI mode...")
+            # Fall through to CLI mode instead of exiting
+        else:
+            # Reset terminal to a known state and disable mouse tracking
+            import os
+
+            # Comprehensive terminal reset
+            reset_sequences = [
+                "\033[?1000l",    # Disable X11 mouse reporting
+                "\033[?1002l",    # Disable cell motion mouse tracking
+                "\033[?1003l",    # Disable all motion mouse tracking
+                "\033[?1006l",    # Disable SGR mouse mode
+                "\033[?1015l",    # Disable urxvt mouse mode
+                "\033[?25h",      # Show cursor
+                "\033[?1049l",    # Exit alternate screen
+                "\033[?1004l",    # Disable focus reporting
+                "\033[?2004l",    # Disable bracketed paste
+            ]
+
+            for seq in reset_sequences:
+                sys.stdout.write(seq)
+                sys.stdout.flush()
+
+            os.system('stty sane')
+            os.system('reset')
+
+            try:
+                app = DeepResearchTUI()
+                app.run()
+            except Exception as e:
+                print(f"❌ TUI failed: {e}")
+                print("Falling back to CLI mode...")
+            finally:
+                # Ensure cleanup on exit
+                for seq in reset_sequences:
+                    sys.stdout.write(seq)
+                    sys.stdout.flush()
+                os.system('stty sane')
+                sys.exit(0)  # Exit after TUI attempt
+
+        # If we get here, either TTY check failed or TUI crashed - run CLI mode
     else:
         asyncio.run(main(args))
 # TUI scrolling and click fixes applied

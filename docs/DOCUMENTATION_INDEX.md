@@ -10,6 +10,7 @@ Complete documentation structure for DeepResearchAgent with organized guides and
 - **[usage/QUICK_START.md](usage/QUICK_START.md)** - Get running in 5 minutes
 - **[usage/EXTERNAL_PROJECTS.md](usage/EXTERNAL_PROJECTS.md)** - Using on external projects (recommended)
 - **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Common issues and solutions
+- **[TERMINAL_RECOVERY.md](TERMINAL_RECOVERY.md)** - 🚨 Emergency terminal recovery (mouse escape floods)
 
 ### 🏗️ **Architecture & Design**
 - **[architecture/OVERVIEW.md](architecture/OVERVIEW.md)** - System design and components
@@ -45,9 +46,10 @@ Complete documentation structure for DeepResearchAgent with organized guides and
 3. Understand [architecture/OVERVIEW.md](architecture/OVERVIEW.md) - System design
 
 ### **For Troubleshooting**
-1. Check [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Common issues
-2. Review [IMMEDIATE_FIXES_README.md](IMMEDIATE_FIXES_README.md) - Quick fixes
-3. Validate [models/CONFIGURATION.md](models/CONFIGURATION.md) - Model setup
+1. 🚨 **Emergency**: [TERMINAL_RECOVERY.md](TERMINAL_RECOVERY.md) - Terminal flooded with mouse escapes
+2. Check [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Common issues
+3. Review [IMMEDIATE_FIXES_README.md](IMMEDIATE_FIXES_README.md) - Quick fixes
+4. Validate [models/CONFIGURATION.md](models/CONFIGURATION.md) - Model setup
 
 ## 📋 **Document Relationships**
 

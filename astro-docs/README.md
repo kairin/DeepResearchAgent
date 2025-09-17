@@ -1,35 +1,66 @@
-# Starlight Starter Kit: Basics
+# DeepResearchAgent Documentation Site
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+Modern documentation site built with Astro, Tailwind CSS, and shadcn/ui components.
 
-```
-npm create astro@latest -- --template starlight
-```
+## 🚀 Quick Start
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+```bash
+# Install dependencies
+npm install
 
-## 🚀 Project Structure
+# Start development server
+npm run dev
 
-Inside of your Astro + Starlight project, you'll see the following folders and files:
+# Build for production
+npm run build
 
-```
-.
-├── public/
-├── src/
-│   ├── assets/
-│   ├── content/
-│   │   └── docs/
-│   └── content.config.ts
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
+# Preview production build
+npm run preview
 ```
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+## 🎨 Design System
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
+This site uses:
+- **[Astro](https://astro.build/)** - Static site generator
+- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
+- **[shadcn/ui](https://ui.shadcn.com/)** - Re-usable components built using Radix UI and Tailwind CSS
+- **[Lucide React](https://lucide.dev/)** - Beautiful & consistent icons
 
-Static assets, like favicons, can be placed in the `public/` directory.
+## 📁 Project Structure
+
+```
+src/
+├── components/
+│   └── ui/                 # shadcn/ui components
+├── layouts/
+│   └── Layout.astro        # Main layout component
+├── pages/
+│   ├── index.astro         # Homepage
+│   ├── quick-start.astro   # Quick start guide
+│   └── emergency-recovery.astro # Emergency procedures
+├── styles/
+│   └── globals.css         # Global styles and Tailwind setup
+└── lib/
+    └── utils.ts            # Utility functions
+```
+
+## 🎯 Key Features
+
+- **Responsive Design** - Mobile-first approach with Tailwind CSS
+- **Emergency Recovery** - Prominently featured emergency procedures for terminal issues
+- **Modern UI Components** - Consistent design system using shadcn/ui
+- **Fast Performance** - Static generation with Astro
+- **Developer Experience** - TypeScript support and path mapping
+
+## 🚨 Emergency Recovery
+
+The site prominently features emergency recovery procedures for terminal mouse tracking issues. The emergency recovery page is accessible at `/emergency-recovery` and includes:
+
+- Quick reference card for immediate action
+- Step-by-step recovery methods
+- Root cause analysis
+- Prevention measures
+- Technical details
 
 ## 🧞 Commands
 
@@ -44,6 +75,44 @@ All commands are run from the root of the project, from a terminal:
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
 
-## 👀 Want to learn more?
+## 📝 Content Management
 
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+Pages are created as `.astro` files in the `src/pages/` directory. The site uses:
+
+- **Component-based architecture** with reusable UI components
+- **TypeScript support** for type safety
+- **CSS-in-JS** through Tailwind CSS classes
+- **Modern build tools** with Vite integration
+
+## 🛠️ Development
+
+### Adding New Pages
+
+1. Create a new `.astro` file in `src/pages/`
+2. Import the `Layout` component
+3. Use shadcn/ui components for consistent styling
+4. Import global CSS with `@import '../styles/globals.css'`
+
+### Using UI Components
+
+```astro
+---
+import { Button } from '../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+---
+
+<Card>
+  <CardHeader>
+    <CardTitle>Example Card</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <Button>Click me</Button>
+  </CardContent>
+</Card>
+```
+
+## 🔗 Related
+
+- [Main DeepResearchAgent Repository](../README.md)
+- [Emergency Recovery Guide](src/pages/emergency-recovery.astro)
+- [File Organization Documentation](../docs/FILE_ORGANIZATION.md)

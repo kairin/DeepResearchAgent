@@ -14,6 +14,11 @@ echo "📊 Updating research data..."
 cd "$PROJECT_ROOT"
 uv run python scripts/astro_data_pipeline.py
 
+# Sync documentation from main project
+echo "📚 Syncing documentation..."
+# Copy latest documentation updates if needed
+# (Main docs are already organized in astro-docs/src/content/docs/)
+
 # Check if Astro directory exists
 if [ ! -d "$ASTRO_DIR" ]; then
     echo "❌ Astro directory not found: $ASTRO_DIR"

@@ -70,9 +70,13 @@ uv add package-name                      # Add dependency
 uv sync --all-extras                     # Install dependencies
 uv run black . && uv run isort .         # Format code
 uv run ruff check .                      # Lint code
+
+# Development tools
+uv run python tools/development/test_minimal_tui.py     # Test TUI functionality
+uv run python tools/development/debug_terminal.py      # Debug terminal issues
 ```
 
-**Complete Command Reference:** [docs/usage/COMMANDS.md](docs/usage/COMMANDS.md)
+**Complete Command Reference:** [docs/usage/COMMANDS.md](docs/usage/COMMANDS.md) • [File Organization](docs/FILE_ORGANIZATION.md)
 
 ## Configuration
 ```bash
@@ -177,6 +181,16 @@ Connected models are validated at startup. Typical configuration includes:
 
 ## Troubleshooting
 
+### 🚨 Emergency: Terminal Flooded with Mouse Escapes
+If terminal shows continuous `<35;83;16M` sequences and you can't type:
+```bash
+# 1. Close terminal window → open new terminal (fastest)
+# 2. Try rapid Ctrl+C if you can type
+# 3. Quick fix: ./fix
+```
+**Emergency Guide:** [docs/TERMINAL_RECOVERY.md](docs/TERMINAL_RECOVERY.md)
+
+### Standard Issues
 ```bash
 uv sync --reinstall                     # Fix dependencies
 uv run playwright install --force       # Fix browser automation
@@ -186,6 +200,15 @@ uv run python -c "from src.models.model_validator import validate_and_display_mo
 
 # API validation
 uv run python -c "from src.models.api_validator import APIConfigValidator; APIConfigValidator().validate_all_configs()"
+
+# TUI issues - use CLI mode instead:
+uv run python main.py --config configs/config_cli_fallback.py
+
+# Emergency mouse tracking fix:
+uv run python tools/emergency/fix_mouse.py
+
+# TUI testing:
+uv run python tools/development/test_minimal_tui.py
 ```
 
 **Full Guide:** [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
