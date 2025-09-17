@@ -11,6 +11,7 @@ from textual.app import App, ComposeResult
 from textual.containers import Vertical, Horizontal
 from textual.widgets import (Button, Header, Footer, Log, Input, Select,
                            Label, Static, ListView, ListItem)
+from textual import events
 
 root = str(Path(__file__).resolve().parents[0])
 sys.path.append(root)
@@ -27,7 +28,35 @@ from src.tui.agent_integration import run_with_tui_progress
 from src.project_cli import setup_project_cli
 
 
+def test_textual():
+    """Simple test to check if Textual works in this environment."""
+    from textual.app import App
+    from textual.widgets import Label
+    
+    class TestApp(App):
+        def compose(self) -> ComposeResult:
+            yield Label("Textual Test - If you see this, Textual is working!")
+    
+    app = TestApp()
+    try:
+        asyncio.run(app.run_async())
+    except Exception as e:
+        print(f"Textual test failed: {e}")
+        return False
+    return True
+
+
 def parse_args():
+    # First check if this is a test command
+    import sys
+    if '--test-textual' in sys.argv:
+        # Create a simple args object for test
+        class TestArgs:
+            test_textual = True
+            tui = False
+            command = None
+        return TestArgs()
+    
     parser = argparse.ArgumentParser(
         description='DeepResearchAgent - Multi-Project Research Tool')
     
@@ -35,8 +64,12 @@ def parse_args():
     parser.add_argument(
         "--tui", action="store_true", help="Launch TUI mode")
     
+    # Add test flag
+    parser.add_argument(
+        "--test-textual", action="store_true", help="Test if Textual works in this environment")
+    
     subparsers = parser.add_subparsers(
-        dest='command', help='Available commands')
+        dest='command', help='Available commands', required=False)
 
     # Main research command (default behavior)
     research_parser = subparsers.add_parser(
@@ -67,6 +100,9 @@ def parse_args():
 class DeepResearchTUI(App):
     """TUI for DeepResearchAgent with menu and description panels."""
 
+    # Disable mouse support to avoid coordinate issues
+    ENABLE_MOUSE_SUPPORT = False
+    
     # State for project research mode
     research_mode = False
     selected_project = None
@@ -104,18 +140,46 @@ class DeepResearchTUI(App):
             "shortcut": "c"
         },
         {
+            "id": "research",
+            "name": "Research Task",
+            "description": "Run a custom research task.\n\n"
+                           "Execute the main research agent with your own task.",
+            "shortcut": "r"
+        },
+        {
+            "id": "project_add",
+            "name": "Add Project",
+            "description": "Add a new project to the registry.\n\n"
+                           "Register a project for research and tracking.",
+            "shortcut": "p"
+        },
+        {
             "id": "project_list",
             "name": "List Projects",
             "description": "Display all registered projects.\n\n"
                            "Shows names, IDs, paths, and status.",
-            "shortcut": "p"
+            "shortcut": "l"
         },
         {
             "id": "project_research",
             "name": "Research on Project",
             "description": "Perform research on a specific project.\n\n"
                            "Select projects and define custom tasks.",
-            "shortcut": "r"
+            "shortcut": "s"
+        },
+        {
+            "id": "project_history",
+            "name": "Project History",
+            "description": "Show research history for a project.\n\n"
+                           "View past research sessions and results.",
+            "shortcut": "h"
+        },
+        {
+            "id": "project_remove",
+            "name": "Remove Project",
+            "description": "Remove a project from the registry.\n\n"
+                           "Delete project registration and history.",
+            "shortcut": "d"
         },
         {
             "id": "quit",
@@ -124,7 +188,7 @@ class DeepResearchTUI(App):
                            "All processes will be terminated.",
             "shortcut": "q"
         }
-    ]
+    ]  # Updated with scrollable menu and click support
 
     CSS = """
     Screen {
@@ -147,6 +211,7 @@ class DeepResearchTUI(App):
         width: 40;
         border: solid $primary;
         padding: 1;
+        overflow-y: auto;
     }
 
     #description_panel {
@@ -165,6 +230,8 @@ class DeepResearchTUI(App):
         padding: 0 1;
         margin: 0 0 1 0;
         background: $surface;
+        width: 100%;
+        text-align: left;
     }
 
     .menu-item.selected {
@@ -174,6 +241,11 @@ class DeepResearchTUI(App):
 
     .menu-item:hover {
         background: $accent;
+    }
+
+    .menu-item:focus {
+        background: $primary;
+        color: $primary-background;
     }
 
     Label {
@@ -194,8 +266,12 @@ class DeepResearchTUI(App):
         ("a", "run_gaia", "Run Gaia Test"),
         ("o", "run_oai", "Run OAI Deep Research"),
         ("c", "run_cli", "Run CLI Fallback"),
-        ("p", "project_list", "List Projects"),
-        ("r", "project_research", "Research on Project"),
+        ("r", "research", "Research Task"),
+        ("p", "project_add", "Add Project"),
+        ("l", "project_list", "List Projects"),
+        ("s", "project_research", "Research on Project"),
+        ("h", "project_history", "Project History"),
+        ("d", "project_remove", "Remove Project"),
     ]
 
     def compose(self) -> ComposeResult:
@@ -209,11 +285,13 @@ class DeepResearchTUI(App):
                     classes = "menu-item"
                     if i == self.current_selection:
                         classes += " selected"
-                    yield Static(
+                    button = Button(
                         f"[{item['shortcut']}] {item['name']}",
                         classes=classes,
-                        id=f"menu_item_{i}"
+                        id=f"menu_item_{i}",
+                        variant="default"
                     )
+                    yield button
 
             # Right panel: Description
             with Vertical(id="description_panel"):
@@ -253,21 +331,115 @@ class DeepResearchTUI(App):
         # Bottom: Log
         yield Log(id="log")
 
+        # Log initialization info
+        log = self.query_one("#log", Log)
+        log.write("🚀 DeepResearchTUI initialized")
+        log.write(f"📊 Menu items: {len(self.MENU_ITEMS)}")
+        for i, item in enumerate(self.MENU_ITEMS):
+            log.write(f"   {i}: {item['name']} ({item['id']})")
+
+    def on_mount(self) -> None:
+        """Called when the app is mounted - setup terminal mode."""
+        # Ensure we're in the right terminal mode
+        import sys
+        import os
+        
+        # Reset terminal to known state
+        os.system('stty sane 2>/dev/null || true')
+        
+        # Disable mouse tracking by sending escape sequences
+        sys.stdout.write('\033[?1000l')  # Disable mouse tracking
+        sys.stdout.write('\033[?1002l')  # Disable mouse motion tracking  
+        sys.stdout.write('\033[?1003l')  # Disable all mouse tracking
+        sys.stdout.write('\033[?1005l')  # Disable mouse wheel tracking
+        sys.stdout.write('\033[?1006l')  # Disable SGR mouse mode
+        sys.stdout.write('\033[?1015l')  # Disable URXVT mouse mode
+        
+        # Reset cursor and screen
+        sys.stdout.write('\033[2J')      # Clear screen
+        sys.stdout.write('\033[H')       # Move cursor to home
+        sys.stdout.write('\033[?25h')    # Show cursor
+        
+        sys.stdout.flush()
+        
+        log = self.query_one("#log", Log)
+        log.write("🖥️  Terminal mode configured - mouse tracking disabled")
+        log.write("🎯 Use keyboard navigation: ↑/↓ to select, Enter to activate")
+        log.write("ℹ️  If you see mouse coordinates, try: reset && python main.py --tui")
+
     def on_button_pressed(self, event: Button.Pressed) -> None:
+        """Handle button presses including menu item clicks."""
+        button_id = event.button.id
+        log = self.query_one("#log", Log)
+        log.write(f"🔘 Button pressed: {button_id}")
+
+        # Handle menu item clicks
+        if button_id.startswith("menu_item_"):
+            try:
+                item_index = int(button_id.split("_")[-1])
+                if 0 <= item_index < len(self.MENU_ITEMS):
+                    self.current_selection = item_index
+                    self.refresh()
+                    log.write(f"📋 Menu item {item_index} selected: {self.MENU_ITEMS[item_index]['name']}")
+                    # Execute the selected action
+                    current_item = self.MENU_ITEMS[self.current_selection]
+                    action_map = {
+                        "run_general": self.run_general_agent,
+                        "run_gaia": self.run_gaia_test,
+                        "run_oai": self.run_oai_deep_research,
+                        "run_cli": self.run_cli_fallback,
+                        "research": self.research_task,
+                        "project_add": self.project_add,
+                        "project_list": self.project_list,
+                        "project_research": self.start_project_research,
+                        "project_history": self.project_history,
+                        "project_remove": self.project_remove,
+                        "quit": self.action_quit,
+                    }
+                    if current_item["id"] in action_map:
+                        log.write(f"🚀 Executing action: {current_item['id']}")
+                        action_map[current_item["id"]]()
+                    else:
+                        log.write(f"❌ No action found for: {current_item['id']}")
+                else:
+                    log.write(f"❌ Invalid menu item index: {item_index}")
+            except (ValueError, IndexError) as e:
+                log.write(f"❌ Error parsing menu item ID: {e}")
+            return
+
+        # Handle other buttons
         action_map = {
             "run_general": self.run_general_agent,
             "run_gaia": self.run_gaia_test,
             "run_oai": self.run_oai_deep_research,
             "run_cli": self.run_cli_fallback,
+            "research": self.research_task,
+            "project_add": self.project_add,
             "project_list": self.project_list,
             "project_research": self.start_project_research,
+            "project_history": self.project_history,
+            "project_remove": self.project_remove,
             "back_to_main": self.back_to_main,
             "start_research": self.start_research,
             "cancel_research": self.cancel_research,
             "quit": self.action_quit,
         }
-        if event.button.id in action_map:
-            action_map[event.button.id]()
+        if button_id in action_map:
+            log.write(f"🚀 Executing other action: {button_id}")
+            action_map[button_id]()
+        else:
+            log.write(f"❓ Unknown button: {button_id}")
+
+    def on_focus(self, event: events.Focus) -> None:
+        """Handle focus events on menu buttons."""
+        if event.widget.id and event.widget.id.startswith("menu_item_"):
+            try:
+                item_index = int(event.widget.id.split("_")[-1])
+                if 0 <= item_index < len(self.MENU_ITEMS):
+                    self.current_selection = item_index
+                    self.refresh()
+            except (ValueError, IndexError):
+                pass
 
     async def action_quit(self) -> None:
         self.exit()
@@ -284,20 +456,42 @@ class DeepResearchTUI(App):
     def action_run_cli(self) -> None:
         self.run_cli_fallback()
 
+    def action_research(self) -> None:
+        self.research_task()
+
+    def action_project_add(self) -> None:
+        self.project_add()
+
+    def action_project_list(self) -> None:
+        self.project_list()
+
+    def action_project_research(self) -> None:
+        self.start_project_research()
+
+    def action_project_history(self) -> None:
+        self.project_history()
+
+    def action_project_remove(self) -> None:
+        self.project_remove()
+
     def action_cursor_up(self) -> None:
         """Move cursor up in menu."""
         if not self.research_mode:
+            old_selection = self.current_selection
             self.current_selection = max(0, self.current_selection - 1)
-            self.refresh()
+            if old_selection != self.current_selection:
+                self.refresh()
 
     def action_cursor_down(self) -> None:
         """Move cursor down in menu."""
         if not self.research_mode:
+            old_selection = self.current_selection
             self.current_selection = min(
                 len(self.MENU_ITEMS) - 1,
                 self.current_selection + 1
             )
-            self.refresh()
+            if old_selection != self.current_selection:
+                self.refresh()
 
     def action_select_item(self) -> None:
         """Select the currently highlighted menu item."""
@@ -308,8 +502,12 @@ class DeepResearchTUI(App):
                 "run_gaia": self.run_gaia_test,
                 "run_oai": self.run_oai_deep_research,
                 "run_cli": self.run_cli_fallback,
+                "research": self.research_task,
+                "project_add": self.project_add,
                 "project_list": self.project_list,
                 "project_research": self.start_project_research,
+                "project_history": self.project_history,
+                "project_remove": self.project_remove,
                 "quit": self.action_quit,
             }
             if current_item["id"] in action_map:
@@ -357,13 +555,38 @@ class DeepResearchTUI(App):
             log.write(f"❌ Error listing projects: {e}")
 
     @work(exclusive=True, thread=True)
-    def project_research(self) -> None:
-        """Research on a specific project."""
+    def research_task(self) -> None:
+        """Run a custom research task."""
         log = self.query_one("#log", Log)
-        log.write("🔬 Project research feature coming soon...")
+        log.write("🔬 Research task feature coming soon...")
+        log.write("   Use CLI commands for now:")
+        log.write("   uv run python main.py research \"your task here\"")
+
+    @work(exclusive=True, thread=True)
+    def project_add(self) -> None:
+        """Add a new project to the registry."""
+        log = self.query_one("#log", Log)
+        log.write("� Add project feature coming soon...")
+        log.write("   Use CLI commands for now:")
+        log.write("   uv run python main.py project-add \"Project Name\" /path/to/project")
+
+    @work(exclusive=True, thread=True)
+    def project_history(self) -> None:
+        """Show research history for a project."""
+        log = self.query_one("#log", Log)
+        log.write("📚 Project history feature coming soon...")
         log.write("   Use CLI commands for now:")
         log.write("   uv run python main.py project-list")
-        log.write("   uv run python main.py project-research <id> <task>")
+        log.write("   uv run python main.py project-history <project_id>")
+
+    @work(exclusive=True, thread=True)
+    def project_remove(self) -> None:
+        """Remove a project from the registry."""
+        log = self.query_one("#log", Log)
+        log.write("🗑️  Remove project feature coming soon...")
+        log.write("   Use CLI commands for now:")
+        log.write("   uv run python main.py project-list")
+        log.write("   uv run python main.py project-remove <project_id>")
 
     def _get_project_options(self):
         """Get project options for the select widget."""
@@ -569,8 +792,23 @@ if __name__ == '__main__':
         args.func(args)
         sys.exit(0)
 
+    # Handle test command
+    if getattr(args, 'test_textual', False):
+        print("Testing Textual compatibility...")
+        success = test_textual()
+        if success:
+            print("✅ Textual test passed!")
+        else:
+            print("❌ Textual test failed!")
+        sys.exit(0)
+
     # Handle TUI mode - either explicitly requested or default when no command
     if getattr(args, 'tui', False) or args.command is None:
+        # Reset terminal to a known state
+        import os
+        os.system('reset')
+        os.system('stty sane')
+        
         app = DeepResearchTUI()
         asyncio.run(app.run_async())
     else:

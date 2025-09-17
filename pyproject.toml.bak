@@ -14,7 +14,7 @@ dependencies = [
     "litellm",
     "openai",
     "pillow",
-    "numpy>=1.24.0", # Relaxed to permit numpy 2.x (align with requirements.txt). If you need to block numpy 2.x for compatibility, revert this change.
+    "numpy>=1.24.0,<2.0.0", # Keep constraint due to browser-use compatibility
     "pynput",
     "transformers",
     "markdownify",
@@ -46,8 +46,7 @@ dependencies = [
     "httpx-aiohttp",
     "inflection",
     "mmengine",
-    "pydantic<2.0.0",  # Force Pydantic v1 for litellm compatibility
-    # removed typo: "markitdown" (no known PyPI package)
+    "markitdown",
     "browser-use==0.1.48", # Keep specific version for compatibility
     "playwright",
     "firecrawl-py>=4.3.6",
