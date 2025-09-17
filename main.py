@@ -575,3 +575,4 @@ if __name__ == '__main__':
         asyncio.run(app.run_async())
     else:
         asyncio.run(main(args))
+# TUI scrolling and click fixes applied
