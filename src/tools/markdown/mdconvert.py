@@ -6,15 +6,19 @@ load_dotenv(verbose=True)
 
 import tempfile
 from typing import Any
+import os
 
 import camelot
 from litellm import transcription
 from markitdown import MarkItDown
-from markitdown._markitdown import (
-    MediaConverter,
-    DocumentConverterResult,
-    PdfConverter,
-)
+from markitdown._markitdown import DocumentConverterResult
+import pymupdf
+import pdfplumber
+from PIL import Image
+import pillow_heif
+
+# Register HEIF opener for PIL
+pillow_heif.register_heif_opener()
 
 from src.logger import logger
 from src.models import model_manager
@@ -41,37 +45,11 @@ def transcribe_audio(file_stream, audio_format):
 
     return result
 
-class AudioWhisperConverter(MediaConverter):
+class AudioWhisperConverter:
+    """Custom audio converter using transcription service"""
 
-    def convert(
-            self,
-            local_path: str,
-            **kwargs: Any,  # Options to pass to the converter
-    ) -> DocumentConverterResult:
+    def convert(self, local_path: str, **kwargs: Any) -> DocumentConverterResult:
         md_content = ""
-
-        # Add metadata - for now we'll skip metadata extraction
-        # as the exiftool_metadata function API may have changed
-        metadata = None
-        if metadata:
-            for f in [
-                "Title",
-                "Artist",
-                "Author",
-                "Band",
-                "Album",
-                "Genre",
-                "Track",
-                "DateTimeOriginal",
-                "CreateDate",
-                # "Duration", -- Wrong values when read from memory
-                "NumChannels",
-                "SampleRate",
-                "AvgBytesPerSec",
-                "BitsPerSample",
-            ]:
-                if f in metadata:
-                    md_content += f"{f}: {metadata[f]}\n"
 
         # Figure out the audio format for transcription from file path
         file_extension = os.path.splitext(local_path)[1].lower()
@@ -90,47 +68,64 @@ class AudioWhisperConverter(MediaConverter):
                 with open(local_path, 'rb') as file_stream:
                     transcript = transcribe_audio(file_stream, audio_format=audio_format)
                     if transcript:
-                        md_content += "\n\n### Audio Transcript:\n" + transcript
-            except (FileNotFoundError, Exception):
-                pass  # Skip transcription if file cannot be read
+                        md_content += "### Audio Transcript:\n" + transcript
+            except (FileNotFoundError, Exception) as e:
+                logger.warning(f"Audio transcription failed: {e}")
+                md_content = "Audio file detected but transcription failed."
 
-        # Return the result
         return DocumentConverterResult(markdown=md_content.strip())
 
-class PdfWithTableConverter(PdfConverter):
-    def convert(
-        self,
-        local_path: str,
-        **kwargs: Any,  # Options to pass to the converter
-    ) -> DocumentConverterResult:
-        # Use the parent PdfConverter to get base conversion first
-        try:
-            base_result = super().convert(local_path, **kwargs)
-            base_markdown = base_result.markdown if base_result else ""
-        except Exception as e:
-            logger.warning(f"Base PDF conversion failed: {e}")
-            base_markdown = ""
+class PdfWithTableConverter:
+    """Custom PDF converter using pymupdf and pdfplumber"""
 
-        # Try to extract tables from the PDF
-        try:
-            with open(local_path, 'rb') as file_stream:
-                tables = read_tables_from_stream(file_stream)
-                num_tables = tables.n
-                if num_tables == 0:
-                    # No tables found, return base markdown
-                    return DocumentConverterResult(markdown=base_markdown)
-                else:
-                    # Tables found, add them to the markdown
-                    table_content = ""
-                    for i in range(num_tables):
-                        table = tables[i].df
-                        table_content += f"Table {i + 1}:\n" + table.to_markdown(index=False) + "\n\n"
+    def convert(self, local_path: str, **kwargs: Any) -> DocumentConverterResult:
+        md_content = ""
 
-                    combined_markdown = base_markdown + "\n\n" + table_content
-                    return DocumentConverterResult(markdown=combined_markdown)
+        try:
+            # Use pymupdf for basic text extraction
+            doc = pymupdf.open(local_path)
+            text_content = ""
+            for page_num in range(doc.page_count):
+                page = doc[page_num]
+                text_content += f"## Page {page_num + 1}\n\n"
+                text_content += page.get_text() + "\n\n"
+            doc.close()
+
+            md_content += text_content
+
+            # Use pdfplumber for table extraction
+            try:
+                with pdfplumber.open(local_path) as pdf:
+                    tables_found = False
+                    for page_num, page in enumerate(pdf.pages):
+                        tables = page.extract_tables()
+                        if tables:
+                            if not tables_found:
+                                md_content += "\n## Extracted Tables\n\n"
+                                tables_found = True
+
+                            for table_idx, table in enumerate(tables):
+                                md_content += f"### Table {table_idx + 1} (Page {page_num + 1})\n\n"
+                                # Convert table to markdown
+                                if table and len(table) > 0:
+                                    # Create header row
+                                    header = table[0]
+                                    md_content += "| " + " | ".join(str(cell) if cell else "" for cell in header) + " |\n"
+                                    md_content += "| " + " | ".join("---" for _ in header) + " |\n"
+
+                                    # Add data rows
+                                    for row in table[1:]:
+                                        md_content += "| " + " | ".join(str(cell) if cell else "" for cell in row) + " |\n"
+                                    md_content += "\n"
+
+            except Exception as e:
+                logger.warning(f"Table extraction failed: {e}")
+
         except Exception as e:
-            logger.warning(f"Table extraction failed: {e}")
-            return DocumentConverterResult(markdown=base_markdown)
+            logger.warning(f"PDF conversion failed: {e}")
+            md_content = "PDF file detected but conversion failed."
+
+        return DocumentConverterResult(markdown=md_content.strip())
 
 class MarkitdownConverter:
     def __init__(self,
@@ -151,22 +146,26 @@ class MarkitdownConverter:
         else:
             self.client = MarkItDown()
 
-        removed_converters = [
-            PdfConverter
-        ]
-
-        self.client._page_converters = [
-            converter for converter in self.client._page_converters
-            if not isinstance(converter, tuple(removed_converters))
-        ]
-        self.client.register_page_converter(PdfWithTableConverter())
-        self.client.register_page_converter(AudioWhisperConverter())
+        # Register custom converters as standalone processors
+        self.pdf_converter = PdfWithTableConverter()
+        self.audio_converter = AudioWhisperConverter()
 
     def convert(self, source: str, **kwargs: Any):
         try:
-            result = self.client.convert(
-                source,
-                **kwargs)
+            # Check if source is a file with custom converter
+            if os.path.isfile(source):
+                file_extension = os.path.splitext(source)[1].lower()
+
+                # Use custom PDF converter for PDFs
+                if file_extension == '.pdf':
+                    return self.pdf_converter.convert(source, **kwargs)
+
+                # Use custom audio converter for audio files
+                elif file_extension in ['.wav', '.mp3', '.mp4', '.m4a']:
+                    return self.audio_converter.convert(source, **kwargs)
+
+            # Fall back to standard MarkItDown for other files
+            result = self.client.convert(source, **kwargs)
             return result
         except Exception as e:
             logger.error(f"Error during conversion: {e}")
