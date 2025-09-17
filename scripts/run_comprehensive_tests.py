@@ -20,6 +20,12 @@ from pathlib import Path
 # Add project root to path
 root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(root))
+# Import the project's AgentLogger so we can run the smoke logger as part of the
+# comprehensive test runner (consolidation of small test scripts).
+try:
+    from src.logger import logger
+except Exception:
+    logger = None
 
 
 class TestRunner:
@@ -251,6 +257,39 @@ class TestRunner:
 
         self.test_logger.info("APPLICATION TESTS PHASE COMPLETED")
         return results
+
+    def run_smoke_logger(self) -> dict:
+        """Run a lightweight smoke test that exercises the project's AgentLogger.
+
+        This consolidates the behavior previously provided by
+        `scripts/smoke_logger.py` into this single test runner.
+        """
+        self.test_logger.info("STARTING SMOKE LOGGER TEST")
+        print("🔍 Running smoke logger test...")
+
+        # Ensure outputs/logs exists
+        log_dir = root / "outputs" / "logs"
+        log_dir.mkdir(parents=True, exist_ok=True)
+        smoke_log = log_dir / "smoke_from_test_runner.log"
+
+        if logger is None:
+            msg = "Project logger could not be imported; smoke logger skipped."
+            self.test_logger.warning(msg)
+            return {"success": False, "stderr": msg, "returncode": 1}
+
+        try:
+            # Initialize project logger to write to the smoke log file
+            logger.init_logger(log_path=str(smoke_log))
+            logger.log_rule('Smoke logger test (from comprehensive runner)')
+            logger.info('Info message from comprehensive test runner smoke test')
+            logger.debug('Debug message from comprehensive test runner smoke test')
+            logger.log_code('Example code', 'print("hello smoke")')
+            logger.log_markdown('# Sample\nThis is a markdown log entry (runner).', title='MD Test')
+            self.test_logger.info(f"Smoke logger wrote to: {smoke_log}")
+            return {"success": True, "returncode": 0, "stdout": f"Wrote {smoke_log}"}
+        except Exception as e:
+            self.test_logger.error(f"Smoke logger test failed: {e}")
+            return {"success": False, "returncode": 1, "stderr": str(e)}
 
     def run_comprehensive_test(self) -> dict:
         """Run comprehensive test suite."""
