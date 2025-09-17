@@ -44,10 +44,10 @@ jobs:
           uv-${{ runner.os }}-${{ matrix.python-version }}-
 
     - name: Install dependencies
-      run: uv sync --dev
+      run: uv sync --all-extras
 
     - name: Run comprehensive tests
-      run: uv run python run_comprehensive_tests.py --all --verbose --coverage
+      run: uv run python scripts/run_comprehensive_tests.py --all --verbose --coverage
 
     - name: Upload test results
       uses: actions/upload-artifact@v4
@@ -81,7 +81,7 @@ jobs:
         version: "latest"
 
     - name: Install dependencies
-      run: uv sync --dev
+      run: uv sync --all-extras
 
     - name: Run linting
       run: |
@@ -104,7 +104,7 @@ jobs:
         version: "latest"
 
     - name: Install dependencies
-      run: uv sync --dev
+      run: uv sync --all-extras
 
     - name: Run security checks
       run: |

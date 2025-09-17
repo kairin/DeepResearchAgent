@@ -34,7 +34,7 @@ jobs:
         cache-dependency-glob: "uv.lock"
 
     - name: Set up Python ${{ matrix.python-version }}
-      run: uv python pin ${{ matrix.python-version }}
+      run: uv python install ${{ matrix.python-version }}
 
     - name: Install dependencies
       run: uv sync --all-extras
@@ -69,10 +69,10 @@ jobs:
       uses: astral-sh/setup-uv@v4
 
     - name: Check dependency resolution
-      run: uv lock --check
+      run: uv sync --dry-run
 
     - name: Check for security vulnerabilities
-      run: uv pip audit
+      run: uv run pip-audit
       continue-on-error: true
 
   build:
